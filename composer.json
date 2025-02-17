@@ -1,0 +1,19 @@
+{
+    "name": "tw/roomflow",
+    "description": "O Composer gerencia as dependências do projeto Roomflow, facilitando a instalação e atualização automática das bibliotecas PHP necessárias.",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Tw\\Roomflow\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Davi Passos",
+            "email": "devdapacontact@gmail.com"
+        }
+    ],
+    "minimum-stability": "alpha",
+    "require": {}
+}
