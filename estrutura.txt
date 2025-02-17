@@ -1,0 +1,460 @@
+Listagem de caminhos de pasta para o volume OS
+O número de série do volume é 9277-D1F8
+C:.
+│   .htaccess
+│   estrutura.txt
+│   index.php
+│   
+├───controllers
+│       GuestController.php
+│       HomeController.php
+│       NotFoundController.php
+│       
+├───core
+│       core.php
+│       
+├───models
+│       Database.php
+│       GuestModel.php
+│       
+├───Public
+│   │   acomodacoescadastro.php
+│   │   acomodacoeseditar.php
+│   │   acomodacoeslistar.php
+│   │   amenidadescadastro.php
+│   │   amenidadeslistar.php
+│   │   cadastrohospedes.php
+│   │   editarhospede.php
+│   │   index.php
+│   │   listarhospedes.php
+│   │   
+│   ├───assets
+│   │   ├───css
+│   │   │       material-dashboard.css
+│   │   │       material-dashboard.css.map
+│   │   │       material-dashboard.min.css
+│   │   │       nucleo-icons.css
+│   │   │       nucleo-svg.css
+│   │   │       
+│   │   ├───fonts
+│   │   │       nucleo-icons.eot
+│   │   │       nucleo-icons.svg
+│   │   │       nucleo-icons.ttf
+│   │   │       nucleo-icons.woff
+│   │   │       nucleo-icons.woff2
+│   │   │       nucleo.eot
+│   │   │       nucleo.ttf
+│   │   │       nucleo.woff
+│   │   │       nucleo.woff2
+│   │   │       
+│   │   ├───img
+│   │   │   │   apple-icon.png
+│   │   │   │   bg-pricing.jpg
+│   │   │   │   bg-smart-home-1.jpg
+│   │   │   │   bg-smart-home-2.jpg
+│   │   │   │   bruce-mars.jpg
+│   │   │   │   down-arrow-dark.svg
+│   │   │   │   down-arrow-white.svg
+│   │   │   │   down-arrow.svg
+│   │   │   │   drake.jpg
+│   │   │   │   favicon.png
+│   │   │   │   home-decor-1.jpg
+│   │   │   │   home-decor-2.jpg
+│   │   │   │   home-decor-3.jpg
+│   │   │   │   ivana-square.jpg
+│   │   │   │   ivana-squares.jpg
+│   │   │   │   ivancik.jpg
+│   │   │   │   kal-visuals-square.jpg
+│   │   │   │   logo-ct-dark.png
+│   │   │   │   logo-ct.png
+│   │   │   │   marie.jpg
+│   │   │   │   meeting.jpg
+│   │   │   │   office-dark.jpg
+│   │   │   │   product-12.jpg
+│   │   │   │   team-1.jpg
+│   │   │   │   team-2.jpg
+│   │   │   │   team-3.jpg
+│   │   │   │   team-4.jpg
+│   │   │   │   team-5.jpg
+│   │   │   │   vr-bg.jpg
+│   │   │   │   
+│   │   │   ├───icons
+│   │   │   │   └───flags
+│   │   │   │           AU.png
+│   │   │   │           BR.png
+│   │   │   │           DE.png
+│   │   │   │           GB.png
+│   │   │   │           US.png
+│   │   │   │           
+│   │   │   ├───illustrations
+│   │   │   │       chat.png
+│   │   │   │       danger-chat-ill.png
+│   │   │   │       dark-lock-ill.png
+│   │   │   │       error-404.png
+│   │   │   │       error-500.png
+│   │   │   │       illustration-lock.jpg
+│   │   │   │       illustration-reset.jpg
+│   │   │   │       illustration-signin.jpg
+│   │   │   │       illustration-signup.jpg
+│   │   │   │       illustration-verification.jpg
+│   │   │   │       lock.png
+│   │   │   │       pattern-tree.svg
+│   │   │   │       rocket-white.png
+│   │   │   │       
+│   │   │   ├───logos
+│   │   │   │   └───gray-logos
+│   │   │   │           logo-coinbase.svg
+│   │   │   │           logo-nasa.svg
+│   │   │   │           logo-netflix.svg
+│   │   │   │           logo-pinterest.svg
+│   │   │   │           logo-spotify.svg
+│   │   │   │           logo-vodafone.svg
+│   │   │   │           
+│   │   │   └───small-logos
+│   │   │           bootstrap.svg
+│   │   │           creative-tim.svg
+│   │   │           devto.svg
+│   │   │           github.svg
+│   │   │           google-webdev.svg
+│   │   │           icon-bulb.svg
+│   │   │           icon-sun-cloud.png
+│   │   │           logo-asana.svg
+│   │   │           logo-atlassian.svg
+│   │   │           logo-invision.svg
+│   │   │           logo-jira.svg
+│   │   │           logo-slack.svg
+│   │   │           logo-spotify.svg
+│   │   │           logo-xd.svg
+│   │   │           
+│   │   ├───js
+│   │   │   │   alerts.js
+│   │   │   │   material-dashboard.js
+│   │   │   │   material-dashboard.js.map
+│   │   │   │   material-dashboard.min.js
+│   │   │   │   preferences.js
+│   │   │   │   
+│   │   │   ├───core
+│   │   │   │       bootstrap.bundle.min.js
+│   │   │   │       bootstrap.min.js
+│   │   │   │       popper.min.js
+│   │   │   │       
+│   │   │   └───plugins
+│   │   │           bootstrap-notify.js
+│   │   │           Chart.extension.js
+│   │   │           chartjs.min.js
+│   │   │           countup.min.js
+│   │   │           perfect-scrollbar.min.js
+│   │   │           smooth-scrollbar.min.js
+│   │   │           world.js
+│   │   │           
+│   │   └───scss
+│   │       │   material-dashboard.scss
+│   │       │   
+│   │       └───material-dashboard
+│   │           │   theme-pro.scss
+│   │           │   theme.scss
+│   │           │   _accordion.scss
+│   │           │   _alert.scss
+│   │           │   _avatars.scss
+│   │           │   _backgrounds.scss
+│   │           │   _badge.scss
+│   │           │   _breadcrumbs.scss
+│   │           │   _buttons.scss
+│   │           │   _cards-extend.scss
+│   │           │   _cards.scss
+│   │           │   _components.scss
+│   │           │   _dark-version.scss
+│   │           │   _dropdown-extend.scss
+│   │           │   _dropdown.scss
+│   │           │   _dropup.scss
+│   │           │   _fixed-plugin.scss
+│   │           │   _floating-elements.scss
+│   │           │   _footer.scss
+│   │           │   _forms.scss
+│   │           │   _gradients.scss
+│   │           │   _header.scss
+│   │           │   _icons.scss
+│   │           │   _info-areas.scss
+│   │           │   _list-check.scss
+│   │           │   _misc-extend.scss
+│   │           │   _misc.scss
+│   │           │   _nav.scss
+│   │           │   _navbar-vertical.scss
+│   │           │   _navbar.scss
+│   │           │   _pagination.scss
+│   │           │   _popovers.scss
+│   │           │   _progress.scss
+│   │           │   _ripple.scss
+│   │           │   _rtl-extend.scss
+│   │           │   _rtl.scss
+│   │           │   _social-buttons.scss
+│   │           │   _tables.scss
+│   │           │   _tilt.scss
+│   │           │   _timeline.scss
+│   │           │   _tooltips.scss
+│   │           │   _typography.scss
+│   │           │   _utilities-extend.scss
+│   │           │   _utilities.scss
+│   │           │   _variables.scss
+│   │           │   
+│   │           ├───badges
+│   │           │       _badge-circle.scss
+│   │           │       _badge-dot.scss
+│   │           │       _badge-floating.scss
+│   │           │       _badge.scss
+│   │           │       
+│   │           ├───bootstrap
+│   │           │   │   bootstrap-grid.scss
+│   │           │   │   bootstrap-reboot.scss
+│   │           │   │   bootstrap-utilities.scss
+│   │           │   │   bootstrap.scss
+│   │           │   │   _accordion.scss
+│   │           │   │   _alert.scss
+│   │           │   │   _badge.scss
+│   │           │   │   _breadcrumb.scss
+│   │           │   │   _button-group.scss
+│   │           │   │   _buttons.scss
+│   │           │   │   _card.scss
+│   │           │   │   _carousel.scss
+│   │           │   │   _close.scss
+│   │           │   │   _containers.scss
+│   │           │   │   _dropdown.scss
+│   │           │   │   _forms.scss
+│   │           │   │   _functions.scss
+│   │           │   │   _grid.scss
+│   │           │   │   _helpers.scss
+│   │           │   │   _images.scss
+│   │           │   │   _list-group.scss
+│   │           │   │   _maps.scss
+│   │           │   │   _mixins.scss
+│   │           │   │   _modal.scss
+│   │           │   │   _nav.scss
+│   │           │   │   _navbar.scss
+│   │           │   │   _offcanvas.scss
+│   │           │   │   _pagination.scss
+│   │           │   │   _placeholders.scss
+│   │           │   │   _popover.scss
+│   │           │   │   _progress.scss
+│   │           │   │   _reboot.scss
+│   │           │   │   _root.scss
+│   │           │   │   _spinners.scss
+│   │           │   │   _tables.scss
+│   │           │   │   _toasts.scss
+│   │           │   │   _tooltip.scss
+│   │           │   │   _transitions.scss
+│   │           │   │   _type.scss
+│   │           │   │   _utilities.scss
+│   │           │   │   _variables-dark.scss
+│   │           │   │   _variables.scss
+│   │           │   │   
+│   │           │   ├───forms
+│   │           │   │       _floating-labels.scss
+│   │           │   │       _form-check.scss
+│   │           │   │       _form-control.scss
+│   │           │   │       _form-range.scss
+│   │           │   │       _form-select.scss
+│   │           │   │       _form-text.scss
+│   │           │   │       _input-group.scss
+│   │           │   │       _labels.scss
+│   │           │   │       _validation.scss
+│   │           │   │       
+│   │           │   ├───helpers
+│   │           │   │       _clearfix.scss
+│   │           │   │       _color-bg.scss
+│   │           │   │       _colored-links.scss
+│   │           │   │       _focus-ring.scss
+│   │           │   │       _icon-link.scss
+│   │           │   │       _position.scss
+│   │           │   │       _ratio.scss
+│   │           │   │       _stacks.scss
+│   │           │   │       _stretched-link.scss
+│   │           │   │       _text-truncation.scss
+│   │           │   │       _visually-hidden.scss
+│   │           │   │       _vr.scss
+│   │           │   │       
+│   │           │   ├───mixins
+│   │           │   │       _alert.scss
+│   │           │   │       _backdrop.scss
+│   │           │   │       _banner.scss
+│   │           │   │       _border-radius.scss
+│   │           │   │       _box-shadow.scss
+│   │           │   │       _breakpoints.scss
+│   │           │   │       _buttons.scss
+│   │           │   │       _caret.scss
+│   │           │   │       _clearfix.scss
+│   │           │   │       _color-mode.scss
+│   │           │   │       _color-scheme.scss
+│   │           │   │       _container.scss
+│   │           │   │       _deprecate.scss
+│   │           │   │       _forms.scss
+│   │           │   │       _gradients.scss
+│   │           │   │       _grid.scss
+│   │           │   │       _image.scss
+│   │           │   │       _list-group.scss
+│   │           │   │       _lists.scss
+│   │           │   │       _pagination.scss
+│   │           │   │       _reset-text.scss
+│   │           │   │       _resize.scss
+│   │           │   │       _table-variants.scss
+│   │           │   │       _text-truncate.scss
+│   │           │   │       _transition.scss
+│   │           │   │       _utilities.scss
+│   │           │   │       _visually-hidden.scss
+│   │           │   │       
+│   │           │   ├───tests
+│   │           │   │   │   jasmine.js
+│   │           │   │   │   
+│   │           │   │   ├───mixins
+│   │           │   │   │       _auto-import-of-variables-dark.test.scss
+│   │           │   │   │       _color-modes.test.scss
+│   │           │   │   │       _media-query-color-mode-full.test.scss
+│   │           │   │   │       _utilities.test.scss
+│   │           │   │   │       
+│   │           │   │   ├───sass-true
+│   │           │   │   │       register.js
+│   │           │   │   │       runner.js
+│   │           │   │   │       
+│   │           │   │   └───utilities
+│   │           │   │           _api.test.scss
+│   │           │   │           
+│   │           │   ├───utilities
+│   │           │   │       _api.scss
+│   │           │   │       
+│   │           │   └───vendor
+│   │           │           _rfs.scss
+│   │           │           
+│   │           ├───cards
+│   │           │       card-background.scss
+│   │           │       card-blog.scss
+│   │           │       card-horizontal.scss
+│   │           │       card-pricing.scss
+│   │           │       card-profile.scss
+│   │           │       card-rotate.scss
+│   │           │       
+│   │           ├───custom
+│   │           │       _styles.scss
+│   │           │       _variables.scss
+│   │           │       
+│   │           ├───forms
+│   │           │       _form-check.scss
+│   │           │       _form-select.scss
+│   │           │       _form-switch.scss
+│   │           │       _forms.scss
+│   │           │       _input-group.scss
+│   │           │       _inputs.scss
+│   │           │       _labels.scss
+│   │           │       
+│   │           ├───mixins
+│   │           │       mixins.scss
+│   │           │       _badge.scss
+│   │           │       _buttons.scss
+│   │           │       _colored-shadows.scss
+│   │           │       _hover.scss
+│   │           │       _social-buttons.scss
+│   │           │       _vendor.scss
+│   │           │       
+│   │           ├───plugins
+│   │           │   ├───free
+│   │           │   │       plugins.scss
+│   │           │   │       _flatpickr.scss
+│   │           │   │       _nouislider.scss
+│   │           │   │       _perfect-scrollbar.scss
+│   │           │   │       _prism.scss
+│   │           │   │       
+│   │           │   └───pro
+│   │           │           multi-step.scss
+│   │           │           plugins-extend.scss
+│   │           │           _carousel-slick.scss
+│   │           │           _choices.scss
+│   │           │           _datatable-extend.scss
+│   │           │           _datatable.scss
+│   │           │           _dragula.scss
+│   │           │           _dropzone.scss
+│   │           │           _fullcalendar-extend.scss
+│   │           │           _fullcalendar.scss
+│   │           │           _glidejs.scss
+│   │           │           _highlight.scss
+│   │           │           _kanban.scss
+│   │           │           _leaflet.scss
+│   │           │           _list-check.scss
+│   │           │           _photoswipe.scss
+│   │           │           _quill.scss
+│   │           │           _rating-widget.scss
+│   │           │           _sweetalert2-extend.scss
+│   │           │           _sweetalert2.scss
+│   │           │           _vector-map.scss
+│   │           │           
+│   │           └───variables
+│   │                   _animations.scss
+│   │                   _avatars.scss
+│   │                   _badge.scss
+│   │                   _breadcrumb.scss
+│   │                   _cards-extend.scss
+│   │                   _cards.scss
+│   │                   _choices.scss
+│   │                   _dark-version.scss
+│   │                   _dropdowns.scss
+│   │                   _fixed-plugin.scss
+│   │                   _form-switch.scss
+│   │                   _full-calendar.scss
+│   │                   _header.scss
+│   │                   _info-areas.scss
+│   │                   _misc-extend.scss
+│   │                   _misc.scss
+│   │                   _navbar-vertical.scss
+│   │                   _navbar.scss
+│   │                   _pagination.scss
+│   │                   _ripple.scss
+│   │                   _rtl.scss
+│   │                   _social-buttons.scss
+│   │                   _table.scss
+│   │                   _timeline.scss
+│   │                   _utilities-extend.scss
+│   │                   _utilities.scss
+│   │                   _virtual-reality.scss
+│   │                   
+│   ├───ControllersVelho
+│   │       atualizaAcomodacao.php
+│   │       atualizaHospede.php
+│   │       cadAcomodacoes.php
+│   │       cadAmenidades.php
+│   │       cadHospedes.php
+│   │       deleteAcomodacao.php
+│   │       deleteHospede.php
+│   │       
+│   ├───docs
+│   │       documentation.html
+│   │       
+│   └───pages
+│           billing.html
+│           dashboard.html
+│           icons.html
+│           landing.html
+│           map.html
+│           notifications.html
+│           profile.html
+│           rtl.html
+│           sign-in.html
+│           sign-up.html
+│           tables.html
+│           template.html
+│           typography.html
+│           virtual-reality.html
+│           
+├───router
+│       routes.php
+│       
+├───utils
+│       RenderView.php
+│       
+└───views
+    │   Home.php
+    │   HospedeCadastrar.php
+    │   HospedeEditar.php
+    │   Hospedes.php
+    │   Layout.php
+    │   
+    └───partials
+            footer.php
+            navbar.php
+            
