@@ -204,7 +204,7 @@ class GuestController extends RenderView
                 );
 
                 if ($success) {
-                    header("Location: /Roomflox/Hospedes/$id_guest?msg=success");
+                    header("Location: /Roomflox/Hospedes/$id_guest?msg=success_update");
                     exit();
                 } else {
                     $errors['general'] = "Erro ao atualizar! Tente novamente.";
@@ -221,5 +221,22 @@ class GuestController extends RenderView
             'father' => 'Hospedes',
             'page' => 'Editar',
         ]);
+    }
+
+    public function delete()
+    {
+        $id_guest = $_POST['id'];
+
+        $guest = new GuestModel();
+
+        $success = $guest->deletar($id_guest);
+
+        if ($success) {
+            header("Location: /Roomflox/Hospedes?msg=success_delete");
+            exit();
+        } else {
+            header("Location: /Roomflox/Hospedes?msg=error_delete");
+            exit();
+        }
     }
 }

@@ -10,7 +10,7 @@ class GuestModel extends Database
     }
     public function listar()
     {
-        $stmt = $this->pdo->query("SELECT * FROM hospedes");
+        $stmt = $this->pdo->query("SELECT * FROM hospedes WHERE active = 1");
         if ($stmt->rowCount() > 0) {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
@@ -205,4 +205,33 @@ class GuestModel extends Database
         return false;
     }
 }
+
+public function deletar($id)
+{
+    try {
+        // Iniciar uma transação
+        $this->pdo->beginTransaction();
+
+        // Desativar o hóspede na tabela hospedes
+        $stmt = $this->pdo->prepare("UPDATE hospedes SET active = 0 WHERE id = :id");
+
+        // Bind do parâmetro usando PDO
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        // Executar a atualização
+        $stmt->execute();
+
+        // Confirmar a transação
+        $this->pdo->commit();
+
+        // Retorna true em caso de sucesso
+        return true;
+
+    } catch (PDOException $e) {
+        // Em caso de erro, desfazer a transação
+        $this->pdo->rollBack();
+        error_log("Erro ao excluir hóspede: " . $e->getMessage());
+        return false;
+    }
+    }
 }

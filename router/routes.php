@@ -5,5 +5,6 @@ $Routes = [
     '/Hospedes' => 'GuestController@list',
     '/Hospedes/@id' => 'GuestController@editar',
     '/Hospedes/Update/@id' => 'GuestController@update',
-    '/Hospedes/Cadastrar' => 'GuestController@create'
+    '/Hospedes/Cadastrar' => 'GuestController@create',
+    '/Hospedes/Deletar' => 'GuestController@delete',
 ];

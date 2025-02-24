@@ -95,7 +95,7 @@ switch ($msg) {
                                                 <a href="/Roomflox/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                                     Editar
                                                 </a>
-                                                <form action="../App/Controllers/deletehospede.php" method="POST" class="d-inline">
+                                                <form action="/Roomflox/Hospedes/Deletar" method="POST" class="d-inline">
                                                     <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
                                                     <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir este hóspede?');">
                                                         Deletar

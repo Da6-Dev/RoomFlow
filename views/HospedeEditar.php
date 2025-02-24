@@ -229,7 +229,7 @@ if (!empty($errors['general'])) {
                         <div class="row" id="preferences">
                             <?php if (!empty($preferencias)): ?>
                                 <?php foreach ($preferencias as $index => $valor) : ?>
-                                    
+
                                     <div class="col-md-12">
                                         <div class="input-group input-group-outline my-3 is-filled" id="pref<?php echo $index + 1; ?>">
                                             <label class="form-label">Preferência <?php echo $index + 1; ?></label>
@@ -251,9 +251,18 @@ if (!empty($errors['general'])) {
             <div class="col-md-12">
                 <button type="submit" class="btn bg-gradient-dark text-white">Atualizar</button>
             </div>
+
         </div>
     </form>
+    <form action="/Roomflox/Hospedes/Deletar" method="POST" class="d-inline">
+        <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
+        <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir este hóspede?');">
+            Deletar
+        </button>
+    </form>
 </div>
+
+
 
 <?php
 
