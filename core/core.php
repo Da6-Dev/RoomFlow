@@ -2,7 +2,8 @@
 
 class core
 {
-    public function run($Routes){
+    public function run($Routes)
+    {
         $url = '/';
         $url .= isset($_GET['url']) ? $_GET['url'] : '';
 
@@ -30,6 +31,8 @@ class core
                 return; // Interrompe a execução para evitar múltiplas verificações
             }
         }
+
+
 
         // Se não encontrou a rota, exibir a página 404
         require_once __DIR__ . "/../controllers/NotFoundController.php";

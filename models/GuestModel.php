@@ -17,11 +17,63 @@ class GuestModel extends Database
             return [];
         }
     }
-    public function editar($id)
+    public function getHospedeById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM hospedes WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            if (!$this->pdo) {
+                throw new Exception("Erro: conexão com o banco de dados não está ativa.");
+            }
+
+            // Garante que o ID seja um número válido
+            $id = filter_var($id, FILTER_VALIDATE_INT);
+            if (!$id) {
+                throw new Exception("ID inválido fornecido.");
+            }
+
+            $stmt = $this->pdo->prepare("SELECT * FROM hospedes WHERE id = ?");
+            $stmt->execute([$id]);
+
+            $hospede = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$hospede) {
+                return null; // Retorna null se nenhum hóspede for encontrado
+            }
+
+            return $hospede;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage()); // Registra o erro no log do servidor
+            return null;
+        }
+    }
+
+    public function getPreferencesById($id){
+        try {
+            if (!$this->pdo) {
+                throw new Exception("Erro: conexão com o banco de dados não está ativa.");
+            }
+
+            // Garante que o ID seja um número válido
+            $id = filter_var($id, FILTER_VALIDATE_INT);
+            if (!$id) {
+                throw new Exception("ID inválido fornecido.");
+            }
+
+            $stmt = $this->pdo->prepare("SELECT * FROM preferencias_hospedes WHERE id_hospede = ?");
+            $stmt->execute([$id]);
+
+            $preferencias = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$preferencias) {
+                return null; // Retorna null se nenhum hóspede for encontrado
+            }
+
+            return $preferencias;
+
+        } catch (Exception $e) {
+            error_log($e->getMessage()); // Registra o erro no log do servidor
+            return null;
+        }
     }
 
     public function criar($nome, $email, $telefone, $cpf, $rua, $cidade, $estado, $numero, $cep, $dataNasc)
@@ -93,34 +145,33 @@ class GuestModel extends Database
     }
 
     public function cpfExists($cpf)
-{
-    try {
-        // Remover qualquer formatação do CPF (como pontos ou traços)
-        $cpf = preg_replace('/[^0-9]/', '', $cpf);
+    {
+        try {
+            // Remover qualquer formatação do CPF (como pontos ou traços)
+            $cpf = preg_replace('/[^0-9]/', '', $cpf);
 
-        // Preparando a consulta SQL para verificar se o CPF já existe na tabela 'hospedes'
-        $query = "SELECT COUNT(*) FROM hospedes WHERE documento = :cpf";
-        $stmt = $this->pdo->prepare($query);
+            // Preparando a consulta SQL para verificar se o CPF já existe na tabela 'hospedes'
+            $query = "SELECT COUNT(*) FROM hospedes WHERE documento = :cpf";
+            $stmt = $this->pdo->prepare($query);
 
-        // Bind do parâmetro para proteger contra SQL Injection
-        $stmt->bindParam(':cpf', $cpf, PDO::PARAM_STR);
+            // Bind do parâmetro para proteger contra SQL Injection
+            $stmt->bindParam(':cpf', $cpf, PDO::PARAM_STR);
 
-        // Executando a consulta
-        $stmt->execute();
+            // Executando a consulta
+            $stmt->execute();
 
-        // Obtendo o resultado da contagem
-        $count = $stmt->fetchColumn();
+            // Obtendo o resultado da contagem
+            $count = $stmt->fetchColumn();
 
-        // Debug: Exibe o CPF e o resultado da contagem
-        error_log("Verificando CPF: $cpf - Resultado: $count");
+            // Debug: Exibe o CPF e o resultado da contagem
+            error_log("Verificando CPF: $cpf - Resultado: $count");
 
-        // Se o resultado for maior que 0, significa que o CPF já existe
-        return $count > 0;
-    } catch (PDOException $e) {
-        // Em caso de erro com o banco de dados, retorna false
-        error_log("Erro no banco de dados: " . $e->getMessage());
-        return false;
+            // Se o resultado for maior que 0, significa que o CPF já existe
+            return $count > 0;
+        } catch (PDOException $e) {
+            // Em caso de erro com o banco de dados, retorna false
+            error_log("Erro no banco de dados: " . $e->getMessage());
+            return false;
+        }
     }
-}
-
 }
