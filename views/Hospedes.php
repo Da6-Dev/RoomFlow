@@ -92,7 +92,7 @@ switch ($msg) {
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo htmlspecialchars($guest['documento']); ?></span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="?id=<?php echo $guest['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                <a href="/Roomflox/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                                     Editar
                                                 </a>
                                                 <form action="../App/Controllers/deletehospede.php" method="POST" class="d-inline">

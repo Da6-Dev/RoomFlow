@@ -40,40 +40,20 @@ class GuestModel extends Database
             }
 
             return $hospede;
-
         } catch (Exception $e) {
             error_log($e->getMessage()); // Registra o erro no log do servidor
             return null;
         }
     }
 
-    public function getPreferencesById($id){
-        try {
-            if (!$this->pdo) {
-                throw new Exception("Erro: conexão com o banco de dados não está ativa.");
-            }
-
-            // Garante que o ID seja um número válido
-            $id = filter_var($id, FILTER_VALIDATE_INT);
-            if (!$id) {
-                throw new Exception("ID inválido fornecido.");
-            }
-
-            $stmt = $this->pdo->prepare("SELECT * FROM preferencias_hospedes WHERE id_hospede = ?");
-            $stmt->execute([$id]);
-
-            $preferencias = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$preferencias) {
-                return null; // Retorna null se nenhum hóspede for encontrado
-            }
-
-            return $preferencias;
-
-        } catch (Exception $e) {
-            error_log($e->getMessage()); // Registra o erro no log do servidor
-            return null;
-        }
+    public function getPreferencesById($id)
+    {
+            $stmt = $this->pdo->prepare("SELECT * FROM preferencias_hospedes WHERE id_hospede = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+        
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
     }
 
     public function criar($nome, $email, $telefone, $cpf, $rua, $cidade, $estado, $numero, $cep, $dataNasc)
@@ -174,4 +154,55 @@ class GuestModel extends Database
             return false;
         }
     }
+
+    public function atualizar($id, $nome, $email, $telefone, $cpf, $rua, $cidade, $estado, $numero, $cep, $dataNasc, $preferencias)
+{
+    try {
+        // Iniciar uma transação
+        $this->pdo->beginTransaction();
+
+        // Atualizar os dados do hóspede na tabela hospedes
+        $stmt = $this->pdo->prepare("UPDATE hospedes SET nome = :nome, email = :email, telefone = :telefone, documento = :cpf, rua = :rua, cidade = :cidade, estado = :estado, numero = :numero, cep = :cep, data_nascimento = :dataNasc WHERE id = :id");
+
+        // Bind dos parâmetros usando PDO
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':nome', $nome);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':telefone', $telefone);
+        $stmt->bindValue(':cpf', $cpf);
+        $stmt->bindValue(':rua', $rua);
+        $stmt->bindValue(':cidade', $cidade);
+        $stmt->bindValue(':estado', $estado);
+        $stmt->bindValue(':numero', $numero);
+        $stmt->bindValue(':cep', $cep);
+        $stmt->bindValue(':dataNasc', $dataNasc);
+
+        // Executar a atualização
+        $stmt->execute();
+
+        // Remover as preferências antigas do hóspede
+        $stmtDelete = $this->pdo->prepare("DELETE FROM preferencias_hospedes WHERE id_hospede = :id_hospede");
+        $stmtDelete->bindValue(':id_hospede', $id, PDO::PARAM_INT);
+        $stmtDelete->execute();
+
+        // Inserir as novas preferências, se existirem
+        foreach ($preferencias as $preferencia) {
+            $stmtPref = $this->pdo->prepare("INSERT INTO preferencias_hospedes (id_hospede, descricao) VALUES (:id_hospede, :descricao)");
+            $stmtPref->bindValue(':id_hospede', $id, PDO::PARAM_INT);
+            $stmtPref->bindValue(':descricao', $preferencia);
+            $stmtPref->execute();
+        }
+
+        // Confirmar a transação
+        $this->pdo->commit();
+
+        // Retorna true em caso de sucesso
+        return true;
+    } catch (PDOException $e) {
+        // Em caso de erro, desfazer a transação
+        $this->pdo->rollBack();
+        error_log("Erro ao atualizar hóspede: " . $e->getMessage());
+        return false;
+    }
+}
 }

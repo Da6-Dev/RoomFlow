@@ -6,7 +6,6 @@
     <title><?= $Title ?? 'Roomflox' ?></title>
     <link rel="stylesheet" href="/Roomflox/public/css/style.css">
 </head>
-<body>
 
     <!-- Incluindo a Navbar -->
     <?php include __DIR__ . '/partials/navbar.php'; ?>
@@ -18,5 +17,5 @@
     <!-- Incluindo o Footer -->
     <?php include __DIR__ . '/partials/footer.php'; ?>
 
-</body>
+</body> 
 </html>

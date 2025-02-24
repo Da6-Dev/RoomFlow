@@ -34,13 +34,18 @@ function validarEmail($email)
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return ['status' => 'error', 'msg' => 'O e-mail informado é inválido.'];
     }
-
-    $emailExiste = new GuestModel();
-    if ($emailExiste->emailExists($email)) {
-        return ['status' => 'error', 'msg' => 'O e-mail já está cadastrado.'];
-    }
-
+    
     return ['status' => 'success', 'msg' => 'E-mail válido.'];
+}
+
+function existsEmail($email)
+{
+    $email = trim($email);
+    $guest = new GuestModel();
+    if ($guest->emailExists($email)) {
+        return ['status' => 'error', 'msg' => 'O e-mail informado já está cadastrado.'];
+    }
+    return['status' => 'success', 'msg' => 'E-mail válido.'];
 }
 
 function validarTelefone($telefone)

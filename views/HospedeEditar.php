@@ -1,4 +1,3 @@
-
 <?php
 
 ob_start();
@@ -16,7 +15,6 @@ if (!empty($errors['general'])) {
     $alertClass = 'alert-success';
     $alertMessage = "Cadastro de usuário realizado com sucesso!";
 }
-
 ?>
 
 <div class="container-fluid py-2">
@@ -26,7 +24,7 @@ if (!empty($errors['general'])) {
         </div>
     <?php endif; ?>
 
-    <form action="/Roomflox/Hospedes/Cadastrar" method="post">
+    <form action=<?php echo '"/Roomflox/Hospedes/Update/' . $guest['id'] . '"' ?> method="post">
         <!-- Título do Formulário -->
         <div class="row mb-4">
             <div class="col-12">
@@ -229,15 +227,18 @@ if (!empty($errors['general'])) {
                             <button type="button" id="prefless" class="btn btn-outline-primary btn-sm">-</button>
                         </div>
                         <div class="row" id="preferences">
-                            <?php if (isset($preferencias) && $preferencias != null): ?>
+                            <?php if (!empty($preferencias)): ?>
                                 <?php foreach ($preferencias as $index => $valor) : ?>
+                                    
                                     <div class="col-md-12">
                                         <div class="input-group input-group-outline my-3 is-filled" id="pref<?php echo $index + 1; ?>">
                                             <label class="form-label">Preferência <?php echo $index + 1; ?></label>
-                                            <input type="text" class="form-control" name="pref<?php echo $index + 1; ?>" value="<?php echo htmlspecialchars($valor); ?>" required>
+                                            <input type="text" class="form-control" name="pref<?php echo $index + 1; ?>" value="<?php echo htmlspecialchars($valor['descricao']); ?>" required>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
+                            <?php else: ?>
+                                <p class="text-muted">Nenhuma preferência cadastrada.</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -248,7 +249,7 @@ if (!empty($errors['general'])) {
         <!-- Botão de Cadastro -->
         <div class="row">
             <div class="col-md-12">
-                <button type="submit" class="btn bg-gradient-dark text-white">Cadastrar</button>
+                <button type="submit" class="btn bg-gradient-dark text-white">Atualizar</button>
             </div>
         </div>
     </form>
@@ -260,4 +261,3 @@ $content = ob_get_clean(); // Captura o conteúdo da página
 include __DIR__ . '/Layout.php'; // Inclui o layout base
 
 ?>
-    
