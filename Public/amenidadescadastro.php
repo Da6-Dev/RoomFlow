@@ -5,26 +5,7 @@ $_SESSION['caminhoPai'] = "Acomodações";
 $_SESSION['pagina'] = "Cadastrar Amenidade";
 include_once('../Includes/navbar.php');
 
-// Verifica se há uma mensagem na URL e define a classe e o texto do alerta com base nela
-$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
 
-$alertClass = '';
-$alertMessage = '';
-
-switch ($msg) {
-    case 'success_create':
-        $alertClass = 'alert-success';
-        $alertMessage = 'Amenidade cadastrada com sucesso!';
-        break;
-    case 'error_create':
-        $alertClass = 'alert-danger';
-        $alertMessage = 'Erro ao cadastrar a amenidade.';
-        break;
-    default:
-        $alertClass = '';
-        $alertMessage = '';
-        break;
-}
 ?>
 
 <div class="container-fluid py-2">
