@@ -17,25 +17,33 @@ O **ROOMFLOW** é um sistema desenvolvido para otimizar a gestão de reservas de
 - **Hospedagem**: AWS / Firebase / Heroku
 
 ## Instalação e Uso
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/seuusuario/roomflow.git
-   ```
-2. Acesse o diretório do projeto:
-   ```bash
-   cd roomflow
-   ```
-3. Instale as dependências:
-   ```bash
-   npm install  # Para projetos em Node.js
-   pip install -r requirements.txt  # Para projetos em Python
-   ```
-4. Inicie o servidor:
-   ```bash
-   npm start  # Para projetos em Node.js
-   python manage.py runserver  # Para projetos em Django
-   ```
-5. Acesse a aplicação em: `http://localhost:3000/`
+
+# Roomflow
+
+## Como configurar o projeto
+
+### 1. Clonar este repositório
+```bash
+git clone https://github.com/seuusuario/RoomFlow.git
+```
+
+### 2. Acessar o diretório do projeto
+```bash
+cd RoomFlow
+```
+
+### 3. Configurar um servidor local
+Para rodar a aplicação, utilize um servidor local como Apache ou Nginx.
+
+#### Opções:
+- **XAMPP**: Copie os arquivos do projeto para a pasta `htdocs` e inicie o Apache.
+- **Laragon**: Adicione o projeto ao Laragon e inicie o servidor.
+
+### 4. Acessar a aplicação
+Após configurar o servidor, acesse a aplicação no navegador:
+```bash
+http://localhost/RoomFlow/
+```
 
 ## Contribuição
 Contribuições são bem-vindas! Siga os passos:
