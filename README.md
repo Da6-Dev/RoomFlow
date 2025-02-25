@@ -11,10 +11,9 @@ O **ROOMFLOW** é um sistema desenvolvido para otimizar a gestão de reservas de
 - 📊 **Relatórios e Análises**: Dados e métricas para otimização da gestão.
 
 ## Tecnologias Utilizadas
-- **Frontend**: React.js / Vue.js / Angular (escolha a tecnologia utilizada)
-- **Backend**: Node.js / Python (Django ou Flask) / PHP (Laravel)
-- **Banco de Dados**: MySQL / PostgreSQL / MongoDB
-- **Hospedagem**: AWS / Firebase / Heroku
+- **Frontend**: HTML, CSS, JS, BootStrap
+- **Backend**: PHP (Puro)
+- **Banco de Dados**: MySQL
 
 ## Instalação e Uso
 
