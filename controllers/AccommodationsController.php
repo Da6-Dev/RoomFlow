@@ -91,7 +91,7 @@ class AccommodationsController extends RenderView{
             // Se não houver erros, inserir no banco de dados
             if (empty($errors)) {
                 $accommodations = new AccommodationsModel();
-                $accommodations->create($data);
+                $accommodations->create($data, $amenities);
                 header('Location: /Roomflox/Acomodações/Cadastrar?msg=success_create');
                 exit();
             }
