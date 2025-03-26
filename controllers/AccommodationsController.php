@@ -1,6 +1,7 @@
-<?php 
+<?php
 
-class AccommodationsController extends RenderView{
+class AccommodationsController extends RenderView
+{
 
     public function list()
     {
@@ -28,8 +29,12 @@ class AccommodationsController extends RenderView{
 
             // Definir dados
             $data = [
-                'nome' => cleanInput($_POST['nome'] ?? ''),
+                'tipo' => cleanInput($_POST['tipo'] ?? ''),
+                'numero' => cleanInput($_POST['numero'] ?? ''),
                 'descricao' => cleanInput($_POST['descricao'] ?? ''),
+                'status' => cleanInput($_POST['status'] ?? ''),
+                'capacidade' => cleanInput($_POST['capacidade'] ?? ''),
+                'preco' => cleanInput($_POST['preco'] ?? ''),
                 'minimo_noites' => cleanInput($_POST['minimo_noites'] ?? ''),
                 'camas_casal' => cleanInput($_POST['camas_casal'] ?? ''),
                 'camas_solteiro' => cleanInput($_POST['camas_solteiro'] ?? ''),
@@ -91,19 +96,20 @@ class AccommodationsController extends RenderView{
             // Se não houver erros, inserir no banco de dados
             if (empty($errors)) {
                 $accommodations = new AccommodationsModel();
-                $accommodations->create($data, $amenities);
+                $accommodations->create($data);
                 header('Location: /Roomflox/Acomodações/Cadastrar?msg=success_create');
                 exit();
             }
-
         }
 
-
-$this->LoadView('AcomodaçõesCadastrar', [
+        $amenities = new AmenitiesModel();
+        $this->LoadView('AcomodacoesCadastrar', [
             'Title' => 'Cadastrar Acomodação',
             'errors' => $errors,
             'father' => 'Acomodações',
             'page' => 'Cadastrar',
+            'Amenities' => $amenities->listar(),
+
         ]);
     }
 
@@ -153,9 +159,9 @@ $this->LoadView('AcomodaçõesCadastrar', [
             // Validar mínimo de noites
             if (empty($data['minimo_noites'])) {
                 $errors['minimo_noites'] = 'O campo mínimo de noites é obrigatório.';
-            } elseif ($data['minimo_noites'] < 1) { 
+            } elseif ($data['minimo_noites'] < 1) {
                 $errors['minimo_noites'] = 'O mínimo de noites deve ser maior que 0.';
-            }   
+            }
 
             // Validar camas de casal
             if (empty($data['camas_casal'])) {
@@ -179,7 +185,7 @@ $this->LoadView('AcomodaçõesCadastrar', [
             // Validar hora de check-out
             if (empty($data['check_out_time'])) {
                 $errors['check_out_time'] = 'O campo hora de check-out é obrigatório.';
-            } 
+            }
 
             // Se não houver erros, atualizar no banco de dados
             if (empty($errors)) {
@@ -187,9 +193,8 @@ $this->LoadView('AcomodaçõesCadastrar', [
                 header('Location: /Roomflox/Acomodações/Atualizar/' . $id . '?msg=success_update');
                 exit();
             }
-
         }
-        
+
         $this->LoadView('AcomodaçõesAtualizar', [
             'Title' => 'Atualizar Acomodação',
             'accommodation' => $accommodation,
@@ -197,7 +202,6 @@ $this->LoadView('AcomodaçõesCadastrar', [
             'father' => 'Acomodações',
             'page' => 'Atualizar',
         ]);
-
     }
 
     public function delete($id)
@@ -207,7 +211,4 @@ $this->LoadView('AcomodaçõesCadastrar', [
         header('Location: /Roomflox/Acomodações?msg=success_delete');
         exit();
     }
-
 }
-
-?>
