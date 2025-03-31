@@ -76,10 +76,10 @@ switch ($msg) {
                                                 </div>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="/Roomflox/Comodidades/<?php echo $amenity['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit amenity">
+                                                <a href="/RoomFlow/Comodidades/<?php echo $amenity['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit amenity">
                                                     Editar
                                                 </a>
-                                                <form action="/Roomflox/Comodidades/Deletar" method="POST" class="d-inline">
+                                                <form action="/RoomFlow/Comodidades/Deletar" method="POST" class="d-inline">
                                                     <input type="hidden" name="id" value="<?php echo $amenity['id']; ?>">
                                                     <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir esta amenidade?');">
                                                         Deletar

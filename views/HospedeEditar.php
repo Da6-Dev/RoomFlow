@@ -24,7 +24,7 @@ if (!empty($errors['general'])) {
         </div>
     <?php endif; ?>
 
-    <form action=<?php echo '"/Roomflox/Hospedes/Update/' . $guest['id'] . '"' ?> method="post">
+    <form action=<?php echo '"/RoomFlow/Hospedes/Update/' . $guest['id'] . '"' ?> method="post">
         <!-- Título do Formulário -->
         <div class="row mb-4">
             <div class="col-12">
@@ -254,7 +254,7 @@ if (!empty($errors['general'])) {
 
         </div>
     </form>
-    <form action="/Roomflox/Hospedes/Deletar" method="POST" class="d-inline">
+    <form action="/RoomFlow/Hospedes/Deletar" method="POST" class="d-inline">
         <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
         <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir este hóspede?');">
             Deletar

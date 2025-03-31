@@ -97,7 +97,7 @@ class AccommodationsController extends RenderView
             if (empty($errors)) {
                 $accommodations = new AccommodationsModel();
                 $accommodations->create($data);
-                header('Location: /Roomflox/Acomodações/Cadastrar?msg=success_create');
+                header('Location: /RoomFlow/Acomodações/Cadastrar?msg=success_create');
                 exit();
             }
         }
@@ -190,7 +190,7 @@ class AccommodationsController extends RenderView
             // Se não houver erros, atualizar no banco de dados
             if (empty($errors)) {
                 $accommodations->update($id, $data);
-                header('Location: /Roomflox/Acomodações/Atualizar/' . $id . '?msg=success_update');
+                header('Location: /RoomFlow/Acomodações/Atualizar/' . $id . '?msg=success_update');
                 exit();
             }
         }
@@ -208,7 +208,7 @@ class AccommodationsController extends RenderView
     {
         $accommodations = new AccommodationsModel();
         $accommodations->delete($id);
-        header('Location: /Roomflox/Acomodações?msg=success_delete');
+        header('Location: /RoomFlow/Acomodações?msg=success_delete');
         exit();
     }
 }

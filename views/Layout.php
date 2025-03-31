@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $Title ?? 'Roomflox' ?></title>
-    <link rel="stylesheet" href="/Roomflox/public/css/style.css">
+    <title><?= $Title ?? 'RoomFlow' ?></title>
+    <link rel="stylesheet" href="/RoomFlow/public/css/style.css">
 </head>
 
     <!-- Incluindo a Navbar -->

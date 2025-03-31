@@ -74,7 +74,7 @@ switch ($msg) {
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div>
-                                                        <img src="/RoomFlox/Public/assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                        <img src="/RoomFlow/Public/assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($guest['nome']); ?></h6>
@@ -92,10 +92,10 @@ switch ($msg) {
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo htmlspecialchars($guest['documento']); ?></span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="/Roomflox/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
+                                                <a href="/RoomFlow/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
                                                     Editar
                                                 </a>
-                                                <form action="/Roomflox/Hospedes/Deletar" method="POST" class="d-inline">
+                                                <form action="/RoomFlow/Hospedes/Deletar" method="POST" class="d-inline">
                                                     <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
                                                     <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir este hóspede?');">
                                                         Deletar

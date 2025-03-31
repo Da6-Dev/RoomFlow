@@ -106,7 +106,7 @@ class GuestController extends RenderView
                     );
 
                     if ($success) {
-                        header("Location: /Roomflox/Hospedes/Cadastrar?msg=success_create");
+                        header("Location: /RoomFlow/Hospedes/Cadastrar?msg=success_create");
                         exit();
                     } else {
                         $errors['general'] = "Erro ao cadastrar! Tente novamente.";
@@ -204,7 +204,7 @@ class GuestController extends RenderView
                 );
 
                 if ($success) {
-                    header("Location: /Roomflox/Hospedes/$id_guest?msg=success_update");
+                    header("Location: /RoomFlow/Hospedes/$id_guest?msg=success_update");
                     exit();
                 } else {
                     $errors['general'] = "Erro ao atualizar! Tente novamente.";
@@ -232,10 +232,10 @@ class GuestController extends RenderView
         $success = $guest->deletar($id_guest);
 
         if ($success) {
-            header("Location: /Roomflox/Hospedes?msg=success_delete");
+            header("Location: /RoomFlow/Hospedes?msg=success_delete");
             exit();
         } else {
-            header("Location: /Roomflox/Hospedes?msg=error_delete");
+            header("Location: /RoomFlow/Hospedes?msg=error_delete");
             exit();
         }
     }

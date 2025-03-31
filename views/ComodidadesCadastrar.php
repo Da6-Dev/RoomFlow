@@ -40,7 +40,7 @@ switch ($msg) {
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <form action="/Roomflox/Comodidades/Cadastrar" method="post">
+                    <form action="/RoomFlow/Comodidades/Cadastrar" method="post">
                         <div class="row p-3">
                             <div class="col-md-6">
                                 <div class="input-group input-group-outline my-3 <?php echo !empty($errors['nome']) || !empty($_POST['nome']) ? 'is-filled' : ''; ?>">

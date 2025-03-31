@@ -47,7 +47,7 @@ class AmenitiesController extends RenderView
             if (empty($errors)) {
                 $amenities = new AmenitiesModel();
                 $amenities->create($data);
-                header('Location: /Roomflox/Comodidades/Cadastrar?msg=success_create');
+                header('Location: /RoomFlow/Comodidades/Cadastrar?msg=success_create');
                 exit();
             }
         }
@@ -89,7 +89,7 @@ class AmenitiesController extends RenderView
             // Se não houver erros, atualizar no banco de dados
             if (empty($errors)) {
                 $amenities->update($data);
-                header('Location: /Roomflox/Comodidades/' . $id . '?msg=success_update');
+                header('Location: /RoomFlow/Comodidades/' . $id . '?msg=success_update');
                 exit();
             }
         } else {
@@ -114,10 +114,10 @@ class AmenitiesController extends RenderView
         $success = $amenities->delete($id_guest);
 
         if ($success) {
-            header("Location: /Roomflox/Comodidades?msg=success_delete");
+            header("Location: /RoomFlow/Comodidades?msg=success_delete");
             exit();
         } else {
-            header("Location: /Roomflox/Comodidades?msg=error_delete");
+            header("Location: /RoomFlow/Comodidades?msg=error_delete");
             exit();
         }
     }

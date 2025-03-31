@@ -29,7 +29,7 @@ switch ($msg) {
             <?php echo $alertMessage; ?>
         </div>
     <?php endif; ?>
-    <form action="/Roomflox/Comodidades/<?php echo $data['id']; ?>" method="post">
+    <form action="/RoomFlow/Comodidades/<?php echo $data['id']; ?>" method="post">
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group input-group-outline my-3 <?php echo !empty($errors['tipo']) || !empty($_POST['tipo']) ? 'is-filled' : ''; ?>">

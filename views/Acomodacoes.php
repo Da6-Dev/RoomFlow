@@ -76,7 +76,7 @@ switch ($msg) {
                                                 <div class="d-flex px-2 py-1">
                                                     <div>
                                                         <!-- Adicione uma imagem representativa, se necessário -->
-                                                        <img src="/Roomflox/public/assets/img/drake.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="room_image">
+                                                        <img src="/RoomFlow/public/assets/img/drake.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="room_image">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($acomodacao['tipo']); ?></h6>
@@ -96,10 +96,10 @@ switch ($msg) {
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($acomodacao['status']); ?></span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="/Roomflox/Acomodacoes/Editar/<?php echo $acomodacao['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar acomodação">
+                                                <a href="/RoomFlow/Acomodacoes/Editar/<?php echo $acomodacao['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar acomodação">
                                                     Editar
                                                 </a>
-                                                <form action="/Roomflox/Acomodacoes/Deletar" method="POST" class="d-inline">
+                                                <form action="/RoomFlow/Acomodacoes/Deletar" method="POST" class="d-inline">
                                                     <input type="hidden" name="id" value="<?php echo $acomodacao['id']; ?>">
                                                     <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir esta acomodação?');">
                                                         Deletar

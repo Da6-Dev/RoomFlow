@@ -74,10 +74,10 @@
     </div>
   </div>
   <!--   Core JS Files   -->
-  <script src="/Roomflox/Public/assets/js/core/popper.min.js"></script>
-  <script src="/Roomflox/Public/assets/js/core/bootstrap.min.js"></script>
-  <script src="/Roomflox/Public/assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="/Roomflox/Public/assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="/RoomFlow/Public/assets/js/core/popper.min.js"></script>
+  <script src="/RoomFlow/Public/assets/js/core/bootstrap.min.js"></script>
+  <script src="/RoomFlow/Public/assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="/RoomFlow/Public/assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -90,9 +90,9 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/Roomflox/Public/assets/js/material-dashboard.min.js?v=3.2.0"></script>
-  <script src="/Roomflox/Public/assets/js/preferences.js"></script>
-  <script src="/Roomflox/Public/assets/js/alerts.js"></script>
+  <script src="/RoomFlow/Public/assets/js/material-dashboard.min.js?v=3.2.0"></script>
+  <script src="/RoomFlow/Public/assets/js/preferences.js"></script>
+  <script src="/RoomFlow/Public/assets/js/alerts.js"></script>
 </body>
 
 </html>
