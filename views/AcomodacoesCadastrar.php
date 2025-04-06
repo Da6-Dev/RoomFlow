@@ -2,24 +2,19 @@
 
 ob_start();
 
-$msg = isset($_GET['msg']) ? $_GET['msg'] : '';
-
+// Mensagem de alerta geral
 $alertClass = '';
 $alertMessage = '';
 
-switch ($msg) {
-    case 'success_create':
-        $alertClass = 'alert-success';
-        $alertMessage = 'Cadastro realizado com sucesso!';
-        break;
-    case 'error_create':
-        $alertClass = 'alert-danger';
-        $alertMessage = 'Erro ao cadastrar a acomodação.';
-        break;
-    default:
-        $alertClass = '';
-        $alertMessage = '';
-        break;
+// Checar se existe algum erro geral
+if (!empty($errors['general'])) {
+    // Se houver erro geral, mostrar a mensagem de erro
+    $alertClass = 'alert-danger';
+    $alertMessage = $errors['general'];
+} elseif (isset($_GET['msg']) && $_GET['msg'] === 'success') {
+    // Se houver uma mensagem de sucesso, mostrar a mensagem de sucesso
+    $alertClass = 'alert-success';
+    $alertMessage = "Acomodação cadastrada com sucesso!!";
 }
 ?>
 
@@ -29,38 +24,87 @@ switch ($msg) {
             <?php echo $alertMessage; ?>
         </div>
     <?php endif; ?>
+
+    <!-- Título do Formulário -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3 class="mb-0 h4 font-weight-bolder">Cadastro de Acomodações</h3>
+            <p class="mb-4">Preencha os dados abaixo para cadastrar uma nova acomodação.</p>
+        </div>
+    </div>
+
     <form action="/RoomFlow/Acomodacoes/Cadastrar" method="post">
         <div class="row">
             <div class="col-md-6">
-                <div class="input-group input-group-outline my-3 <?php echo !empty($errors['tipo']) || !empty($_POST['tipo']) ? 'is-filled' : ''; ?>">
-                    <label class="form-label">Tipo</label>
-                    <input type="text" class="form-control" name="tipo" value="<?php echo $_POST['tipo'] ?? ''; ?>" value="<?php echo $_POST[''] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">tipo</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['tipo']) || !empty($_POST['tipo']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Tipo</label>
+                            <input type="text" class="form-control" name="tipo" value="<?php echo $_POST['tipo'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['tipo'])): ?>
+                            <div class="text-danger small"><?php echo $errors['tipo']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-outline my-3 <?php echo !empty($errors['numero']) || !empty($_POST['numero']) ? 'is-filled' : ''; ?>">
-                    <label class="form-label">Número</label>
-                    <input type="text" class="form-control" name="numero" value="<?php echo $_POST['numero'] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">numero</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['numero']) || !empty($_POST['numero']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Número</label>
+                            <input type="text" class="form-control" name="numero" value="<?php echo $_POST['numero'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['numero'])): ?>
+                            <div class="text-danger small"><?php echo $errors['numero']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="input-group input-group-outline my-3 <?php echo !empty($errors['descricao']) || !empty($_POST['descricao']) ? 'is-filled' : ''; ?>">
-                    <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="<?php echo $_POST['descricao'] ?? ''; ?>" required>
+                <div class="card md-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">numero</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['descricao']) || !empty($_POST['descricao']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Descrição</label>
+                            <input type="text" class="form-control" name="descricao" value="<?php echo $_POST['descricao'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['tipo'])): ?>
+                            <div class="text-danger small"><?php echo $errors['tipo']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4">
-                <div class="input-group input-group-static mb-4">
-                    <label for="status" class="ms-0">Status</label>
-                    <select class="form-control" name="status" id="status" required>
-                        <option value="disponivel" <?php echo isset($_POST['status']) && $_POST['status'] == "disponivel" ? "selected" : ""; ?>>Disponível</option>
-                        <option value="ocupado" <?php echo isset($_POST['status']) && $_POST['status'] == "ocupado" ? "selected" : ""; ?>>Ocupado</option>
-                        <option value="manutencao" <?php echo isset($_POST['status']) && $_POST['status'] == "manutencao" ? "selected" : ""; ?>>Manutenção</option>
-                    </select>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Status</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static mb-4">
+                            <label for="status" class="ms-0">Status</label>
+                            <select class="form-control" name="status" id="status" required>
+                                <option value="disponivel" <?php echo isset($_POST['status']) && $_POST['status'] == "disponivel" ? "selected" : ""; ?>>Disponível</option>
+                                <option value="ocupado" <?php echo isset($_POST['status']) && $_POST['status'] == "ocupado" ? "selected" : ""; ?>>Ocupado</option>
+                                <option value="manutencao" <?php echo isset($_POST['status']) && $_POST['status'] == "manutencao" ? "selected" : ""; ?>>Manutenção</option>
+                            </select>
+                        </div>
+                    </div>
+                    <?php if (!empty($errors['status'])): ?>
+                        <div class="text-danger small"><?php echo $errors['status']; ?></div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-md-4">

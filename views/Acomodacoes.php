@@ -2,7 +2,6 @@
 
 ob_start();
 
-
 // Verifica se há uma mensagem na URL e define a classe e o texto do alerta com base nela
 $msg = isset($_GET['msg']) ? $_GET['msg'] : '';
 
