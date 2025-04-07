@@ -272,10 +272,15 @@ if (!empty($errors['general'])) {
 
         <!-- Botão Final -->
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-1">
                 <button type="submit" class="btn btn-primary btn-lg px-4">
                     Cadastrar
                 </button>
+            </div>
+            <div class="col-md-1">
+                <a href="/RoomFlow/Acomodacoes" class="btn btn-secondary btn-lg px-4">
+                    Voltar
+                </a>
             </div>
         </div>
 

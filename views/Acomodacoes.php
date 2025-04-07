@@ -95,7 +95,7 @@ switch ($msg) {
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($acomodacao['status']); ?></span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="/RoomFlow/Acomodacoes/Editar/<?php echo $acomodacao['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar acomodação">
+                                                <a href="/RoomFlow/Acomodacoes/<?php echo $acomodacao['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar acomodação">
                                                     Editar
                                                 </a>
                                                 <form action="/RoomFlow/Acomodacoes/Deletar" method="POST" class="d-inline">

@@ -285,14 +285,14 @@ function validarMinimoNoites($minimo_noites)
 
 function validarCamasCasal($camas_casal)
 {
-    // Verifica se o campo mínimo de noites não está vazio
-    if (empty($camas_casal)) {
+    // Verifica se o campo foi enviado (permite 0 ou '0', mas não vazio)
+    if (!isset($camas_casal) || trim($camas_casal) === '') {
         return ['status' => 'error', 'msg' => 'O campo Camas de Casal é obrigatório.'];
     }
 
-    // Verifica se o mínimo de noites é um número inteiro positivo
-    if (!filter_var($camas_casal, FILTER_VALIDATE_INT) || $camas_casal <= 0) {
-        return ['status' => 'error', 'msg' => 'O número de Camas de Casal deve ser um número inteiro positivo.'];
+    // Verifica se é um número inteiro não negativo
+    if (!ctype_digit(strval($camas_casal))) {
+        return ['status' => 'error', 'msg' => 'O número de Camas de Casal deve ser um número inteiro maior ou igual a zero.'];
     }
 
     return ['status' => 'success', 'msg' => 'Camas de casal válido.'];
@@ -300,14 +300,14 @@ function validarCamasCasal($camas_casal)
 
 function validarCamasSolteiro($camas_solteiro)
 {
-    // Verifica se o campo mínimo de noites não está vazio
-    if (empty($camas_solteiro)) {
+    // Verifica se o campo foi enviado (permite 0 ou '0', mas não vazio)
+    if (!isset($camas_solteiro) || trim($camas_solteiro) === '') {
         return ['status' => 'error', 'msg' => 'O campo Camas de Solteiro é obrigatório.'];
     }
 
-    // Verifica se o mínimo de noites é um número inteiro positivo
-    if (!filter_var($camas_solteiro, FILTER_VALIDATE_INT) || $camas_solteiro <= 0) {
-        return ['status' => 'error', 'msg' => 'O número de Camas de Solteiro deve ser um número inteiro positivo.'];
+    // Força conversão para número inteiro
+    if (!ctype_digit(strval($camas_solteiro))) {
+        return ['status' => 'error', 'msg' => 'O número de Camas de Solteiro deve ser um número inteiro maior ou igual a zero.'];
     }
 
     return ['status' => 'success', 'msg' => 'Camas de solteiro válido.'];
@@ -320,11 +320,6 @@ function validarCheckInTime($check_in_time)
         return ['status' => 'error', 'msg' => 'O campo Check-in Time é obrigatório.'];
     }
 
-    // Verifica se o horário está no formato correto (HH:MM)
-    if (!preg_match('/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/', $check_in_time)) {
-        return ['status' => 'error', 'msg' => 'O Check-in Time deve estar no formato HH:MM.'];
-    }
-
     return ['status' => 'success', 'msg' => 'Check-in time válido.'];
 }
 
@@ -333,11 +328,6 @@ function validarCheckOutTime($check_out_time)
     // Verifica se o campo check-out time não está vazio
     if (empty($check_out_time)) {
         return ['status' => 'error', 'msg' => 'O campo Check-out Time é obrigatório.'];
-    }
-
-    // Verifica se o horário está no formato correto (HH:MM)
-    if (!preg_match('/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/', $check_out_time)) {
-        return ['status' => 'error', 'msg' => 'O Check-out Time deve estar no formato HH:MM.'];
     }
 
     return ['status' => 'success', 'msg' => 'Check-out time válido.'];

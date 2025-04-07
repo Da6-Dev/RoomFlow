@@ -122,5 +122,32 @@ public function getAmenityByName($name)
         return null;
     }
 }
+
+public function getAmenitiesAccommodations($id)
+{
+try{
+    if (!$this->pdo) {
+        throw new Exception("Erro: conexão com o banco de dados não está ativa.");
+    }
+
+    $stmt = $this->pdo->prepare("SELECT id_amenidades FROM amenidades_acomodacoes WHERE id_acomodacoes = ?");
+    $stmt->execute([$id]);
+
+    $amenity = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $ids_amenidades = array_column($amenity, 'id_amenidades');
+
+    if(!$ids_amenidades){
+        return null;
+    }
+
+    return $ids_amenidades;
+}catch(Exception $e){
+    error_log($e->getMessage());
+    return null;
+
 }
+}
+}
+
+
 ?>

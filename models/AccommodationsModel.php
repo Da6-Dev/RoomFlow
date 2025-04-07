@@ -86,27 +86,31 @@ class AccommodationsModel extends Database
             $this->pdo->beginTransaction();
 
             // Atualizar os dados da acomodação na tabela accommodations
-            $query = "UPDATE accommodations SET name = :name, description = :description, min_nights = :min_nights, double_beds = :double_beds, single_beds = :single_beds, check_in_time = :check_in_time, check_out_time = :check_out_time WHERE id = :id";
+            $query = "UPDATE acomodacoes SET tipo = :tipo, numero = :numero, descricao = :descricao, status = :status, capacidade = :capacidade, preco = :preco, minimo_noites = :minimo_noites, camas_casal = :camas_casal, camas_solteiro = :camas_solteiro, hora_checkin = :check_in_time, hora_checkout = :check_out_time WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':description', $data['description']);
-            $stmt->bindParam(':min_nights', $data['min_nights'], PDO::PARAM_INT);
-            $stmt->bindParam(':double_beds', $data['double_beds'], PDO::PARAM_INT);
-            $stmt->bindParam(':single_beds', $data['single_beds'], PDO::PARAM_INT);
+            $stmt->bindParam(':tipo', $data['tipo']);
+            $stmt->bindParam(':numero', $data['numero']);
+            $stmt->bindParam(':descricao', $data['descricao']);
+            $stmt->bindParam(':status', $data['status']);
+            $stmt->bindParam(':capacidade', $data['capacidade'], PDO::PARAM_INT);
+            $stmt->bindParam(':preco', $data['preco']);
+            $stmt->bindParam(':minimo_noites', $data['minimo_noites'], PDO::PARAM_INT);
+            $stmt->bindParam(':camas_casal', $data['camas_casal'], PDO::PARAM_INT);
+            $stmt->bindParam(':camas_solteiro', $data['camas_solteiro'], PDO::PARAM_INT);
             $stmt->bindParam(':check_in_time', $data['check_in_time']);
             $stmt->bindParam(':check_out_time', $data['check_out_time']);
             $stmt->execute();
 
             // Remover as amenidades antigas da tabela acomodacao_amenidade
-            $query = "DELETE FROM acomodacao_amenidade WHERE acomodacao_id = :acomodacao_id";
+            $query = "DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :acomodacao_id";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
             // Inserir as novas amenidades na tabela acomodacao_amenidade
-            foreach ($data['amenities'] as $amenityId) {
-                $query = "INSERT INTO acomodacao_amenidade (acomodacao_id, amenidade_id) VALUES (:acomodacao_id, :amenidade_id)";
+            foreach ($data['amenidades'] as $amenityId) {
+                $query = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
                 $stmt->bindParam(':amenidade_id', $amenityId, PDO::PARAM_INT);
@@ -128,29 +132,28 @@ class AccommodationsModel extends Database
     public function delete($id)
     {
         try {
-            // Iniciar uma transação
+            // Inicia uma transação
             $this->pdo->beginTransaction();
 
-            // Remover as amenidades da tabela acomodacao_amenidade
-            $query = "DELETE FROM acomodacao_amenidade WHERE acomodacao_id = :acomodacao_id";
+            // Remover as amenidades relacionadas
+            $query = "DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :acomodacao_id";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Remover a acomodação da tabela accommodations
-            $query = "DELETE FROM accommodations WHERE id = :id";
+            // Remover a acomodação principal
+            $query = "DELETE FROM acomodacoes WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
-            // Confirmar a transação
+            // Finaliza a transação
             $this->pdo->commit();
-
             return true;
         } catch (PDOException $e) {
-            // Em caso de erro, desfazer a transação
+            // Reverte se der erro
             $this->pdo->rollBack();
-            error_log("Erro ao excluir acomodação: " . $e->getMessage());
+            error_log("Erro ao deletar acomodação: " . $e->getMessage());
             return false;
         }
     }
