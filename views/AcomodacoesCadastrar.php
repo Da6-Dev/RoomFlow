@@ -11,14 +11,22 @@ if (!empty($errors['general'])) {
     // Se houver erro geral, mostrar a mensagem de erro
     $alertClass = 'alert-danger';
     $alertMessage = $errors['general'];
-} elseif (isset($_GET['msg']) && $_GET['msg'] === 'success') {
+} elseif (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
     // Se houver uma mensagem de sucesso, mostrar a mensagem de sucesso
     $alertClass = 'alert-success';
     $alertMessage = "Acomodação cadastrada com sucesso!!";
+} elseif (!empty($errors['exists'])) {
+    //Se houver erro de acomodação já existente, mostrar a mensagem de erro
+    $alertClass = 'alert-danger';
+    $alertMessage = $errors['exists'];
+} else {
+    // Caso contrário, não mostrar nada
+    $alertClass = '';
+    $alertMessage = '';
 }
 ?>
 
-<div class="container-fluid py-2">
+<div class="container-fluid py-2 p-5">
     <?php if ($alertMessage): ?>
         <div class="alert <?php echo $alertClass; ?> text-white" role="alert" id="alertMessage">
             <?php echo $alertMessage; ?>
@@ -70,7 +78,7 @@ if (!empty($errors['general'])) {
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="card md-4">
+                <div class="card mb-4">
                     <div class="card-header p-2 ps-3 bg-gradient-dark">
                         <p class="text-sm mb-0 text-white text-capitalize">numero</p>
                     </div>
@@ -93,8 +101,7 @@ if (!empty($errors['general'])) {
                         <p class="text-sm mb-0 text-white text-capitalize">Status</p>
                     </div>
                     <div class="card-body p-2 ps-3">
-                        <div class="input-group input-group-static mb-4">
-                            <label for="status" class="ms-0">Status</label>
+                        <div class="input-group input-group-static my-3">
                             <select class="form-control" name="status" id="status" required>
                                 <option value="disponivel" <?php echo isset($_POST['status']) && $_POST['status'] == "disponivel" ? "selected" : ""; ?>>Disponível</option>
                                 <option value="ocupado" <?php echo isset($_POST['status']) && $_POST['status'] == "ocupado" ? "selected" : ""; ?>>Ocupado</option>
@@ -108,85 +115,170 @@ if (!empty($errors['general'])) {
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="input-group input-group-outline my-3 <?php echo !empty($errors['capacidade']) || !empty($_POST['capacidade']) ? 'is-filled' : ''; ?>">
-                    <label class="form-label">Capacidade</label>
-                    <input type="number" class="form-control" name="capacidade" value="<?php echo $_POST['capacidade'] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Capacidade</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['capacidade']) || !empty($_POST['capacidade']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Capacidade</label>
+                            <input type="number" class="form-control" name="capacidade" value="<?php echo $_POST['capacidade'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['capacidade'])): ?>
+                            <div class="text-danger small"><?php echo $errors['capacidade']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="input-group input-group-outline my-3 <?php echo !empty($errors['preco']) || !empty($_POST['preco']) ? 'is-filled' : ''; ?>">
-                    <label class="form-label">Preço</label>
-                    <input type="text" class="form-control" name="preco" value="<?php echo $_POST['preco'] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Preço</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['preco']) || !empty($_POST['preco']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Preço</label>
+                            <input type="text" class="form-control" name="preco" value="<?php echo $_POST['preco'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['preco'])): ?>
+                            <div class="text-danger small"><?php echo $errors['preco']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Amenidades -->
         <div class="row">
             <div class="col-md-12">
-                <div class="my-3">
-                    <label class="form-label">Amenidades</label>
-                    <div class="row">
-                        <?php foreach ($Amenities as $index => $amenity): ?>
-                            <div class="col-md-4 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                        type="checkbox"
-                                        name="amenidades[]"
-                                        value="<?php echo $amenity['id']; ?>"
-                                        id="amenidade_<?php echo $amenity['id']; ?>"
-                                        <?php echo (isset($_POST['amenidades']) && in_array($amenity['id'], $_POST['amenidades'])) ? 'checked' : ''; ?>>
-                                    <label class="form-check-label" for="amenidade_<?php echo $amenity['id']; ?>">
-                                        <?php echo $amenity['nome']; ?>
-                                    </label>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Amenidades</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="row">
+                            <?php foreach ($Amenities as $index => $amenity): ?>
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            name="amenidades[]"
+                                            value="<?php echo $amenity['id']; ?>"
+                                            id="amenidade_<?php echo $amenity['id']; ?>"
+                                            <?php echo (isset($_POST['amenidades']) && in_array($amenity['id'], $_POST['amenidades'])) ? 'checked' : ''; ?>>
+                                        <label class="form-check-label text-dark" for="amenidade_<?php echo $amenity['id']; ?>">
+                                            <?php echo $amenity['nome']; ?>
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <?php if (($index + 1) % 3 == 0): ?>
+                                <?php if (($index + 1) % 3 == 0): ?>
+                        </div>
+                        <div class="row">
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                        </div>
                     </div>
-                    <div class="row">
+                </div>
+            </div>
+        </div>
+
+        <!-- Mínimo de noites / Camas -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Mínimo de Noites</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['minimo_noites']) || !empty($_POST['minimo_noites']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Mínimo de Noites</label>
+                            <input type="number" class="form-control" name="minimo_noites" value="<?php echo $_POST['minimo_noites'] ?? ''; ?>" required>
+                        </div>
+                    </div>
+                    <?php if (!empty($errors['minimo_noites'])): ?>
+                        <div class="text-danger small"><?php echo $errors['minimo_noites']; ?></div>
                     <?php endif; ?>
-                <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Camas de Casal</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['camas_casal']) || !empty($_POST['camas_casal']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Camas de Casal</label>
+                            <input type="number" class="form-control" name="camas_casal" value="<?php echo $_POST['camas_casal'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['camas_casal'])): ?>
+                            <div class="text-danger small"><?php echo $errors['camas_casal']; ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Camas de Solteiro</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['camas_solteiro']) || !empty($_POST['camas_solteiro']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Camas de Solteiro</label>
+                            <input type="number" class="form-control" name="camas_solteiro" value="<?php echo $_POST['camas_solteiro'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['camas_solteiro'])): ?>
+                            <div class="text-danger small"><?php echo $errors['camas_solteiro']; ?></div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="input-group input-group-static my-3 <?php echo !empty($errors['minimo_noites']) || !empty($_POST['minimo_noites']) ? 'is-filled' : ''; ?>">
-                    <label for="minimo_noites" class="ms-0">Mínimo de Noites</label>
-                    <input type="number" class="form-control" name="minimo_noites" value="<?php echo $_POST['minimo_noites'] ?? ''; ?>" required>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group input-group-static my-3 <?php echo !empty($errors['camas_casal']) || !empty($_POST['camas_casal']) ? 'is-filled' : ''; ?>">
-                    <label for="camas_casal" class="ms-0">Camas de Casal</label>
-                    <input type="number" class="form-control" name="camas_casal" value="<?php echo $_POST['camas_casal'] ?? ''; ?>" required>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group input-group-static my-3 <?php echo !empty($errors['camas_solteiro']) || !empty($_POST['camas_solteiro']) ? 'is-filled' : ''; ?>">
-                    <label for="camas_solteiro" class="ms-0">Camas de Solteiro</label>
-                    <input type="number" class="form-control" name="camas_solteiro" value="<?php echo $_POST['camas_solteiro'] ?? ''; ?>" required>
-                </div>
-            </div>
-        </div>
+
+        <!-- Check-in / Check-out -->
         <div class="row">
             <div class="col-md-6">
-                <div class="input-group input-group-static my-3 <?php echo !empty($errors['check_in_time']) || !empty($_POST['check_in_time']) ? 'is-filled' : ''; ?>">
-                    <label for="check_in_time" class="ms-0">Hora de Check-in</label>
-                    <input type="time" class="form-control" name="check_in_time" id="check_in_time" value="<?php echo $_POST['check_in_time'] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Hora de Check-in</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['check_in_time']) || !empty($_POST['check_in_time']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Hora de Check-in</label>
+                            <input type="time" class="form-control" name="check_in_time" id="check_in_time" value="<?php echo $_POST['check_in_time'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['check_in_time'])): ?>
+                            <div class="text-danger small"><?php echo $errors['check_in_time']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="input-group input-group-static my-3 <?php echo !empty($errors['check_out_time']) || !empty($_POST['check_out_time']) ? 'is-filled' : ''; ?>">
-                    <label for="check_out_time" class="ms-0">Hora de Check-out</label>
-                    <input type="time" class="form-control" name="check_out_time" id="check_out_time" value="<?php echo $_POST['check_out_time'] ?? ''; ?>" required>
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Hora de Check-out</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['check_out_time']) || !empty($_POST['check_out_time']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Hora de Check-out</label>
+                            <input type="time" class="form-control" name="check_out_time" id="check_out_time" value="<?php echo $_POST['check_out_time'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['check_out_time'])): ?>
+                            <div class="text-danger small"><?php echo $errors['check_out_time']; ?></div>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- Botão Final -->
         <div class="row">
-            <div><button type="submit" class="btn btn-primary">Cadastrar</button></div>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-lg px-4">
+                    Cadastrar
+                </button>
+            </div>
         </div>
+
     </form>
 </div>
 

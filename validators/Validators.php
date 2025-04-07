@@ -191,3 +191,155 @@ function validarDataNascimento($dataNasc)
 
     return ['status' => 'success', 'msg' => 'Data de nascimento válida.'];
 }
+
+function validarTipo($tipo)
+{
+    // Verifica se o campo tipo não está vazio
+    if (empty($tipo)) {
+        return ['status' => 'error', 'msg' => 'O campo Tipo é obrigatório.'];
+    }
+
+    // Verifica se o tipo contém apenas letras e espaços
+    if (!preg_match('/^[a-zA-Z\s]+$/', $tipo)) {
+        return ['status' => 'error', 'msg' => 'O campo Tipo contém caracteres inválidos.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Tipo válido.'];
+}
+
+function validarDescricao($descricao)
+{
+    // Verifica se o campo descrição não está vazio
+    if (empty($descricao)) {
+        return ['status' => 'error', 'msg' => 'O campo Descrição é obrigatório.'];
+    }
+
+    // Verifica se a descrição tem pelo menos 10 caracteres
+    if (strlen($descricao) < 10) {
+        return ['status' => 'error', 'msg' => 'A Descrição deve ter pelo menos 10 caracteres.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Descrição válida.'];
+}
+
+function validarStatus($status)
+{
+    // Verifica se o campo status não está vazio
+    if (empty($status)) {
+        return ['status' => 'error', 'msg' => 'O campo Status é obrigatório.'];
+    }
+
+    // Verifica se o status é um dos valores permitidos
+    $statusPermitidos = ['disponivel', 'ocupado', 'manutencao'];
+    if (!in_array(strtolower($status), $statusPermitidos)) {
+        return ['status' => 'error', 'msg' => 'O Status deve ser "Disponível", "Ocupado" ou "Manutenção".'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Status válido.'];
+}
+
+function validarCapacidade($capacidade)
+{
+    // Verifica se o campo capacidade não está vazio
+    if (empty($capacidade)) {
+        return ['status' => 'error', 'msg' => 'O campo Capacidade é obrigatório.'];
+    }
+
+    // Verifica se a capacidade é um número inteiro positivo
+    if (!filter_var($capacidade, FILTER_VALIDATE_INT) || $capacidade <= 0) {
+        return ['status' => 'error', 'msg' => 'A Capacidade deve ser um número inteiro positivo.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Capacidade válida.'];
+}
+
+function validarPreco($preco)
+{
+    // Verifica se o campo preço não está vazio
+    if (empty($preco)) {
+        return ['status' => 'error', 'msg' => 'O campo Preço é obrigatório.'];
+    }
+
+    // Verifica se o preço é um número positivo
+    if (!is_numeric($preco) || $preco <= 0) {
+        return ['status' => 'error', 'msg' => 'O Preço deve ser um número positivo.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Preço válido.'];
+}
+
+function validarMinimoNoites($minimo_noites)
+{
+    // Verifica se o campo mínimo de noites não está vazio
+    if (empty($minimo_noites)) {
+        return ['status' => 'error', 'msg' => 'O campo Mínimo de Noites é obrigatório.'];
+    }
+
+    // Verifica se o mínimo de noites é um número inteiro positivo
+    if (!filter_var($minimo_noites, FILTER_VALIDATE_INT) || $minimo_noites <= 0) {
+        return ['status' => 'error', 'msg' => 'O Mínimo de Noites deve ser um número inteiro positivo.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Mínimo de noites válido.'];
+}
+
+function validarCamasCasal($camas_casal)
+{
+    // Verifica se o campo mínimo de noites não está vazio
+    if (empty($camas_casal)) {
+        return ['status' => 'error', 'msg' => 'O campo Camas de Casal é obrigatório.'];
+    }
+
+    // Verifica se o mínimo de noites é um número inteiro positivo
+    if (!filter_var($camas_casal, FILTER_VALIDATE_INT) || $camas_casal <= 0) {
+        return ['status' => 'error', 'msg' => 'O número de Camas de Casal deve ser um número inteiro positivo.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Camas de casal válido.'];
+}
+
+function validarCamasSolteiro($camas_solteiro)
+{
+    // Verifica se o campo mínimo de noites não está vazio
+    if (empty($camas_solteiro)) {
+        return ['status' => 'error', 'msg' => 'O campo Camas de Solteiro é obrigatório.'];
+    }
+
+    // Verifica se o mínimo de noites é um número inteiro positivo
+    if (!filter_var($camas_solteiro, FILTER_VALIDATE_INT) || $camas_solteiro <= 0) {
+        return ['status' => 'error', 'msg' => 'O número de Camas de Solteiro deve ser um número inteiro positivo.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Camas de solteiro válido.'];
+}
+
+function validarCheckInTime($check_in_time)
+{
+    // Verifica se o campo check-in time não está vazio
+    if (empty($check_in_time)) {
+        return ['status' => 'error', 'msg' => 'O campo Check-in Time é obrigatório.'];
+    }
+
+    // Verifica se o horário está no formato correto (HH:MM)
+    if (!preg_match('/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/', $check_in_time)) {
+        return ['status' => 'error', 'msg' => 'O Check-in Time deve estar no formato HH:MM.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Check-in time válido.'];
+}
+
+function validarCheckOutTime($check_out_time)
+{
+    // Verifica se o campo check-out time não está vazio
+    if (empty($check_out_time)) {
+        return ['status' => 'error', 'msg' => 'O campo Check-out Time é obrigatório.'];
+    }
+
+    // Verifica se o horário está no formato correto (HH:MM)
+    if (!preg_match('/^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/', $check_out_time)) {
+        return ['status' => 'error', 'msg' => 'O Check-out Time deve estar no formato HH:MM.'];
+    }
+
+    return ['status' => 'success', 'msg' => 'Check-out time válido.'];
+}
+

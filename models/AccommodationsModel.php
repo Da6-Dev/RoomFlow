@@ -27,7 +27,7 @@ class AccommodationsModel extends Database
 
     public function getAccommodationByName($name)
     {
-        $query = "SELECT * FROM acomodacoes WHERE name = :name";
+        $query = "SELECT * FROM acomodacoes WHERE tipo = :name";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->execute();
@@ -36,7 +36,7 @@ class AccommodationsModel extends Database
 
     public function getAccommodationByNumber($number)
     {
-        $query = "SELECT * FROM accommodations WHERE number = :number";
+        $query = "SELECT * FROM acomodacoes WHERE numero = :number";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':number', $number, PDO::PARAM_INT);
         $stmt->execute();
@@ -45,47 +45,37 @@ class AccommodationsModel extends Database
 
     public function create($data)
     {
-        try {
-            // Iniciar uma transação
-            $this->pdo->beginTransaction();
+        // Inserir a acomodação na tabela accommodations
+        $query = "INSERT INTO acomodacoes (tipo, numero, descricao, status, capacidade, preco, minimo_noites, camas_casal, camas_solteiro, hora_checkin, hora_checkout) VALUES (:tipo, :numero, :descricao, :status, :capacidade, :preco, :minimo_noites, :camas_casal, :camas_solteiro, :check_in_time, :check_out_time)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':tipo', $data['tipo']);
+        $stmt->bindParam(':numero', $data['numero']);
+        $stmt->bindParam(':descricao', $data['descricao']);
+        $stmt->bindParam(':status', $data['status']);
+        $stmt->bindParam(':capacidade', $data['capacidade'], PDO::PARAM_INT);
+        $stmt->bindParam(':preco', $data['preco'],);
+        $stmt->bindParam(':minimo_noites', $data['minimo_noites'], PDO::PARAM_INT);
+        $stmt->bindParam(':camas_casal', $data['camas_casal'], PDO::PARAM_INT);
+        $stmt->bindParam(':camas_solteiro', $data['camas_solteiro'], PDO::PARAM_INT);
+        $stmt->bindParam(':check_in_time', $data['check_in_time']);
+        $stmt->bindParam(':check_out_time', $data['check_out_time']);
 
-            // Inserir a acomodação na tabela accommodations
-            $query = "INSERT INTO acomodacoes (tipo, numero, descricao, status, capacidade, preco, minimo_noites, camas_casal, camas_solteiro, hora_checkin, hora_checkout) VALUES (:tipo, :numero, :descricao, :status, :capacidade, :preco, :minimo_noites, :camas_casal, :camas_solteiro, :check_in_time, :check_out_time)";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':tipo', $data['tipo']);
-            $stmt->bindParam(':numero', $data['numero']);
-            $stmt->bindParam(':descricao', $data['descricao']);
-            $stmt->bindParam(':status', $data['status']);
-            $stmt->bindParam(':capacidade', $data['capacidade'], PDO::PARAM_INT);
-            $stmt->bindParam(':preco', $data['preco'],);
-            $stmt->bindParam(':minimo_noites', $data['minimo_noites'], PDO::PARAM_INT); 
-            $stmt->bindParam(':camas_casal', $data['camas_casal'], PDO::PARAM_INT);
-            $stmt->bindParam(':camas_solteiro', $data['camas_solteiro'], PDO::PARAM_INT);
-            $stmt->bindParam(':check_in_time', $data['check_in_time']);
-            $stmt->bindParam(':check_out_time', $data['check_out_time']);
-            $stmt->execute();
 
+        if ($stmt->execute()) {
             // Obtém o ID da acomodação recém inserida
             $accommodationId = $this->pdo->lastInsertId();
 
             // Inserir as amenidades na tabela acomodacao_amenidade
             foreach ($data['amenidades'] as $amenity) {
-                $query = "INSERT INTO acomodacao_amenidade (acomodacao_id, amenidade_id) VALUES (:acomodacao_id, :amenidade_id)";
+                $query = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
                 $stmt = $this->pdo->prepare($query);
                 $stmt->bindParam(':acomodacao_id', $accommodationId, PDO::PARAM_INT);
                 $stmt->bindParam(':amenidade_id', $amenity, PDO::PARAM_INT);
-                $stmt->execute();
+                echo $stmt->execute();
             }
-
-            // Confirmar a transação
-            $this->pdo->commit();
-
-            return true;
-        } catch (PDOException $e) {
-            // Em caso de erro, desfazer a transação
-            $this->pdo->rollBack();
-            error_log("Erro ao criar acomodação: " . $e->getMessage());
-            return false;
+            return true; // Retorna true se a inserção for bem-sucedida
+        } else {
+            return false; // Retorna false se a inserção falhar
         }
     }
 
@@ -165,5 +155,3 @@ class AccommodationsModel extends Database
         }
     }
 }
-
-?>
