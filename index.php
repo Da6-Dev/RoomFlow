@@ -1,6 +1,7 @@
 <?php
     session_start();
-
+    
+    die();
     
     require_once __DIR__.'/core/core.php';
     require_once __DIR__.'/router/routes.php';
