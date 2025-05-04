@@ -76,6 +76,18 @@
                         <span class="nav-link-text ms-1">Listar Acomodações</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/">
+                        <i class="material-symbols-rounded opacity-5">login</i>
+                        <span class="nav-link-text ms-1">Listar Reservas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Cadastrar/">
+                        <i class="material-symbols-rounded opacity-5">login</i>
+                        <span class="nav-link-text ms-1">Fazer Reservas</span>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
