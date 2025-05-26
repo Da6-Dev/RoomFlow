@@ -2,6 +2,12 @@ $datas_reservadas = JSON.parse(
     document.getElementById("datasReservadas").value
 );
 
+document.getElementById("acomodacao").addEventListener("change", function () {
+    atualizarValorAcomodacao();
+    document.getElementById("data_checkin").value = '';
+    document.getElementById("data_checkout").value = '';
+});
+
 function atualizarValorAcomodacao() {
     $id_acomodacao = document.getElementById("acomodacao").value;
     if ($datas_reservadas[$id_acomodacao]) {

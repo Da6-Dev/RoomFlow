@@ -126,4 +126,33 @@ class ReservationsModel extends Database
         return $datasReservadas;
     }
 
+    public function delete($id)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM reservas WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
+
+    public function getReservationById($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM reservas WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function update($data)
+    {
+        $query = "UPDATE reservas SET id_hospede = :hospede, id_acomodacao = :acomodacao, data_checkin = :data_checkin, data_checkout = :data_checkout, status = :status, metodo_pagamento = :metodo_pagamento, observacoes = :observacoes WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':id', $data['id']);
+        $stmt->bindParam(':hospede', $data['hospede']);
+        $stmt->bindParam(':acomodacao', $data['acomodacao']);
+        $stmt->bindParam(':data_checkin', $data['data_checkin']);
+        $stmt->bindParam(':data_checkout', $data['data_checkout']);
+        $stmt->bindParam(':status', $data['status']);
+        $stmt->bindParam(':metodo_pagamento', $data['metodo_pagamento']);
+        $stmt->bindParam(':observacoes', $data['observacoes']);   
+        return $stmt->execute(); 
+    }
 }

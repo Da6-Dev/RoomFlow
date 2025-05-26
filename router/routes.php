@@ -19,4 +19,7 @@ $Routes = [
     '/Acomodacoes/Deletar' => 'AccommodationsController@delete',
     '/Reservas' => 'ReservationsController@list',
     '/Reservas/Cadastrar' => 'ReservationsController@create',
+    '/Reservas/@id' => 'ReservationsController@editar',
+    '/Reservas/Update/@id' => 'ReservationsController@update',
+    '/Reservas/Deletar' => 'ReservationsController@delete',
 ];

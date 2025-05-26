@@ -96,13 +96,9 @@ $caminho = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="/RoomFlow/Public/assets/js/material-dashboard.min.js?v=3.2.0"></script>
-<?php if(strcasecmp($caminho, '/Roomflow/Hospedes/Cadastrar') === 0):?>
 <script src="/RoomFlow/Public/assets/js/preferences.js"></script>
-<?php endif;?>
 <script src="/RoomFlow/Public/assets/js/alerts.js"></script>
-<?php if(strcasecmp($caminho, '/Roomflow/Reservas/Cadastrar') === 0):?>
 <script src="/RoomFlow/Public/assets/js/reservas.js"></script>
-<?php endif;?>
 <script src="https://unpkg.com/imask"></script>
 <script src="/RoomFlow/Public/assets/js/masks.js"></script>
 <script src="/RoomFlow/Public/assets/js/buscacep.js"></script>

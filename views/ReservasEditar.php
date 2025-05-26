@@ -35,12 +35,12 @@ if (!empty($errors['general'])) {
     <!-- Título do Formulário -->
     <div class="row mb-4">
         <div class="col-12">
-            <h3 class="mb-0 h4 font-weight-bolder">Cadastro de Reservas</h3>
-            <p class="mb-4">Preencha os dados abaixo para fazer uma nova reserva.</p>
+            <h3 class="mb-0 h4 font-weight-bolder">Editar Reserva</h3>
+            <p class="mb-4">Preencha os dados abaixo para fazer atualização da reserva.</p>
         </div>
     </div>
 
-    <form action="/RoomFlow/Reservas/Cadastrar" method="post">
+    <form action="/RoomFlow/Reservas/Update/<?php echo $reserva['id'] ?>" method="post">
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -56,7 +56,12 @@ if (!empty($errors['general'])) {
                                 // Preencher o select com os hóspedes disponíveis
                                 if (!empty($hospedes)) {
                                     foreach ($hospedes as $hospede) {
-                                        echo '<option value="' . $hospede['id'] . '" ' . (isset($_POST['hospede']) && $_POST['hospede'] == $hospede['id'] ? 'selected' : '') . '>' . $hospede['nome'] . '</option>';
+                                        if ($reserva['id_hospede']== $hospede['id']) {
+                                            $selected = 'selected';
+                                        } else {
+                                            $selected = '';
+                                        }
+                                        echo '<option value="' . $hospede['id'] . '" ' . (isset($_POST['hospede']) && $_POST['hospede'] == $hospede['id'] ? 'selected' : '') . $selected . '>' . $hospede['nome'] . '</option>';
                                     }
                                 } else {
                                     echo '<option value="">Nenhum hóspede disponível</option>';
@@ -84,7 +89,12 @@ if (!empty($errors['general'])) {
                                 // Preencher o select com as acomodações disponíveis
                                 if (!empty($acomodacoes)) {
                                     foreach ($acomodacoes as $acomodacao) {
-                                        echo '<option value="' . $acomodacao['id'] . '" ' . (isset($_POST['acomodacao']) && $_POST['acomodacao'] == $acomodacao['id'] ? 'selected' : '') . '>' . $acomodacao['tipo'] . ' - ' . $acomodacao['numero'] . '</option>';
+                                        if ($reserva['id_acomodacao'] == $acomodacao['id']) {
+                                        $selected = 'selected';
+                                    } else {
+                                        $selected = '';
+                                    }
+                                        echo '<option value="' . $acomodacao['id'] . '" ' . (isset($_POST['acomodacao']) && $_POST['acomodacao'] == $acomodacao['id'] ? 'selected' : '') . $selected . '>' . $acomodacao['tipo'] . ' - ' . $acomodacao['numero'] . '</option>';
                                     }
                                 } else {
                                     echo '<option value="">Nenhuma acomodação disponível</option>';
@@ -108,7 +118,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['checkin']) || !empty($_POST['checkin']) ? 'is-filled' : ''; ?>">
-                            <input type="text" id="data_checkin" name="checkin" class="form-control" value="<?php echo $_POST['checkin'] ?? ''; ?>" placeholder="Data de Checkout" required>
+                            <input type="text" id="data_checkin" name="checkin" class="form-control" value="<?php echo $_POST['checkin'] ?? $reserva['data_checkin']; ?>" placeholder="Data de Checkout" required>
                         </div>
                         <?php if (!empty($errors['checkin'])): ?>
                             <div class="text-danger small"><?php echo $errors['checkin']; ?></div>
@@ -123,7 +133,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['checkout']) || !empty($_POST['checkout']) ? 'is-filled' : ''; ?>">
-                            <input type="text" id="data_checkout" class="form-control" name="checkout" value="<?php echo $_POST['checkout'] ?? ''; ?>" placeholder="Data de Check-out" required>
+                            <input type="text" id="data_checkout" class="form-control" name="checkout" value="<?php echo $_POST['checkout'] ?? $reserva['data_checkout']; ?>" placeholder="Data de Check-out" required>
                         </div>
                         <?php if (!empty($errors['checkout'])): ?>
                             <div class="text-danger small"><?php echo $errors['checkout']; ?></div>
@@ -143,8 +153,8 @@ if (!empty($errors['general'])) {
                         <div class="input-group input-group-static my-3">
                             <select class="form-control" name="status" id="status" required>
                                 <option value="" disabled selected>Selecione o status</option>
-                                <option value="confirmada" <?php echo isset($_POST['status']) && $_POST['status'] == 'confirmada' ? 'selected' : ''; ?>>Confirmada</option>
-                                <option value="pendente" <?php echo isset($_POST['status']) && $_POST['status'] == 'pendente' ? 'selected' : ''; ?>>Pendente</option>
+                                <option value="confirmada" <?= (($_POST['status'] ?? $reserva['status'] ?? '') === 'confirmada') ? 'selected' : '' ?>>Confirmada</option>
+                                <option value="pendente" <?= (($_POST['status'] ?? $reserva['status'] ?? '') === 'pendente') ? 'selected' : '' ?>>Pendente</option>
                             </select>
                         </div>
                     </div>
@@ -162,10 +172,10 @@ if (!empty($errors['general'])) {
                         <div class="input-group input-group-static my-3">
                             <select class="form-control" name="metodo_pagamento" id="metodo_pagamento" required>
                                 <option value="" disabled selected>Selecione o método de pagamento</option>
-                                <option value="cartao-debito" <?php echo isset($_POST['metodo_pagamento']) && $_POST['metodo_pagamento'] == 'cartao-debito' ? 'selected' : ''; ?>>Cartão de Débito</option>
-                                <option value="cartao-credito" <?php echo isset($_POST['metodo_pagamento']) && $_POST['metodo_pagamento'] == 'cartao-credito' ? 'selected' : ''; ?>>Cartão de Crédito</option>
-                                <option value="dinheiro" <?php echo isset($_POST['metodo_pagamento']) && $_POST['metodo_pagamento'] == 'dinheiro' ? 'selected' : ''; ?>>Dinheiro</option>
-                                <option value="pix" <?php echo isset($_POST['metodo_pagamento']) && $_POST['metodo_pagamento'] == 'pix' ? 'selected' : ''; ?>>Pix</option>
+                                <option value="cartao-debito" <?= (($_POST['metodo_pagamento'] ?? $reserva['metodo_pagamento'] ?? '') === 'cartao-debito') ? 'selected' : '' ?>>Cartão de Débito</option>
+                                <option value="cartao-credito" <?= (($_POST['metodo_pagamento'] ?? $reserva['metodo_pagamento'] ?? '') === 'cartao-credito') ? 'selected' : '' ?>>Cartão de Crédito</option>
+                                <option value="dinheiro" <?= (($_POST['metodo_pagamento'] ?? $reserva['metodo_pagamento'] ?? '') === 'dinheiro') ? 'selected' : '' ?>>Dinheiro</option>
+                                <option value="pix" <?= (($_POST['metodo_pagamento'] ?? $reserva['metodo_pagamento'] ?? '') === 'pix') ? 'selected' : '' ?>>Pix</option>
                             </select>
                         </div>
                     </div>
@@ -185,7 +195,8 @@ if (!empty($errors['general'])) {
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['observacoes']) || !empty($_POST['observacoes']) ? 'is-filled' : ''; ?>">
                             <label class="form-label">Observações</label>
-                            <input type="text" class="form-control" name="observacoes"<?php echo $_POST['observacoes'] ?? ''; ?>
+                            <input type="text" class="form-control" name="observacoes" value="<?= htmlspecialchars($_POST['observacoes'] ?? $reserva['observacoes'] ?? '') ?>">
+
                         </div>
                         <?php if (!empty($errors['observacoes'])): ?>
                             <div class="text-danger small"><?php echo $errors['observacoes']; ?></div>
@@ -200,7 +211,7 @@ if (!empty($errors['general'])) {
         <div class="row">
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary btn-lg px-4">
-                    Reservar
+                    Atualizar
                 </button>
             </div>
             <div class="col-md-2">

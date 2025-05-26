@@ -100,11 +100,11 @@ switch ($msg) {
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($reserva['data_checkout']); ?></span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="/RoomFlow/Acomodacoes/<?php echo $acomodacao['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar acomodação">
+                                                <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar Reserva">
                                                     Editar
                                                 </a>
-                                                <form action="/RoomFlow/Acomodacoes/Deletar" method="POST" class="d-inline">
-                                                    <input type="hidden" name="id" value="<?php echo $acomodacao['id']; ?>">
+                                                <form action="/RoomFlow/Reservas/Deletar" method="POST" class="d-inline">
+                                                    <input type="hidden" name="id" value="<?php echo $reserva['id']; ?>">
                                                     <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir esta acomodação?');">
                                                         Deletar
                                                     </button>
@@ -114,7 +114,7 @@ switch ($msg) {
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="5" class="text-center">Nenhuma acomodação encontrada.</td>
+                                        <td colspan="5" class="text-center">Nenhuma Reserva encontrada.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
