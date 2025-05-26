@@ -9,3 +9,9 @@ const maskOptionsTelefone = {
   mask: '(00)00000-0000'
 };
 const maskTelefone = IMask(telefone, maskOptionsTelefone);
+
+const cep = document.getElementById('cep-input');
+const maskOptionsCep = {
+  mask: '00000-000'
+};
+const maskCep = IMask(cep, maskOptionsCep);

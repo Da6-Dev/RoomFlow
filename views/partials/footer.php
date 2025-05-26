@@ -105,6 +105,7 @@ $caminho = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 <?php endif;?>
 <script src="https://unpkg.com/imask"></script>
 <script src="/RoomFlow/Public/assets/js/masks.js"></script>
+<script src="/RoomFlow/Public/assets/js/buscacep.js"></script>
 </body>
 
 </html>

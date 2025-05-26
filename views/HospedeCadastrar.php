@@ -111,15 +111,15 @@ if (!empty($errors['general'])) {
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header p-2 ps-3 bg-gradient-dark">
-                        <p class="text-sm mb-0 text-white text-capitalize">Rua</p>
+                        <p class="text-sm mb-0 text-white text-capitalize">CEP</p>
                     </div>
                     <div class="card-body p-2 ps-3">
-                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['rua']) || !empty($_POST['rua']) ? 'is-filled' : ''; ?>">
-                            <label class="form-label">Rua</label>
-                            <input type="text" class="form-control" name="rua" value="<?php echo $_POST['rua'] ?? ''; ?>" required>
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['cep']) || !empty($_POST['cep']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">CEP</label>
+                            <input type="text" class="form-control" id="cep-input" name="cep" value="<?php echo $_POST['cep'] ?? ''; ?>" required>
                         </div>
-                        <?php if (!empty($errors['rua'])): ?>
-                            <div class="text-danger small"><?php echo $errors['rua']; ?></div>
+                        <?php if (!empty($errors['cep'])): ?>
+                            <div class="text-danger small"><?php echo $errors['cep']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -127,15 +127,15 @@ if (!empty($errors['general'])) {
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-header p-2 ps-3 bg-gradient-dark">
-                        <p class="text-sm mb-0 text-white text-capitalize">Cidade</p>
+                        <p class="text-sm mb-0 text-white text-capitalize">Rua</p>
                     </div>
                     <div class="card-body p-2 ps-3">
-                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['cidade']) || !empty($_POST['cidade']) ? 'is-filled' : ''; ?>">
-                            <label class="form-label">Cidade</label>
-                            <input type="text" class="form-control" name="cidade" value="<?php echo $_POST['cidade'] ?? ''; ?>" required>
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['rua']) || !empty($_POST['rua']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Rua</label>
+                            <input type="text" class="form-control" id="rua-input" name="rua" value="<?php echo $_POST['rua'] ?? ''; ?>" required>
                         </div>
-                        <?php if (!empty($errors['cidade'])): ?>
-                            <div class="text-danger small"><?php echo $errors['cidade']; ?></div>
+                        <?php if (!empty($errors['rua'])): ?>
+                            <div class="text-danger small"><?php echo $errors['rua']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -143,6 +143,7 @@ if (!empty($errors['general'])) {
         </div>
 
         <!-- Seção de Estado, Número e CEP -->
+        
         <div class="row">
             <div class="col-md-4">
                 <div class="card mb-4">
@@ -152,10 +153,26 @@ if (!empty($errors['general'])) {
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['estado']) || !empty($_POST['estado']) ? 'is-filled' : ''; ?>">
                             <label class="form-label">Estado</label>
-                            <input type="text" class="form-control" name="estado" value="<?php echo $_POST['estado'] ?? ''; ?>" required>
+                            <input type="text" id="uf-input" class="form-control" name="estado" value="<?php echo $_POST['estado'] ?? ''; ?>" required>
                         </div>
                         <?php if (!empty($errors['estado'])): ?>
                             <div class="text-danger small"><?php echo $errors['estado']; ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Cidade</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['cidade']) || !empty($_POST['cidade']) ? 'is-filled' : ''; ?>">
+                            <label class="form-label">Cidade</label>
+                            <input type="text" id="cidade-input" class="form-control" name="cidade" value="<?php echo $_POST['cidade'] ?? ''; ?>" required>
+                        </div>
+                        <?php if (!empty($errors['cidade'])): ?>
+                            <div class="text-danger small"><?php echo $errors['cidade']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -172,22 +189,6 @@ if (!empty($errors['general'])) {
                         </div>
                         <?php if (!empty($errors['numero'])): ?>
                             <div class="text-danger small"><?php echo $errors['numero']; ?></div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header p-2 ps-3 bg-gradient-dark">
-                        <p class="text-sm mb-0 text-white text-capitalize">CEP</p>
-                    </div>
-                    <div class="card-body p-2 ps-3">
-                        <div class="input-group input-group-outline my-3 <?php echo !empty($errors['cep']) || !empty($_POST['cep']) ? 'is-filled' : ''; ?>">
-                            <label class="form-label">CEP</label>
-                            <input type="text" class="form-control" name="cep" value="<?php echo $_POST['cep'] ?? ''; ?>" required>
-                        </div>
-                        <?php if (!empty($errors['cep'])): ?>
-                            <div class="text-danger small"><?php echo $errors['cep']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>

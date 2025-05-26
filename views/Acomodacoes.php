@@ -80,8 +80,9 @@ switch ($msg) {
                                                         $imagem_capa = array_filter($imagens_capa, function($imagem) use ($acomodacao) {
                                                             return $imagem['acomodacao_id'] === $acomodacao['id'];
                                                         });
+                                                        $imagem_capa = reset($imagem_capa); // Pega o primeiro elemento do array filtrado
                                                         ?>
-                                                        <img src="<?php echo '/Roomflow/'.$imagem_capa[0]['caminho_arquivo'];?>" class="avatar avatar-sm me-3 border-radius-lg" alt="room_image">
+                                                        <img src="<?php echo '/Roomflow/'.$imagem_capa['caminho_arquivo'];?>" class="avatar avatar-sm me-3 border-radius-lg" alt="room_image">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($acomodacao['tipo']); ?></h6>
