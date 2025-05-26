@@ -98,7 +98,7 @@ function validarRua($rua)
     }
 
     // Verifica se a rua contém apenas letras, números e espaços
-    if (!preg_match('/^[a-zA-Z0-9\s,\.]+$/', $rua)) {
+    if (!preg_match('/^[\p{L}\s\p{P}]+$/u', $rua)) {
         return ['status' => 'error', 'msg' => 'O campo Rua contém caracteres inválidos.'];
     }
 
@@ -113,7 +113,7 @@ function validarCidade($cidade)
     }
 
     // Verifica se a cidade contém apenas letras e espaços
-    if (!preg_match('/^[a-zA-Z\s]+$/', $cidade)) {
+    if (!preg_match('/^[\p{L}\s\p{P}]+$/u', $cidade)) {
         return ['status' => 'error', 'msg' => 'O campo Cidade contém caracteres inválidos.'];
     }
 
@@ -200,7 +200,7 @@ function validarTipo($tipo)
     }
 
     // Verifica se o tipo contém apenas letras e espaços
-    if (!preg_match('/^[a-zA-Z\s]+$/', $tipo)) {
+    if (!preg_match('/^[\p{L}\s\p{P}]+$/u', $tipo)) {
         return ['status' => 'error', 'msg' => 'O campo Tipo contém caracteres inválidos.'];
     }
 

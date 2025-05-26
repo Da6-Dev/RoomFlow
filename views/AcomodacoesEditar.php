@@ -1,5 +1,4 @@
 <?php
-
 ob_start();
 
 // Mensagem de alerta geral
@@ -41,7 +40,7 @@ if (!empty($errors['general'])) {
         </div>
     </div>
 
-    <form action="/RoomFlow/Acomodacoes/Update/<?php echo $acomodacao['id'] ?>" method="post">
+    <form action="/RoomFlow/Acomodacoes/Update/<?php echo $acomodacao['id'] ?>" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -270,6 +269,41 @@ if (!empty($errors['general'])) {
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Upload de Fotos</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['imagens[]']) || !empty($_POST['imagens[]']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Upload de Fotos</label>
+                            <input type="file" class="form-control" name="imagens[]" id="imagens[]" multiple accept="image/*">
+                        </div>
+                        <?php if (!empty($errors['imagens[]'])): ?>
+                            <div class="text-danger small"><?php echo $errors['imagens[]']; ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>                 
+        <div class="d-flex flex-wrap">
+            <?php foreach ($imagens as $imagem): ?>
+                <div class="p-2" style="width: 20%;">
+                    <div class="card">
+                        <img src="/Roomflow/<?php echo $imagem['caminho_arquivo'] ?>" class="card-img-top" alt="">
+                        <div class="card-body">
+                            <input type="checkbox" name="delete_imagens[]" value="<?php echo $imagem['id']; ?>" id="delete_image_<?php echo $imagem['id']; ?>">
+                            <label for="delete_image_<?php echo $imagem['id']; ?>" class="form-check-label">Excluir Imagem</label>
+                            <br>
+                            <input type="radio" name="imagem_capa" value="<?php echo $imagem['id']; ?>" id="imagem_capa_<?php echo $imagem['id']; ?>" <?php if($imagem['capa_acomodacao'] == 1){echo 'checked';}; ?>>
+                            <label for="imagem_capa">Definir como Capa</label>
+                            </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
 
         <!-- Botão Final -->

@@ -41,7 +41,7 @@ if (!empty($errors['general'])) {
         </div>
     </div>
 
-    <form action="/RoomFlow/Acomodacoes/Cadastrar" method="post">
+    <form action="/RoomFlow/Acomodacoes/Cadastrar" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -80,15 +80,15 @@ if (!empty($errors['general'])) {
             <div class="col-md-12">
                 <div class="card mb-4">
                     <div class="card-header p-2 ps-3 bg-gradient-dark">
-                        <p class="text-sm mb-0 text-white text-capitalize">numero</p>
+                        <p class="text-sm mb-0 text-white text-capitalize">Descricao</p>
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['descricao']) || !empty($_POST['descricao']) ? 'is-filled' : ''; ?>">
                             <label class="form-label">Descrição</label>
                             <input type="text" class="form-control" name="descricao" value="<?php echo $_POST['descricao'] ?? ''; ?>" required>
                         </div>
-                        <?php if (!empty($errors['tipo'])): ?>
-                            <div class="text-danger small"><?php echo $errors['tipo']; ?></div>
+                        <?php if (!empty($errors['descricao'])): ?>
+                            <div class="text-danger small"><?php echo $errors['descricao']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -264,6 +264,25 @@ if (!empty($errors['general'])) {
                         </div>
                         <?php if (!empty($errors['check_out_time'])): ?>
                             <div class="text-danger small"><?php echo $errors['check_out_time']; ?></div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Upload de Fotos</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-static <?php echo !empty($errors['imagens[]']) || !empty($_POST['imagens[]']) ? 'is-filled' : ''; ?>">
+                            <label class="ms-0">Upload de Fotos</label>
+                            <input type="file" class="form-control" name="imagens[]" id="imagens[]" multiple accept="image/*">
+                        </div>
+                        <?php if (!empty($errors['imagens[]'])): ?>
+                            <div class="text-danger small"><?php echo $errors['imagens[]']; ?></div>
                         <?php endif; ?>
                     </div>
                 </div>

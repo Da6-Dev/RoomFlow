@@ -1,11 +1,11 @@
 const prefadd = document.querySelector("#prefadd");
 const prefless = document.querySelector("#prefless");
-const divpref = document.querySelector('#preferences');
+const divpref = document.querySelector("#preferences");
 
 // Inicializa o contador com o número de preferências já existentes
-var npref = divpref.querySelectorAll('.input-group').length;
+var npref = divpref.querySelectorAll(".input-group").length;
 
-prefadd.addEventListener('click', () => {
+prefadd.addEventListener("click", () => {
     npref = npref + 1;
     divpref.innerHTML += `
         <div class="col-md-12">
@@ -17,11 +17,10 @@ prefadd.addEventListener('click', () => {
     `;
 });
 
-prefless.addEventListener('click', () => {
+prefless.addEventListener("click", () => {
     if (npref > 0) {
         const lastPref = document.querySelector(`#pref${npref}`);
         lastPref.remove();
         npref = npref - 1;
     }
 });
-

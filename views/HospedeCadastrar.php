@@ -81,7 +81,7 @@ if (!empty($errors['general'])) {
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['telefone']) || !empty($_POST['telefone']) ? 'is-filled' : ''; ?>">
                             <label class="form-label">Telefone</label>
-                            <input type="tel" class="form-control" name="telefone" value="<?php echo $_POST['telefone'] ?? ''; ?>" required>
+                            <input type="tel" class="form-control" name="telefone" id="telefone-input" value="<?php echo $_POST['telefone'] ?? ''; ?>" required>
                         </div>
                         <?php if (!empty($errors['telefone'])): ?>
                             <div class="text-danger small"><?php echo $errors['telefone']; ?></div>
@@ -96,8 +96,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['cpf']) || !empty($_POST['cpf']) ? 'is-filled' : ''; ?>">
-                            <label class="form-label">CPF</label>
-                            <input type="text" class="form-control" name="cpf" value="<?php echo $_POST['cpf'] ?? ''; ?>" required>
+                            <input type="text" class="form-control" id="cpf-input" name="cpf" value="<?php echo $_POST['cpf'] ?? ''; ?>" required placeholder="cpf">
                         </div>
                         <?php if (!empty($errors['cpf'])): ?>
                             <div class="text-danger small"><?php echo $errors['cpf']; ?></div>

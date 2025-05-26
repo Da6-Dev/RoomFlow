@@ -1,5 +1,4 @@
 <?php
-
 ob_start();
 
 // Mensagem de alerta geral
@@ -14,7 +13,7 @@ if (!empty($errors['general'])) {
 } elseif (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
     // Se houver uma mensagem de sucesso, mostrar a mensagem de sucesso
     $alertClass = 'alert-success';
-    $alertMessage = "Acomodação cadastrada com sucesso!!";
+    $alertMessage = "Reserva cadastrada com sucesso!!";
 } elseif (!empty($errors['exists'])) {
     //Se houver erro de acomodação já existente, mostrar a mensagem de erro
     $alertClass = 'alert-danger';
@@ -25,7 +24,7 @@ if (!empty($errors['general'])) {
     $alertMessage = '';
 }
 ?>
-
+<input type="text" id="datasReservadas" name="datasReservadas" value="<?php echo htmlspecialchars(json_encode($datasReservadas)); ?>" hidden>
 <div class="container-fluid py-2 p-5">
     <?php if ($alertMessage): ?>
         <div class="alert <?php echo $alertClass; ?> text-white" role="alert" id="alertMessage">
@@ -41,7 +40,7 @@ if (!empty($errors['general'])) {
         </div>
     </div>
 
-    <form action="/RoomFlow/Acomodacoes/Cadastrar" method="post">
+    <form action="/RoomFlow/Reservas/Cadastrar" method="post">
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
@@ -79,7 +78,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-static my-3">
-                            <select class="form-control" name="acomodacao" id="acomodacao" required>
+                            <select class="form-control" name="acomodacao" id="acomodacao" onchange="atualizarValorAcomodacao()" required>
                                 <option value="" disabled selected>Selecione uma acomodação</option>
                                 <?php
                                 // Preencher o select com as acomodações disponíveis
@@ -94,8 +93,8 @@ if (!empty($errors['general'])) {
                             </select>
                         </div>
                     </div>
-                    <?php if (!empty($errors['acomodacoes'])): ?>
-                        <div class="text-danger small"><?php echo $errors['acomodacoes']; ?></div>
+                    <?php if (!empty($errors['acomodacao'])): ?>
+                        <div class="text-danger small"><?php echo $errors['acomodacao']; ?></div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -109,7 +108,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['checkin']) || !empty($_POST['checkin']) ? 'is-filled' : ''; ?>">
-                            <input type="date" class="form-control" name="checkin" value="<?php echo $_POST['checkin'] ?? ''; ?>" required>
+                            <input type="text" id="data_checkin" name="checkin" class="form-control" value="<?php echo $_POST['checkin'] ?? ''; ?>" placeholder="Data de Checkout" required>
                         </div>
                         <?php if (!empty($errors['checkin'])): ?>
                             <div class="text-danger small"><?php echo $errors['checkin']; ?></div>
@@ -124,7 +123,7 @@ if (!empty($errors['general'])) {
                     </div>
                     <div class="card-body p-2 ps-3">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($errors['checkout']) || !empty($_POST['checkout']) ? 'is-filled' : ''; ?>">
-                            <input type="date" class="form-control" name="checkout" value="<?php echo $_POST['checkout'] ?? ''; ?>" required>
+                            <input type="text" id="data_checkout" class="form-control" name="checkout" value="<?php echo $_POST['checkout'] ?? ''; ?>" placeholder="Data de Check-out" required>
                         </div>
                         <?php if (!empty($errors['checkout'])): ?>
                             <div class="text-danger small"><?php echo $errors['checkout']; ?></div>
@@ -213,6 +212,8 @@ if (!empty($errors['general'])) {
 
     </form>
 </div>
+
+
 
 <?php
 $content = ob_get_clean();

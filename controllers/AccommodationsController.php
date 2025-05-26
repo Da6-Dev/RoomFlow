@@ -12,12 +12,15 @@ class AccommodationsController extends RenderView
             'Accommodations' => $accommodations->listar(),
             'father' => 'Acomodações',
             'page' => 'Listar',
+            'imagens_capa' => $accommodations->getImagensCapa(),
         ]);
     }
 
     public function create()
     {
         $errors = [];
+
+
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -41,6 +44,7 @@ class AccommodationsController extends RenderView
                 'check_in_time' => cleanInput($_POST['check_in_time'] ?? ''),
                 'check_out_time' => cleanInput($_POST['check_out_time'] ?? ''),
                 'amenidades' => $_POST['amenidades'] ?? [],
+                'imagens' => $_FILES['imagens'] ?? [],
             ];
 
             //Validações
@@ -120,7 +124,7 @@ class AccommodationsController extends RenderView
             'Title' => 'Editar Acomodação',
             'father' => 'Acomodações',
             'page' => 'Editar',
-
+            'imagens' => $accommodations->getImagesByAccommodationId($id_accommodation),
         ]);
     }
 
@@ -151,6 +155,9 @@ class AccommodationsController extends RenderView
                 'check_in_time' => cleanInput($_POST['check_in_time'] ?? ''),
                 'check_out_time' => cleanInput($_POST['check_out_time'] ?? ''),
                 'amenidades' => $_POST['amenidades'] ?? [],
+                'imagens' => $_FILES['imagens'] ?? [],
+                'delete_imagens' => $_POST['delete_imagens'] ?? [],
+                'imagem_capa' => $_POST['imagem_capa'] ?? '',
             ];
 
             //Validações
@@ -203,7 +210,7 @@ class AccommodationsController extends RenderView
         }
 
 
-        
+
         $accommodations = new AccommodationsModel();
         $amenities = new AmenitiesModel();
 
@@ -215,6 +222,7 @@ class AccommodationsController extends RenderView
             'father' => 'Acomodações',
             'page' => 'Editar',
             'errors' => $errors,
+            'imagens' => $accommodations->getImagesByAccommodationId($id_accommodation),
         ]);
     }
 

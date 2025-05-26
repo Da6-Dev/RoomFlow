@@ -81,6 +81,7 @@ class GuestController extends RenderView
                 }
             }
 
+
             // Se não houver erros, salvar no banco
             if (empty($errors)) {
                 $guestModel = new GuestModel();
