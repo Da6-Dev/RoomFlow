@@ -234,16 +234,35 @@ class GuestModel extends Database
         return $resultado['total'] ?? 0;
     }
 
-    private function uploadImagem($arquivo)
-    {
-        if (isset($arquivo) && $arquivo['error'] === UPLOAD_ERR_OK) {
-            $nomeArquivo = uniqid() . '-' . basename($arquivo['name']);
-            $caminhoDestino = __DIR__ . '/../Public/uploads/hospedes/' . $nomeArquivo;
+    // Em App/Models/GuestModel.php
+private function uploadImagem($arquivo)
+{
+    if (isset($arquivo) && $arquivo['error'] === UPLOAD_ERR_OK) {
+        $nomeArquivo = uniqid() . '-' . basename($arquivo['name']);
+        $caminhoDestino = __DIR__ . '/../Public/uploads/hospedes/' . $nomeArquivo;
 
-            if (move_uploaded_file($arquivo['tmp_name'], $caminhoDestino)) {
-                return $nomeArquivo;
-            }
+        // ---- ADICIONE ESTE CÓDIGO PARA DEPURAR ----
+        $diretorioUpload = dirname($caminhoDestino);
+        if (!is_dir($diretorioUpload)) {
+            error_log("ERRO: O diretório de upload não existe: " . $diretorioUpload);
+            return null; // Retorna nulo se o diretório não existe
         }
-        return null;
+        if (!is_writable($diretorioUpload)) {
+            error_log("ERRO: O diretório não tem permissão de escrita: " . $diretorioUpload);
+            return null; // Retorna nulo se não houver permissão
+        }
+        // ---- FIM DO CÓDIGO DE DEPURAÇÃO ----
+
+        if (move_uploaded_file($arquivo['tmp_name'], $caminhoDestino)) {
+            return $nomeArquivo;
+        } else {
+            // Adicione um log para o erro do move_uploaded_file
+            error_log("ERRO: move_uploaded_file falhou. Destino: " . $caminhoDestino);
+        }
+    } else if (isset($arquivo)) {
+        // Adicione um log para outros erros de upload
+        error_log("ERRO de Upload: Código " . $arquivo['error']);
     }
+    return null;
+}
 }

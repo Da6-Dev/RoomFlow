@@ -24,7 +24,7 @@ if (!empty($errors['general'])) {
         </div>
     <?php endif; ?>
 
-    <form action=<?php echo '"/RoomFlow/Hospedes/Update/' . $guest['id'] . '"' ?> method="post">
+    <form action=<?php echo '"/RoomFlow/Hospedes/Update/' . $guest['id'] . '"' ?> method="post" enctype="multipart/form-data">
         <!-- Título do Formulário -->
         <div class="row mb-4">
             <div class="col-12">

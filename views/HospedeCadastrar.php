@@ -26,7 +26,7 @@ if (!empty($errors['general'])) {
         </div>
     <?php endif; ?>
 
-    <form action="/RoomFlow/Hospedes/Cadastrar" method="post">
+    <form action="/RoomFlow/Hospedes/Cadastrar" method="post" enctype="multipart/form-data">
         <!-- Título do Formulário -->
         <div class="row mb-4">
             <div class="col-12">
