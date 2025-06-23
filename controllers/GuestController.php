@@ -11,6 +11,56 @@ class GuestController extends RenderView
         $this->guestModel = new GuestModel();
     }
 
+    // 1. Convertido de função local para método privado para consistência.
+    private function cleanInput($data)
+    {
+        return htmlspecialchars(stripslashes(trim($data)));
+    }
+
+    private function collectGuestDataFromRequest($currentGuest = null)
+    {
+        return [
+            'nome' => $this->cleanInput($_POST['nome'] ?? ''),
+            'email' => $this->cleanInput($_POST['email'] ?? ''),
+            'telefone' => $this->cleanInput($_POST['telefone'] ?? ''),
+            'cpf' => preg_replace('/[^0-9]/', '', $this->cleanInput($_POST['cpf'] ?? '')), // Remove formatação do CPF
+            'rua' => $this->cleanInput($_POST['rua'] ?? ''),
+            'cidade' => $this->cleanInput($_POST['cidade'] ?? ''),
+            'estado' => $this->cleanInput($_POST['estado'] ?? ''),
+            'numero' => $this->cleanInput($_POST['numero'] ?? ''),
+            'cep' => $this->cleanInput($_POST['cep'] ?? ''),
+            'dataNasc' => $this->cleanInput($_POST['dataNasc'] ?? ''),
+            'imagem' => $_FILES['imagem'], // Passa o array do arquivo
+            'imagem_atual' => $currentGuest['imagem'] ?? null
+        ];
+    }
+
+    private function validateGuestData(array $data)
+    {
+        $errors = [];
+
+        $validations = [
+            'nome' => validarNome($data['nome']),
+            'email' => validarEmail($data['email']),
+            'telefone' => validarTelefone($data['telefone']),
+            'cpf' => validarCpf($data['cpf']),
+            'cep' => validarCep($data['cep']),
+            'dataNasc' => validarDataNascimento($data['dataNasc']),
+            'rua' => validarRua($data['rua']),
+            'cidade' => validarCidade($data['cidade']),
+            'estado' => validarEstado($data['estado']),
+            'numero' => validarNumero($data['numero'])
+        ];
+
+        foreach ($validations as $field => $validation) {
+            if ($validation['status'] === 'error') {
+                $errors[$field] = $validation['msg'];
+            }
+        }
+
+        return $errors;
+    }
+
     public function list()
     {
         $this->LoadView('Hospedes', [
@@ -25,7 +75,6 @@ class GuestController extends RenderView
     {
         $guest = $this->guestModel->getHospedeById($id);
         if (!$guest) {
-            // Redireciona se o hóspede não for encontrado
             header("Location: /RoomFlow/Hospedes?msg=not_found");
             exit();
         }
@@ -33,25 +82,22 @@ class GuestController extends RenderView
         $this->LoadView('HospedeEditar', [
             'Title' => 'Editar Hóspede',
             'guest' => $guest,
-            'preferencias' => $this->guestModel->getPreferencesById($id), // Assumindo que este método existe
+            'preferencias' => $this->guestModel->getPreferencesById($id),
             'father' => 'Hospedes',
             'page' => 'Editar',
         ]);
     }
 
-    public function create($id)
+    // 2. Removido o parâmetro $id, que não era utilizado.
+    public function create()
     {
         $errors = [];
         $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // 1. Coleta os dados do formulário
             $data = $this->collectGuestDataFromRequest();
-
-            // 2. Valida os dados de entrada
             $errors = $this->validateGuestData($data);
 
-            // 3. Se os dados forem válidos, tenta salvar
             if (empty($errors)) {
                 $result = $this->guestModel->salvar($data);
 
@@ -59,13 +105,11 @@ class GuestController extends RenderView
                     header("Location: /RoomFlow/Hospedes?msg=success_create");
                     exit();
                 } else {
-                    // Erros vindos do Model (ex: CPF duplicado)
                     $errors = array_merge($errors, $result['errors']);
                 }
             }
         }
 
-        // 4. Exibe a View de cadastro com os dados e erros (se houver)
         $this->LoadView('HospedeCadastrar', [
             'Title' => 'Cadastro de Hóspede',
             'errors' => $errors,
@@ -78,18 +122,19 @@ class GuestController extends RenderView
     public function update($id)
     {
         $errors = [];
-        // Carrega os dados atuais para mesclar com os novos
         $guest = $this->guestModel->getHospedeById($id);
 
+        if (!$guest) {
+            header("Location: /RoomFlow/Hospedes?msg=not_found");
+            exit();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // 1. Coleta os dados
             $data = $this->collectGuestDataFromRequest($guest);
-            $data['id'] = $id; // Adiciona o ID para a operação de update
+            $data['id'] = $id;
 
-            // 2. Valida os dados
-            $errors = $this->validateGuestData($data, true); // true para modo de atualização
+            $errors = $this->validateGuestData($data);
 
-            // 3. Se válido, tenta salvar
             if (empty($errors)) {
                 $result = $this->guestModel->salvar($data);
 
@@ -102,11 +147,10 @@ class GuestController extends RenderView
             }
         }
 
-        // 4. Exibe a View de edição com os dados e erros
         $this->LoadView('HospedeEditar', [
             'Title' => 'Editar Hóspede',
             'errors' => $errors,
-            'guest' => array_merge($guest, $_POST), // Mescla dados antigos com os submetidos para preencher o form
+            'guest' => array_merge($guest, $_POST), // Mescla para preencher o form com dados novos
             'preferencias' => $this->guestModel->getPreferencesById($id),
             'father' => 'Hospedes',
             'page' => 'Editar',
@@ -125,60 +169,5 @@ class GuestController extends RenderView
         header("Location: /RoomFlow/Hospedes?msg=error_delete");
         exit();
     }
-
-    private function collectGuestDataFromRequest($currentGuest = null)
-    {
-        // Função para limpar os dados de entrada
-        function cleanInput($data)
-        {
-            return htmlspecialchars(stripslashes(trim($data)));
-        }
-
-        return [
-            'nome' => cleanInput($_POST['nome'] ?? ''),
-            'email' => cleanInput($_POST['email'] ?? ''),
-            'telefone' => cleanInput($_POST['telefone'] ?? ''),
-            'cpf' => preg_replace('/[^0-9]/', '', cleanInput($_POST['cpf'] ?? '')), // Remove formatação do CPF
-            'rua' => cleanInput($_POST['rua'] ?? ''),
-            'cidade' => cleanInput($_POST['cidade'] ?? ''),
-            'estado' => cleanInput($_POST['estado'] ?? ''),
-            'numero' => cleanInput($_POST['numero'] ?? ''),
-            'cep' => cleanInput($_POST['cep'] ?? ''),
-            'dataNasc' => cleanInput($_POST['dataNasc'] ?? ''),
-            'imagem' => $_FILES['imagem'], // Passa o array do arquivo
-            'imagem_atual' => $currentGuest['imagem'] ?? null
-        ];
-    }
-
-    private function validateGuestData(array $data, bool $isUpdate = false)
-    {
-        $errors = [];
-
-        // Validações
-        $validations = [
-            'nome' => validarNome($data['nome']),
-            'email' => validarEmail($data['email']),
-            'telefone' => validarTelefone($data['telefone']),
-            'cpf' => validarCpf($data['cpf']),
-            'cep' => validarCep($data['cep']),
-            'dataNasc' => validarDataNascimento($data['dataNasc']),
-            'rua' => validarRua($data['rua']),
-            'cidade' => validarCidade($data['cidade']),
-            'estado' => validarEstado($data['estado']),
-            'numero' => validarNumero($data['numero'])
-        ];
-
-        // Coletar erros
-        foreach ($validations as $field => $validation) {
-            if ($validation['status'] === 'error') {
-                $errors[$field] = $validation['msg'];
-            }
-        }
-
-
-        // Adicione aqui as outras chamadas para suas funções de validação
-        // (validarTelefone, validarCep, validarDataNascimento, etc.)
-
-        return $errors;
-    }
 }
+// 3. Removida a chave "}" extra que estava aqui.
