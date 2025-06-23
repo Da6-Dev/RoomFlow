@@ -2,13 +2,49 @@
 
 class AmenitiesController extends RenderView
 {
+    private $amenitiesModel;
+
+    // 1. O construtor inicializa o model.
+    public function __construct()
+    {
+        $this->amenitiesModel = new AmenitiesModel();
+    }
+
+    // Método privado para coletar dados do formulário.
+    private function collectDataFromRequest()
+    {
+        return [
+            'nome' => htmlspecialchars(stripslashes(trim($_POST['nome'] ?? ''))),
+        ];
+    }
+
+    // Método privado para validar os dados.
+    private function validateData($data, $id = null)
+    {
+        $errors = [];
+
+        // Validar nome
+        if (empty($data['nome'])) {
+            $errors['nome'] = 'O campo nome é obrigatório.';
+        } elseif (strlen($data['nome']) < 3) {
+            $errors['nome'] = 'O nome deve ter pelo menos 3 caracteres.';
+        } elseif (!preg_match("/^[a-zA-Z\s]+$/", $data['nome'])) {
+            $errors['nome'] = 'O nome deve conter apenas letras e espaços.';
+        } else {
+            // Verifica se a comodidade já existe (ignorando o ID atual na edição)
+            $existingAmenity = $this->amenitiesModel->getAmenityByName($data['nome']);
+            if ($existingAmenity && $existingAmenity['id'] != $id) {
+                $errors['nome'] = 'Essa comodidade já existe.';
+            }
+        }
+        return $errors;
+    }
+
     public function list()
     {
-        $amenities = new AmenitiesModel();
-
         $this->LoadView('Comodidades', [
             'Title' => 'Listagem de todas as Comodidades',
-            'Amenities' => $amenities->listar(),
+            'Amenities' => $this->amenitiesModel->listar(),
             'father' => 'Comodidades',
             'page' => 'Listar',
         ]);
@@ -17,36 +53,14 @@ class AmenitiesController extends RenderView
     public function create()
     {
         $errors = [];
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->collectDataFromRequest();
+            $errors = $this->validateData($data);
 
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
-
-            // Definir dados
-            $data = [
-                'nome' => cleanInput($_POST['nome'] ?? ''),
-            ];
-
-            $amenities = new AmenitiesModel();
-            // Validar nome
-            if (empty($data['nome'])) {
-                $errors['nome'] = 'O campo nome é obrigatório.';
-            } elseif (strlen($data['nome']) < 3) {
-                $errors['nome'] = 'O nome deve ter pelo menos 3 caracteres.';
-            } elseif (!preg_match("/^[a-zA-Z\s]+$/", $data['nome'])) {
-                $errors['nome'] = 'O nome deve conter apenas letras e espaços.';
-            } elseif ($amenities->getAmenityByName($data['nome'])) {
-                $errors['nome'] = 'Essa comodidade já existe.';
-            }
-
-            // Se não houver erros, inserir no banco de dados
             if (empty($errors)) {
-                $amenities = new AmenitiesModel();
-                $amenities->create($data);
+                $this->amenitiesModel->create($data);
                 header('Location: /RoomFlow/Comodidades/Cadastrar?msg=success_create');
                 exit();
             }
@@ -55,70 +69,71 @@ class AmenitiesController extends RenderView
         $this->LoadView('ComodidadesCadastrar', [
             'Title' => 'Cadastrar Comodidade',
             'errors' => $errors,
+            'data' => $data,
             'father' => 'Comodidades',
             'page' => 'Cadastrar',
         ]);
     }
 
+    // A função 'editar' agora apenas exibe o formulário.
     public function editar($id)
     {
-        $amenities = new AmenitiesModel();
-        $errors = [];
+        $data = $this->amenitiesModel->getAmenityById($id);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
-
-            // Definir dados
-            $data = [
-                'id' => $id,
-                'nome' => cleanInput($_POST['nome'] ?? ''),
-            ];
-
-            // Validar nome
-            if (empty($data['nome'])) {
-                $errors['nome'] = 'O campo nome é obrigatório.';
-            } elseif (strlen($data['nome']) < 3) {
-                $errors['nome'] = 'O nome deve ter pelo menos 3 caracteres.';
-            }
-
-            // Se não houver erros, atualizar no banco de dados
-            if (empty($errors)) {
-                $amenities->update($data);
-                header('Location: /RoomFlow/Comodidades/' . $id . '?msg=success_update');
-                exit();
-            }
-        } else {
-            $data = $amenities->getAmenityById($id);
+        // Se a comodidade não existe, redireciona para a listagem
+        if (!$data) {
+            header('Location: /RoomFlow/Comodidades?msg=not_found');
+            exit();
         }
 
         $this->LoadView('ComodidadesEditar', [
             'Title' => 'Editar Comodidade',
-            'errors' => $errors,
+            'errors' => [],
             'data' => $data,
             'father' => 'Comodidades',
             'page' => 'Editar',
         ]);
     }
 
-    public function delete($id)
+    // A lógica de atualização foi movida para o método 'update'.
+    public function update($id)
     {
-        $id_guest = $_POST['id'];
+        $data = [];
+        $errors = [];
 
-        $amenities = new AmenitiesModel();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->collectDataFromRequest();
+            $errors = $this->validateData($data, $id);
 
-        $success = $amenities->delete($id_guest);
+            if (empty($errors)) {
+                $data['id'] = $id;
+                $this->amenitiesModel->update($data);
+                header('Location: /RoomFlow/Comodidades?msg=success_update');
+                exit();
+            }
+        }
 
-        if ($success) {
+        // Se houver erro, exibe o formulário novamente com os erros
+        $currentData = $this->amenitiesModel->getAmenityById($id);
+        $this->LoadView('ComodidadesEditar', [
+            'Title' => 'Editar Comodidade',
+            'errors' => $errors,
+            'data' => array_merge($currentData, $data), // Mantém o que o usuário digitou
+            'father' => 'Comodidades',
+            'page' => 'Editar',
+        ]);
+    }
+
+
+    public function delete()
+    {
+        $id = $_POST['id'] ?? null;
+
+        if ($id && $this->amenitiesModel->delete($id)) {
             header("Location: /RoomFlow/Comodidades?msg=success_delete");
-            exit();
         } else {
             header("Location: /RoomFlow/Comodidades?msg=error_delete");
-            exit();
         }
+        exit();
     }
 }
