@@ -308,4 +308,16 @@ class AccommodationsModel extends Database
             return false;
         }
     }
+
+    public function getStatusAcomodacoes() {
+        $query = "SELECT status, COUNT(id) as total FROM acomodacoes GROUP BY status"; //
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAcomodacoesEmManutencao() {
+    $query = "SELECT tipo, numero FROM acomodacoes WHERE status = 'manutencao'";
+    $stmt = $this->pdo->query($query);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

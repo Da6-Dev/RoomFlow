@@ -143,7 +143,7 @@ if (!empty($errors['general'])) {
         </div>
 
         <!-- Seção de Estado, Número e CEP -->
-        
+
         <div class="row">
             <div class="col-md-4">
                 <div class="card mb-4">
@@ -210,6 +210,21 @@ if (!empty($errors['general'])) {
                         <?php if (!empty($errors['dataNasc'])): ?>
                             <div class="text-danger small"><?php echo $errors['dataNasc']; ?></div>
                         <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Foto do Hóspede</p>
+                    </div>
+                    <div class="card-body p-2 ps-3">
+                        <div class="input-group input-group-outline my-3">
+                            <input type="file" class="form-control" name="imagem">
+                        </div>
                     </div>
                 </div>
             </div>

@@ -213,6 +213,27 @@ if (!empty($errors['general'])) {
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header p-2 ps-3 bg-gradient-dark">
+                        <p class="text-sm mb-0 text-white text-capitalize">Foto do Hóspede</p>
+                    </div>
+                    <div class="card-body p-3 d-flex align-items-center">
+                        <div class="me-4">
+                            <img src="/RoomFlow/Public/uploads/hospedes/<?php echo htmlspecialchars($guest['imagem'] ?? 'default.png'); ?>" alt="Foto do Hóspede" class="avatar avatar-xxl rounded-circle" style="object-fit: cover;">
+                        </div>
+                        <div class="w-100">
+                            <div class="input-group input-group-outline my-3">
+                                <input type="file" class="form-control" name="imagem">
+                            </div>
+                            <small class="text-muted">Selecione um novo arquivo para trocar a foto.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Seção de Preferências -->
         <div class="row">
             <div class="col-md-12">

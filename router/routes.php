@@ -22,4 +22,5 @@ $Routes = [
     '/Reservas/@id' => 'ReservationsController@editar',
     '/Reservas/Update/@id' => 'ReservationsController@update',
     '/Reservas/Deletar' => 'ReservationsController@delete',
+    '/Reservas/Historico' => 'ReservationsController@Historico',
 ];

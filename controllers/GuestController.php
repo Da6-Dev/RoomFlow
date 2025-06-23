@@ -4,13 +4,18 @@
 class GuestController extends RenderView
 {
 
+    private $guestModel;
+
+    public function __construct()
+    {
+        $this->guestModel = new GuestModel();
+    }
+
     public function list()
     {
-        $guests = new GuestModel();
-
         $this->LoadView('Hospedes', [
             'Title' => 'Listagem de todos os Ususarios',
-            'Guests' => $guests->listar(),
+            'Guests' => $this->guestModel->listar(),
             'father' => 'Hospedes;',
             'page' => 'Listar',
         ]);
@@ -18,14 +23,17 @@ class GuestController extends RenderView
 
     public function editar($id)
     {
-        $id_guest = $id;
-
-        $guest = new GuestModel();
-        $preferencias = new GuestModel();
+        $guest = $this->guestModel->getHospedeById($id);
+        if (!$guest) {
+            // Redireciona se o hóspede não for encontrado
+            header("Location: /RoomFlow/Hospedes?msg=not_found");
+            exit();
+        }
 
         $this->LoadView('HospedeEditar', [
-            'guest' => $guest->getHospedeById($id_guest),
-            'preferencias' => $preferencias->getPreferencesById($id_guest),
+            'Title' => 'Editar Hóspede',
+            'guest' => $guest,
+            'preferencias' => $this->guestModel->getPreferencesById($id), // Assumindo que este método existe
             'father' => 'Hospedes',
             'page' => 'Editar',
         ]);
@@ -34,92 +42,34 @@ class GuestController extends RenderView
     public function create($id)
     {
         $errors = [];
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // 1. Coleta os dados do formulário
+            $data = $this->collectGuestDataFromRequest();
 
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
+            // 2. Valida os dados de entrada
+            $errors = $this->validateGuestData($data);
 
-            // Definir dados
-            $data = [
-                'nome' => cleanInput($_POST['nome'] ?? ''),
-                'email' => cleanInput($_POST['email'] ?? ''),
-                'telefone' => cleanInput($_POST['telefone'] ?? ''),
-                'cpf' => cleanInput($_POST['cpf'] ?? ''),
-                'rua' => cleanInput($_POST['rua'] ?? ''),
-                'cidade' => cleanInput($_POST['cidade'] ?? ''),
-                'estado' => cleanInput($_POST['estado'] ?? ''),
-                'numero' => cleanInput($_POST['numero'] ?? ''),
-                'cep' => cleanInput($_POST['cep'] ?? ''),
-                'dataNasc' => cleanInput($_POST['dataNasc'] ?? '')
-            ];
-
-            // Remover formatação do CPF (se houver)
-            $data['cpf'] = preg_replace('/[^0-9]/', '', $data['cpf']);
-
-            // Validações
-            $validations = [
-                'nome' => validarNome($data['nome']),
-                'email' => validarEmail($data['email']),
-                'telefone' => validarTelefone($data['telefone']),
-                'cpf' => validarCpf($data['cpf']),
-                'cep' => validarCep($data['cep']),
-                'dataNasc' => validarDataNascimento($data['dataNasc']),
-                'rua' => validarRua($data['rua']),
-                'cidade' => validarCidade($data['cidade']),
-                'estado' => validarEstado($data['estado']),
-                'numero' => validarNumero($data['numero'])
-            ];
-
-            // Coletar erros
-            foreach ($validations as $field => $validation) {
-                if ($validation['status'] === 'error') {
-                    $errors[$field] = $validation['msg'];
-                }
-            }
-
-
-            // Se não houver erros, salvar no banco
+            // 3. Se os dados forem válidos, tenta salvar
             if (empty($errors)) {
-                $guestModel = new GuestModel();
+                $result = $this->guestModel->salvar($data);
 
-                // Verificar se o CPF já está cadastrado
-                if ($guestModel->cpfExists($data['cpf'])) {
-                    $errors['cpf'] = 'O CPF já está cadastrado.';
-                } elseif ($guestModel->emailExists($data['email'])) {
-                        $errors['email'] = 'O e-mail já está cadastrado.';
+                if ($result['status'] === 'success') {
+                    header("Location: /RoomFlow/Hospedes?msg=success_create");
+                    exit();
                 } else {
-                    // Salvar no banco se não houver erros
-                    $success = $guestModel->criar(
-                        $data['nome'],
-                        $data['email'],
-                        $data['telefone'],
-                        $data['cpf'],
-                        $data['rua'],
-                        $data['cidade'],
-                        $data['estado'],
-                        $data['numero'],
-                        $data['cep'],
-                        $data['dataNasc']
-                    );
-
-                    if ($success) {
-                        header("Location: /RoomFlow/Hospedes/Cadastrar?msg=success_create");
-                        exit();
-                    } else {
-                        $errors['general'] = "Erro ao cadastrar! Tente novamente.";
-                    }
+                    // Erros vindos do Model (ex: CPF duplicado)
+                    $errors = array_merge($errors, $result['errors']);
                 }
             }
         }
 
-        // Exibir a View de cadastro com os erros
+        // 4. Exibe a View de cadastro com os dados e erros (se houver)
         $this->LoadView('HospedeCadastrar', [
             'Title' => 'Cadastro de Hóspede',
             'errors' => $errors,
+            'data' => $data,
             'father' => 'Hospedes',
             'page' => 'Cadastrar',
         ]);
@@ -128,97 +78,36 @@ class GuestController extends RenderView
     public function update($id)
     {
         $errors = [];
-        $id_guest = $id;
+        // Carrega os dados atuais para mesclar com os novos
+        $guest = $this->guestModel->getHospedeById($id);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // 1. Coleta os dados
+            $data = $this->collectGuestDataFromRequest($guest);
+            $data['id'] = $id; // Adiciona o ID para a operação de update
 
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
+            // 2. Valida os dados
+            $errors = $this->validateGuestData($data, true); // true para modo de atualização
 
-            // Definir dados
-            $data = [
-                'nome' => cleanInput($_POST['nome'] ?? ''),
-                'email' => cleanInput($_POST['email'] ?? ''),
-                'telefone' => cleanInput($_POST['telefone'] ?? ''),
-                'cpf' => cleanInput($_POST['cpf'] ?? ''),
-                'rua' => cleanInput($_POST['rua'] ?? ''),
-                'cidade' => cleanInput($_POST['cidade'] ?? ''),
-                'estado' => cleanInput($_POST['estado'] ?? ''),
-                'numero' => cleanInput($_POST['numero'] ?? ''),
-                'cep' => cleanInput($_POST['cep'] ?? ''),
-                'dataNasc' => cleanInput($_POST['dataNasc'] ?? '')
-            ];
-
-            // Remover formatação do CPF (se houver)
-            $data['cpf'] = preg_replace('/[^0-9]/', '', $data['cpf']);
-
-            // Capturar preferências
-            $preferencias = [];
-            foreach ($_POST as $key => $value) {
-                if (strpos($key, 'pref') === 0) {
-                    $preferencias[] = cleanInput($value);
-                }
-            }
-
-            // Validações
-            $validations = [
-                'nome' => validarNome($data['nome']),
-                'email' => validarEmail($data['email']),
-                'telefone' => validarTelefone($data['telefone']),
-                'cpf' => validarCpf($data['cpf']),
-                'cep' => validarCep($data['cep']),
-                'dataNasc' => validarDataNascimento($data['dataNasc']),
-                'rua' => validarRua($data['rua']),
-                'cidade' => validarCidade($data['cidade']),
-                'estado' => validarEstado($data['estado']),
-                'numero' => validarNumero($data['numero'])
-            ];
-
-            // Coletar erros
-            foreach ($validations as $field => $validation) {
-                if ($validation['status'] === 'error') {
-                    $errors[$field] = $validation['msg'];
-                }
-            }
-
-            // Se não houver erros, atualizar no banco
+            // 3. Se válido, tenta salvar
             if (empty($errors)) {
-                $guestModel = new GuestModel();
+                $result = $this->guestModel->salvar($data);
 
-                // Atualizar no banco se não houver erros
-                $success = $guestModel->atualizar(
-                    $id_guest,
-                    $data['nome'],
-                    $data['email'],
-                    $data['telefone'],
-                    $data['cpf'],
-                    $data['rua'],
-                    $data['cidade'],
-                    $data['estado'],
-                    $data['numero'],
-                    $data['cep'],
-                    $data['dataNasc'],
-                    $preferencias
-                );
-
-                if ($success) {
-                    header("Location: /RoomFlow/Hospedes/$id_guest?msg=success_update");
+                if ($result['status'] === 'success') {
+                    header("Location: /RoomFlow/Hospedes?msg=success_update");
                     exit();
                 } else {
-                    $errors['general'] = "Erro ao atualizar! Tente novamente.";
+                    $errors = array_merge($errors, $result['errors']);
                 }
             }
         }
 
-        // Exibir a View de edição com os erros
-        $guest = new GuestModel();
+        // 4. Exibe a View de edição com os dados e erros
         $this->LoadView('HospedeEditar', [
-            'guest' => $guest->getHospedeById($id_guest),
-            'preferencias' => $guest->getPreferencesById($id_guest),
+            'Title' => 'Editar Hóspede',
             'errors' => $errors,
+            'guest' => array_merge($guest, $_POST), // Mescla dados antigos com os submetidos para preencher o form
+            'preferencias' => $this->guestModel->getPreferencesById($id),
             'father' => 'Hospedes',
             'page' => 'Editar',
         ]);
@@ -226,18 +115,70 @@ class GuestController extends RenderView
 
     public function delete()
     {
-        $id_guest = $_POST['id'];
-
-        $guest = new GuestModel();
-
-        $success = $guest->deletar($id_guest);
-
-        if ($success) {
-            header("Location: /RoomFlow/Hospedes?msg=success_delete");
-            exit();
-        } else {
-            header("Location: /RoomFlow/Hospedes?msg=error_delete");
-            exit();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['id'])) {
+            $id_guest = $_POST['id'];
+            if ($this->guestModel->deletar($id_guest)) {
+                header("Location: /RoomFlow/Hospedes?msg=success_delete");
+                exit();
+            }
         }
+        header("Location: /RoomFlow/Hospedes?msg=error_delete");
+        exit();
+    }
+
+    private function collectGuestDataFromRequest($currentGuest = null)
+    {
+        // Função para limpar os dados de entrada
+        function cleanInput($data)
+        {
+            return htmlspecialchars(stripslashes(trim($data)));
+        }
+
+        return [
+            'nome' => cleanInput($_POST['nome'] ?? ''),
+            'email' => cleanInput($_POST['email'] ?? ''),
+            'telefone' => cleanInput($_POST['telefone'] ?? ''),
+            'cpf' => preg_replace('/[^0-9]/', '', cleanInput($_POST['cpf'] ?? '')), // Remove formatação do CPF
+            'rua' => cleanInput($_POST['rua'] ?? ''),
+            'cidade' => cleanInput($_POST['cidade'] ?? ''),
+            'estado' => cleanInput($_POST['estado'] ?? ''),
+            'numero' => cleanInput($_POST['numero'] ?? ''),
+            'cep' => cleanInput($_POST['cep'] ?? ''),
+            'dataNasc' => cleanInput($_POST['dataNasc'] ?? ''),
+            'imagem' => $_FILES['imagem'], // Passa o array do arquivo
+            'imagem_atual' => $currentGuest['imagem'] ?? null
+        ];
+    }
+
+    private function validateGuestData(array $data, bool $isUpdate = false)
+    {
+        $errors = [];
+
+        // Validações
+        $validations = [
+            'nome' => validarNome($data['nome']),
+            'email' => validarEmail($data['email']),
+            'telefone' => validarTelefone($data['telefone']),
+            'cpf' => validarCpf($data['cpf']),
+            'cep' => validarCep($data['cep']),
+            'dataNasc' => validarDataNascimento($data['dataNasc']),
+            'rua' => validarRua($data['rua']),
+            'cidade' => validarCidade($data['cidade']),
+            'estado' => validarEstado($data['estado']),
+            'numero' => validarNumero($data['numero'])
+        ];
+
+        // Coletar erros
+        foreach ($validations as $field => $validation) {
+            if ($validation['status'] === 'error') {
+                $errors[$field] = $validation['msg'];
+            }
+        }
+
+
+        // Adicione aqui as outras chamadas para suas funções de validação
+        // (validarTelefone, validarCep, validarDataNascimento, etc.)
+
+        return $errors;
     }
 }

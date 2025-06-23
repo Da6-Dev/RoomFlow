@@ -60,9 +60,8 @@ switch ($msg) {
                         <table class="table align-items-center mb-0">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hospede</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Telefone</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Hóspede</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Contato</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">CPF</th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>
@@ -74,19 +73,16 @@ switch ($msg) {
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div>
-                                                        <img src="/RoomFlow/Public/assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                        <img src="/RoomFlow/Public/uploads/hospedes/<?php echo htmlspecialchars($guest['imagem'] ?? 'default.png'); ?>" class="avatar avatar-sm me-3 border-radius-lg" alt="foto do hospede" style="object-fit: cover;">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($guest['nome']); ?></h6>
-                                                        <p class="text-xs text-secondary mb-0"><?php echo htmlspecialchars($guest['email']); ?></p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <p class="text-xs font-weight-bold mb-0"><?php echo htmlspecialchars($guest['email']); ?></p>
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success"><?php echo htmlspecialchars($guest['telefone']); ?></span>
+                                                <p class="text-xs text-secondary mb-0"><?php echo htmlspecialchars($guest['telefone']); ?></p>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-xs font-weight-bold"><?php echo htmlspecialchars($guest['documento']); ?></span>
@@ -106,7 +102,7 @@ switch ($msg) {
                                     <?php endforeach ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="5" class="text-center">Nenhum hóspede encontrado.</td>
+                                        <td colspan="4" class="text-center">Nenhum hóspede encontrado.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -119,8 +115,6 @@ switch ($msg) {
 </div>
 
 <?php
-
-$content = ob_get_clean(); // Captura o conteúdo da página
-include __DIR__ . '/layout.php'; // Inclui o layout base
-
+$content = ob_get_clean();
+include __DIR__ . '/layout.php';
 ?>

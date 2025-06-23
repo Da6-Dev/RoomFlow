@@ -48,55 +48,95 @@ class GuestModel extends Database
 
     public function getPreferencesById($id)
     {
-            $stmt = $this->pdo->prepare("SELECT * FROM preferencias_hospedes WHERE id_hospede = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-        
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
+        $stmt = $this->pdo->prepare("SELECT * FROM preferencias_hospedes WHERE id_hospede = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
     }
 
-    public function criar($nome, $email, $telefone, $cpf, $rua, $cidade, $estado, $numero, $cep, $dataNasc)
+    public function salvar($dados)
     {
-        // Inserir o hóspede na tabela hospedes
-        $stmt = $this->pdo->prepare("INSERT INTO hospedes (nome, email, telefone, documento, rua, cidade, estado, numero, cep, data_nascimento) VALUES (:nome, :email, :telefone, :cpf, :rua, :cidade, :estado, :numero, :cep, :dataNasc)");
+        $errors = [];
 
-        // Bind dos parâmetros usando PDO
-        $stmt->bindValue(':nome', $nome);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':telefone', $telefone);
-        $stmt->bindValue(':cpf', $cpf);
-        $stmt->bindValue(':rua', $rua);
-        $stmt->bindValue(':cidade', $cidade);
-        $stmt->bindValue(':estado', $estado);
-        $stmt->bindValue(':numero', $numero);
-        $stmt->bindValue(':cep', $cep);
-        $stmt->bindValue(':dataNasc', $dataNasc);
+        // Verifica se o email já existe (ignorando o próprio usuário na atualização)
+        $queryEmail = "SELECT id FROM hospedes WHERE email = ? AND (id != ? OR ? IS NULL)";
+        $stmtEmail = $this->pdo->prepare($queryEmail);
+        $stmtEmail->execute([$dados['email'], $dados['id'] ?? null, $dados['id'] ?? null]);
+        if ($stmtEmail->fetch()) {
+            $errors['email'] = 'Este e-mail já está em uso.';
+        }
 
-        // Verificando se a inserção foi bem-sucedida
-        if ($stmt->execute()) {
-            // Obtém o ID do hóspede recém inserido
-            $idHospede = $this->pdo->lastInsertId();
+        // Verifica se o CPF já existe (ignorando o próprio usuário na atualização)
+        $queryCpf = "SELECT id FROM hospedes WHERE documento = ? AND (id != ? OR ? IS NULL)";
+        $stmtCpf = $this->pdo->prepare($queryCpf);
+        $stmtCpf->execute([$dados['cpf'], $dados['id'] ?? null, $dados['id'] ?? null]);
+        if ($stmtCpf->fetch()) {
+            $errors['cpf'] = 'Este CPF já está cadastrado.';
+        }
 
-            // Inserir as preferências, se existirem
-            $npref = 1;
-            while (isset($_POST["pref{$npref}"])) {
-                $preferencia = $_POST["pref{$npref}"];
+        if (!empty($errors)) {
+            return ['status' => 'error', 'errors' => $errors];
+        }
 
-                // Inserir as preferências na tabela preferencias_hospedes
-                $stmtPref = $this->pdo->prepare("INSERT INTO preferencias_hospedes (id_hospede, descricao) VALUES (:id_hospede, :descricao)");
-                $stmtPref->bindValue(':id_hospede', $idHospede);
-                $stmtPref->bindValue(':descricao', $preferencia);
-                $stmtPref->execute();
-
-                $npref++;
+        // Lida com o upload da imagem
+        $nomeImagem = $dados['imagem_atual'] ?? 'default.png'; // Mantém a imagem atual por padrão
+        if (isset($dados['imagem']) && $dados['imagem']['error'] === UPLOAD_ERR_OK) {
+            $novaImagem = $this->uploadImagem($dados['imagem']);
+            if ($novaImagem) {
+                // Apaga a imagem antiga se não for a padrão
+                if ($nomeImagem && $nomeImagem != 'default.png' && file_exists(__DIR__ . '/../Public/uploads/hospedes/' . $nomeImagem)) {
+                    unlink(__DIR__ . '/../Public/uploads/hospedes/' . $nomeImagem);
+                }
+                $nomeImagem = $novaImagem;
             }
+        }
 
-            // Retorna true em caso de sucesso
-            return true;
-        } else {
-            // Retorna false em caso de erro
-            return false;
+        try {
+            if (empty($dados['id'])) {
+                // INSERIR (Criar novo hóspede)
+                $sql = "INSERT INTO hospedes (nome, email, telefone, documento, rua, cidade, estado, numero, cep, data_nascimento, imagem, data_cadastro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([
+                    $dados['nome'],
+                    $dados['email'],
+                    $dados['telefone'],
+                    $dados['cpf'],
+                    $dados['rua'],
+                    $dados['cidade'],
+                    $dados['estado'],
+                    $dados['numero'],
+                    $dados['cep'],
+                    $dados['dataNasc'],
+                    $nomeImagem,
+                    date('Y-m-d H:i:s')
+                ]);
+            } else {
+                // ATUALIZAR (Editar hóspede existente)
+                $sql = "UPDATE hospedes SET nome = ?, email = ?, telefone = ?, documento = ?, rua = ?, cidade = ?, estado = ?, numero = ?, cep = ?, data_nascimento = ?, imagem = ? WHERE id = ?";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([
+                    $dados['nome'],
+                    $dados['email'],
+                    $dados['telefone'],
+                    $dados['cpf'],
+                    $dados['rua'],
+                    $dados['cidade'],
+                    $dados['estado'],
+                    $dados['numero'],
+                    $dados['cep'],
+                    $dados['dataNasc'],
+                    $nomeImagem,
+                    $dados['id']
+                ]);
+            }
+            return ['status' => 'success'];
+        } catch (PDOException $e) {
+            // Log do erro (importante para o desenvolvimento)
+            error_log($e->getMessage());
+            $errors['general'] = 'Ocorreu um erro no servidor ao salvar o hóspede.';
+            return ['status' => 'error', 'errors' => $errors];
         }
     }
 
@@ -155,83 +195,55 @@ class GuestModel extends Database
         }
     }
 
-    public function atualizar($id, $nome, $email, $telefone, $cpf, $rua, $cidade, $estado, $numero, $cep, $dataNasc, $preferencias)
-{
-    try {
-        // Iniciar uma transação
-        $this->pdo->beginTransaction();
 
-        // Atualizar os dados do hóspede na tabela hospedes
-        $stmt = $this->pdo->prepare("UPDATE hospedes SET nome = :nome, email = :email, telefone = :telefone, documento = :cpf, rua = :rua, cidade = :cidade, estado = :estado, numero = :numero, cep = :cep, data_nascimento = :dataNasc WHERE id = :id");
 
-        // Bind dos parâmetros usando PDO
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->bindValue(':nome', $nome);
-        $stmt->bindValue(':email', $email);
-        $stmt->bindValue(':telefone', $telefone);
-        $stmt->bindValue(':cpf', $cpf);
-        $stmt->bindValue(':rua', $rua);
-        $stmt->bindValue(':cidade', $cidade);
-        $stmt->bindValue(':estado', $estado);
-        $stmt->bindValue(':numero', $numero);
-        $stmt->bindValue(':cep', $cep);
-        $stmt->bindValue(':dataNasc', $dataNasc);
+    public function deletar($id)
+    {
+        try {
+            // Primeiro, pegue o nome do arquivo da imagem para poder deletá-lo da pasta
+            $stmt = $this->pdo->prepare("SELECT imagem FROM hospedes WHERE id = ?");
+            $stmt->execute([$id]);
+            $hospede = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Executar a atualização
-        $stmt->execute();
+            if ($hospede) {
+                $imagemParaDeletar = $hospede['imagem'];
+                // Deleta o registro do banco de dados
+                $deleteStmt = $this->pdo->prepare("DELETE FROM hospedes WHERE id = ?");
+                $deleteStmt->execute([$id]);
 
-        // Remover as preferências antigas do hóspede
-        $stmtDelete = $this->pdo->prepare("DELETE FROM preferencias_hospedes WHERE id_hospede = :id_hospede");
-        $stmtDelete->bindValue(':id_hospede', $id, PDO::PARAM_INT);
-        $stmtDelete->execute();
-
-        // Inserir as novas preferências, se existirem
-        foreach ($preferencias as $preferencia) {
-            $stmtPref = $this->pdo->prepare("INSERT INTO preferencias_hospedes (id_hospede, descricao) VALUES (:id_hospede, :descricao)");
-            $stmtPref->bindValue(':id_hospede', $id, PDO::PARAM_INT);
-            $stmtPref->bindValue(':descricao', $preferencia);
-            $stmtPref->execute();
+                // Se o registro foi deletado com sucesso, apaga o arquivo da imagem
+                if ($deleteStmt->rowCount() > 0) {
+                    if ($imagemParaDeletar && $imagemParaDeletar != 'default.png' && file_exists(__DIR__ . '/../Public/uploads/hospedes/' . $imagemParaDeletar)) {
+                        unlink(__DIR__ . '/../Public/uploads/hospedes/' . $imagemParaDeletar);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
         }
-
-        // Confirmar a transação
-        $this->pdo->commit();
-
-        // Retorna true em caso de sucesso
-        return true;
-    } catch (PDOException $e) {
-        // Em caso de erro, desfazer a transação
-        $this->pdo->rollBack();
-        error_log("Erro ao atualizar hóspede: " . $e->getMessage());
-        return false;
     }
-}
-
-public function deletar($id)
-{
-    try {
-        // Iniciar uma transação
-        $this->pdo->beginTransaction();
-
-        // Desativar o hóspede na tabela hospedes
-        $stmt = $this->pdo->prepare("UPDATE hospedes SET active = 0 WHERE id = :id");
-
-        // Bind do parâmetro usando PDO
-        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-        // Executar a atualização
-        $stmt->execute();
-
-        // Confirmar a transação
-        $this->pdo->commit();
-
-        // Retorna true em caso de sucesso
-        return true;
-
-    } catch (PDOException $e) {
-        // Em caso de erro, desfazer a transação
-        $this->pdo->rollBack();
-        error_log("Erro ao excluir hóspede: " . $e->getMessage());
-        return false;
+    public function getContagemNovosHospedesHoje()
+    {
+        // Este método assume que existe uma coluna 'data_cadastro' na sua tabela 'hospedes'.
+        $query = "SELECT COUNT(id) as total FROM hospedes WHERE DATE(data_cadastro) = CURDATE()";
+        $stmt = $this->pdo->query($query);
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'] ?? 0;
     }
+
+    private function uploadImagem($arquivo)
+    {
+        if (isset($arquivo) && $arquivo['error'] === UPLOAD_ERR_OK) {
+            $nomeArquivo = uniqid() . '-' . basename($arquivo['name']);
+            $caminhoDestino = __DIR__ . '/../Public/uploads/hospedes/' . $nomeArquivo;
+
+            if (move_uploaded_file($arquivo['tmp_name'], $caminhoDestino)) {
+                return $nomeArquivo;
+            }
+        }
+        return null;
     }
 }

@@ -48,14 +48,15 @@ class ReservationsController extends RenderView
             'hospedes' => $reservations->hospedesGetAll(),
             'acomodacoes' => $reservations->acomodacoesGetDisponiveis(),
             'data' => $date = date('Y-m-d'),
-            'datasReservadas' => $reservations->getReservationsDate(), 
+            'datasReservadas' => $reservations->getReservationsDate(),
             'errors' => $errors,
         ]);
     }
 
 
 
-    public function list() {
+    public function list()
+    {
         $reservations = new ReservationsModel();
         $reservas = $reservations->getAllReservations();
 
@@ -69,11 +70,11 @@ class ReservationsController extends RenderView
             'father' => 'Reservas',
             'page' => 'Listar',
             'Reservas' => $reservas,
-        ]); 
-
+        ]);
     }
 
-    public function delete(){
+    public function delete()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
 
@@ -95,7 +96,8 @@ class ReservationsController extends RenderView
         }
     }
 
-    public function editar($id) {
+    public function editar($id)
+    {
         $reservations = new ReservationsModel();
         $reserva = $reservations->getReservationById($id);
 
@@ -107,16 +109,18 @@ class ReservationsController extends RenderView
             'hospedes' => $reservations->hospedesGetAll(),
             'acomodacoes' => $reservations->acomodacoesGetDisponiveis(),
             'data' => $date = date('Y-m-d'),
-            'datasReservadas' => $reservations->getReservationsDate(), 
+            'datasReservadas' => $reservations->getReservationsDate(),
         ]);
     }
 
-    public function update($id) {
+    public function update($id)
+    {
         $errors = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Função de limpeza de entrada
-            function cleanInput($data) {
+            function cleanInput($data)
+            {
                 return htmlspecialchars(stripslashes(trim($data)));
             }
 
@@ -156,7 +160,22 @@ class ReservationsController extends RenderView
             'acomodacoes' => $reservations->acomodacoesGetDisponiveis(),
             'errors' => $errors,
             'data' => $date = date('Y-m-d'),
-            'datasReservadas' => $reservations->getReservationsDate(), 
+            'datasReservadas' => $reservations->getReservationsDate(),
+        ]);
+    }
+
+    public function Historico()
+    {
+        // Busca os dados do histórico usando o novo método do model
+        $reservations = new ReservationsModel();
+        $historico = $reservations->getHistoricoReservas();
+
+        // Carrega a view, passando os dados do histórico
+        $this->LoadView('ReservasHistorico', [
+            'Title'         => 'Histórico de Reservas',
+            'father'        => 'Reservas',
+            'page'          => 'Histórico',
+            'historico'     => $historico // Envia a lista para a view
         ]);
     }
 }

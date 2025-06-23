@@ -9,16 +9,11 @@
     <title>
         Material Dashboard 3 by Creative Tim
     </title>
-    <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <!-- Nucleo Icons -->
     <link href="/RoomFlow/public/assets/css/nucleo-icons" />
     <link href="/RoomFlow/public/assets/css/nucleo-svg.css" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    <!-- Material Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <!-- CSS Files -->
     <link id="pagestyle" href="/RoomFlow/public/assets/css/material-dashboard.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
@@ -40,13 +35,13 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/Roomflow/Hospedes/Cadastrar/">
-                        <i class="material-symbols-rounded opacity-5">person</i>
+                        <i class="material-symbols-rounded opacity-5">person_add</i>
                         <span class="nav-link-text ms-1">Cadastrar</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Hospedes/">
-                        <i class="material-symbols-rounded opacity-5">login</i>
+                        <i class="material-symbols-rounded opacity-5">group</i>
                         <span class="nav-link-text ms-1">Listar</span>
                     </a>
                 </li>
@@ -55,38 +50,47 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Comodidades/Cadastrar/">
-                        <i class="material-symbols-rounded opacity-5">person</i>
-                        <span class="nav-link-text ms-1">Cadastrar Amenidades</span>
+                        <i class="material-symbols-rounded opacity-5">add_circle</i>
+                        <span class="nav-link-text ms-1">Cadastrar Comodidade</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Comodidades/">
-                        <i class="material-symbols-rounded opacity-5">login</i>
-                        <span class="nav-link-text ms-1">Listar Amenidades</span>
+                        <i class="material-symbols-rounded opacity-5">widgets</i>
+                        <span class="nav-link-text ms-1">Listar Comodidades</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/Roomflow/Acomodacoes/Cadastrar">
-                        <i class="material-symbols-rounded opacity-5">login</i>
-                        <span class="nav-link-text ms-1">Cadastrar Acomodações</span>
+                        <i class="material-symbols-rounded opacity-5">add_home</i>
+                        <span class="nav-link-text ms-1">Cadastrar Acomodação</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Acomodacoes/">
-                        <i class="material-symbols-rounded opacity-5">login</i>
+                        <i class="material-symbols-rounded opacity-5">apartment</i>
                         <span class="nav-link-text ms-1">Listar Acomodações</span>
+                    </a>
+                </li>
+                <li class="nav-item mt-3">
+                    <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Reservas</h6>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Cadastrar/">
+                        <i class="material-symbols-rounded opacity-5">edit_calendar</i>
+                        <span class="nav-link-text ms-1">Fazer Reserva</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Reservas/">
-                        <i class="material-symbols-rounded opacity-5">login</i>
+                        <i class="material-symbols-rounded opacity-5">book_online</i>
                         <span class="nav-link-text ms-1">Listar Reservas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Cadastrar/">
-                        <i class="material-symbols-rounded opacity-5">login</i>
-                        <span class="nav-link-text ms-1">Fazer Reservas</span>
+                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Historico/">
+                        <i class="material-symbols-rounded opacity-5">history</i>
+                        <span class="nav-link-text ms-1">Histórico</span>
                     </a>
                 </li>
             </ul>
@@ -98,12 +102,11 @@
         </div>
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <!-- Navbar -->
         <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;"><?php echo $father?></a></li>
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;"><?php echo $father ?></a></li>
                         <li class="breadcrumb-item text-sm text-dark active" aria-current="page"><?php echo $page ?></li>
                     </ol>
                 </nav>
@@ -217,4 +220,3 @@
                 </div>
             </div>
         </nav>
-        <!-- End Navbar -->

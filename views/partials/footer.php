@@ -14,11 +14,9 @@
           <i class="material-symbols-rounded">clear</i>
         </button>
       </div>
-      <!-- End Toggle Button -->
-    </div>
+      </div>
     <hr class="horizontal dark my-1">
     <div class="card-body pt-sm-3 pt-0">
-      <!-- Sidebar Backgrounds -->
       <div>
         <h6 class="mb-0">Sidebar Colors</h6>
       </div>
@@ -32,7 +30,6 @@
           <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
         </div>
       </a>
-      <!-- Sidenav Type -->
       <div class="mt-3">
         <h6 class="mb-0">Sidenav Type</h6>
         <p class="text-sm">Choose between different sidenav types.</p>
@@ -43,7 +40,6 @@
         <button class="btn bg-gradient-dark px-3 mb-2  active ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
       </div>
       <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-      <!-- Navbar Fixed -->
       <div class="mt-3 d-flex">
         <h6 class="mb-0">Navbar Fixed</h6>
         <div class="form-check form-switch ps-0 ms-auto my-auto">
@@ -73,11 +69,11 @@
     </div>
   </div>
 </div>
-<!--   Core JS Files   -->
 <script src="/RoomFlow/Public/assets/js/core/popper.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/core/bootstrap.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/plugins/smooth-scrollbar.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   var win = navigator.platform.indexOf('Win') > -1;
   if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -91,10 +87,8 @@
 <?php
 $caminho = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 ?>
-<!-- Github buttons -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
-<!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 <script src="/RoomFlow/Public/assets/js/material-dashboard.min.js?v=3.2.0"></script>
 <script src="/RoomFlow/Public/assets/js/preferences.js"></script>
 <script src="/RoomFlow/Public/assets/js/alerts.js"></script>
