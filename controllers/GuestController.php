@@ -19,6 +19,14 @@ class GuestController extends RenderView
 
     private function collectGuestDataFromRequest($currentGuest = null)
     {
+        $preferencias = [];
+
+        foreach ($_POST as $key => $value) {
+            if (preg_match('/^pref\d+$/', $key)) {
+                $preferencias[] = trim($value);
+            }
+        }
+
         return [
             'nome' => $this->cleanInput($_POST['nome'] ?? ''),
             'email' => $this->cleanInput($_POST['email'] ?? ''),
@@ -30,6 +38,7 @@ class GuestController extends RenderView
             'numero' => $this->cleanInput($_POST['numero'] ?? ''),
             'cep' => $this->cleanInput($_POST['cep'] ?? ''),
             'dataNasc' => $this->cleanInput($_POST['dataNasc'] ?? ''),
+            'preferencias' => $preferencias,
             'imagem' => $_FILES['imagem'], // Passa o array do arquivo
             'imagem_atual' => $currentGuest['imagem'] ?? null
         ];
