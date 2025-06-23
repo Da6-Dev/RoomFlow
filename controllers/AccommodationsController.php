@@ -2,94 +2,106 @@
 
 class AccommodationsController extends RenderView
 {
+    private $accommodationsModel;
+    private $amenitiesModel;
+
+    // 1. O construtor inicializa os models, que serão usados em toda a classe.
+    public function __construct()
+    {
+        $this->accommodationsModel = new AccommodationsModel();
+        $this->amenitiesModel = new AmenitiesModel();
+    }
+
+    // 2. Método para limpar a entrada de dados.
+    private function cleanInput($data)
+    {
+        return htmlspecialchars(stripslashes(trim($data)));
+    }
+
+    // 3. Método privado para coletar dados do formulário.
+    private function collectDataFromRequest()
+    {
+        return [
+            'tipo' => $this->cleanInput($_POST['tipo'] ?? ''),
+            'numero' => $this->cleanInput($_POST['numero'] ?? ''),
+            'descricao' => $this->cleanInput($_POST['descricao'] ?? ''),
+            'status' => $this->cleanInput($_POST['status'] ?? ''),
+            'capacidade' => $this->cleanInput($_POST['capacidade'] ?? ''),
+            'preco' => $this->cleanInput($_POST['preco'] ?? ''),
+            'minimo_noites' => $this->cleanInput($_POST['minimo_noites'] ?? ''),
+            'camas_casal' => $this->cleanInput($_POST['camas_casal'] ?? ''),
+            'camas_solteiro' => $this->cleanInput($_POST['camas_solteiro'] ?? ''),
+            'check_in_time' => $this->cleanInput($_POST['check_in_time'] ?? ''),
+            'check_out_time' => $this->cleanInput($_POST['check_out_time'] ?? ''),
+            'amenidades' => $_POST['amenidades'] ?? [],
+            'imagens' => $_FILES['imagens'] ?? [],
+            'delete_imagens' => $_POST['delete_imagens'] ?? [],
+            'imagem_capa' => $_POST['imagem_capa'] ?? '',
+        ];
+    }
+
+    // 4. Método privado para validar os dados coletados.
+    private function validateData($data)
+    {
+        $errors = [];
+        $validations = [
+            'tipo' => validarTipo($data['tipo']),
+            'numero' => validarNumero($data['numero']),
+            'descricao' => validarDescricao($data['descricao']),
+            'status' => validarStatus($data['status']),
+            'capacidade' => validarCapacidade($data['capacidade']),
+            'preco' => validarPreco($data['preco']),
+            'minimo_noites' => validarMinimoNoites($data['minimo_noites']),
+            'camas_casal' => validarCamasCasal($data['camas_casal']),
+            'camas_solteiro' => validarCamasSolteiro($data['camas_solteiro']),
+            'check_in_time' => validarCheckInTime($data['check_in_time']),
+            'check_out_time' => validarCheckOutTime($data['check_out_time']),
+        ];
+
+        foreach ($validations as $field => $validation) {
+            if ($validation['status'] === 'error') {
+                $errors[$field] = $validation['msg'];
+            }
+        }
+
+        if (empty($data['amenidades'])) {
+            $errors['amenidades'] = 'Selecione pelo menos uma amenidade.';
+        } else {
+            foreach ($data['amenidades'] as $amenity) {
+                if (!is_numeric($amenity)) {
+                    $errors['amenidades'] = 'A amenidade selecionada é inválida.';
+                    break;
+                }
+            }
+        }
+        return $errors;
+    }
 
     public function list()
     {
-        $accommodations = new AccommodationsModel();
-
         $this->LoadView('Acomodacoes', [
             'Title' => 'Listagem de todas as Acomodações',
-            'Accommodations' => $accommodations->listar(),
+            'Accommodations' => $this->accommodationsModel->listar(),
             'father' => 'Acomodações',
             'page' => 'Listar',
-            'imagens_capa' => $accommodations->getImagensCapa(),
+            'imagens_capa' => $this->accommodationsModel->getImagensCapa(),
         ]);
     }
 
     public function create()
     {
         $errors = [];
-
-
+        $data = []; // Inicializa para evitar erro na view no primeiro carregamento
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
-
-            // Definir dados
-            $data = [
-                'tipo' => cleanInput($_POST['tipo'] ?? ''),
-                'numero' => cleanInput($_POST['numero'] ?? ''),
-                'descricao' => cleanInput($_POST['descricao'] ?? ''),
-                'status' => cleanInput($_POST['status'] ?? ''),
-                'capacidade' => cleanInput($_POST['capacidade'] ?? ''),
-                'preco' => cleanInput($_POST['preco'] ?? ''),
-                'minimo_noites' => cleanInput($_POST['minimo_noites'] ?? ''),
-                'camas_casal' => cleanInput($_POST['camas_casal'] ?? ''),
-                'camas_solteiro' => cleanInput($_POST['camas_solteiro'] ?? ''),
-                'check_in_time' => cleanInput($_POST['check_in_time'] ?? ''),
-                'check_out_time' => cleanInput($_POST['check_out_time'] ?? ''),
-                'amenidades' => $_POST['amenidades'] ?? [],
-                'imagens' => $_FILES['imagens'] ?? [],
-            ];
-
-            //Validações
-            $validations = [
-                'tipo' => validarTipo($data['tipo']),
-                'numero' => validarNumero($data['numero']),
-                'descricao' => validarDescricao($data['descricao']),
-                'status' => validarStatus($data['status']),
-                'capacidade' => validarCapacidade($data['capacidade']),
-                'preco' => validarPreco($data['preco']),
-                'minimo_noites' => validarMinimoNoites($data['minimo_noites']),
-                'camas_casal' => validarCamasCasal($data['camas_casal']),
-                'camas_solteiro' => validarCamasSolteiro($data['camas_solteiro']),
-                'check_in_time' => validarCheckInTime($data['check_in_time']),
-                'check_out_time' => validarCheckOutTime($data['check_out_time']),
-            ];
-
-            // Coletar erros
-            foreach ($validations as $field => $validation) {
-                if ($validation['status'] === 'error') {
-                    $errors[$field] = $validation['msg'];
-                }
-            }
-
-            //Validar as amenidades
-            if (empty($data['amenidades'])) {
-                $errors['amenidades'] = 'Selecione pelo menos uma amenidade.';
-            } else {
-                foreach ($data['amenidades'] as $amenity) {
-                    if (!is_numeric($amenity)) {
-                        $errors['amenidades'] = 'A amenidade selecionada é inválida.';
-                        break;
-                    }
-                }
-            }
+            $data = $this->collectDataFromRequest();
+            $errors = $this->validateData($data);
 
             if (empty($errors)) {
-                $accommodations = new AccommodationsModel();
-                // Verifica se a acomodação já existe
-                if ($accommodations->getAccommodationByName($data['tipo']) && $accommodations->getAccommodationByNumber($data['numero'])) {
+                if ($this->accommodationsModel->getAccommodationByName($data['tipo']) && $this->accommodationsModel->getAccommodationByNumber($data['numero'])) {
                     $errors['exists'] = 'Essa acomodação já existe.';
                 } else {
-                    $success = $accommodations->create($data);
-                    if ($success) {
-                        // Redirecionar para a página de listagem com mensagem de sucesso
+                    if ($this->accommodationsModel->create($data)) {
                         header('Location: /RoomFlow/Acomodacoes/Cadastrar?msg=success_create');
                         exit();
                     } else {
@@ -99,108 +111,39 @@ class AccommodationsController extends RenderView
             }
         }
 
-        $amenities = new AmenitiesModel();
         $this->LoadView('AcomodacoesCadastrar', [
             'Title' => 'Cadastrar Acomodação',
             'errors' => $errors,
+            'data' => $data, // Envia dados submetidos de volta para preencher o formulário
             'father' => 'Acomodações',
             'page' => 'Cadastrar',
-            'Amenities' => $amenities->listar(),
-
+            'Amenities' => $this->amenitiesModel->listar(),
         ]);
     }
 
     public function editar($id)
     {
-        $id_accommodation = $id;
-
-        $accommodations = new AccommodationsModel();
-        $amenities = new AmenitiesModel();
-
         $this->LoadView('AcomodacoesEditar', [
-            'acomodacao' => $accommodations->getAccommodationById($id_accommodation),
-            'amenidades_acomodacao' => $amenities->getAmenitiesAccommodations($id_accommodation),
-            'amenidades' => $amenities->listar(),
+            'acomodacao' => $this->accommodationsModel->getAccommodationById($id),
+            'amenidades_acomodacao' => $this->amenitiesModel->getAmenitiesAccommodations($id),
+            'amenidades' => $this->amenitiesModel->listar(),
             'Title' => 'Editar Acomodação',
             'father' => 'Acomodações',
             'page' => 'Editar',
-            'imagens' => $accommodations->getImagesByAccommodationId($id_accommodation),
+            'imagens' => $this->accommodationsModel->getImagesByAccommodationId($id),
         ]);
     }
 
     public function update($id)
     {
         $errors = [];
-        $id_accommodation = $id;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = $this->collectDataFromRequest();
+            $errors = $this->validateData($data);
 
-            // Função de limpeza de entrada
-            function cleanInput($data)
-            {
-                return htmlspecialchars(stripslashes(trim($data)));
-            }
-
-            // Definir dados
-            $data = [
-                'tipo' => cleanInput($_POST['tipo'] ?? ''),
-                'numero' => cleanInput($_POST['numero'] ?? ''),
-                'descricao' => cleanInput($_POST['descricao'] ?? ''),
-                'status' => cleanInput($_POST['status'] ?? ''),
-                'capacidade' => cleanInput($_POST['capacidade'] ?? ''),
-                'preco' => cleanInput($_POST['preco'] ?? ''),
-                'minimo_noites' => cleanInput($_POST['minimo_noites'] ?? ''),
-                'camas_casal' => cleanInput($_POST['camas_casal'] ?? ''),
-                'camas_solteiro' => cleanInput($_POST['camas_solteiro'] ?? ''),
-                'check_in_time' => cleanInput($_POST['check_in_time'] ?? ''),
-                'check_out_time' => cleanInput($_POST['check_out_time'] ?? ''),
-                'amenidades' => $_POST['amenidades'] ?? [],
-                'imagens' => $_FILES['imagens'] ?? [],
-                'delete_imagens' => $_POST['delete_imagens'] ?? [],
-                'imagem_capa' => $_POST['imagem_capa'] ?? '',
-            ];
-
-            //Validações
-            $validations = [
-                'tipo' => validarTipo($data['tipo']),
-                'numero' => validarNumero($data['numero']),
-                'descricao' => validarDescricao($data['descricao']),
-                'status' => validarStatus($data['status']),
-                'capacidade' => validarCapacidade($data['capacidade']),
-                'preco' => validarPreco($data['preco']),
-                'minimo_noites' => validarMinimoNoites($data['minimo_noites']),
-                'camas_casal' => validarCamasCasal($data['camas_casal']),
-                'camas_solteiro' => validarCamasSolteiro($data['camas_solteiro']),
-                'check_in_time' => validarCheckInTime($data['check_in_time']),
-                'check_out_time' => validarCheckOutTime($data['check_out_time']),
-            ];
-
-            // Coletar erros
-            foreach ($validations as $field => $validation) {
-                if ($validation['status'] === 'error') {
-                    $errors[$field] = $validation['msg'];
-                }
-            }
-
-            //Validar as amenidades
-            if (empty($data['amenidades'])) {
-                $errors['amenidades'] = 'Selecione pelo menos uma amenidade.';
-            } else {
-                foreach ($data['amenidades'] as $amenity) {
-                    if (!is_numeric($amenity)) {
-                        $errors['amenidades'] = 'A amenidade selecionada é inválida.';
-                        break;
-                    }
-                }
-            }
-
-            // Se não houver erros, atualizar no banco de dados
             if (empty($errors)) {
-                $accommodations = new AccommodationsModel();
-                $success = $accommodations->update($id, $data);
-
-                if ($success) {
-                    // Redirecionar para a página de listagem com mensagem de sucesso
+                if ($this->accommodationsModel->update($id, $data)) {
                     header('Location: /RoomFlow/Acomodacoes?msg=success_update');
                     exit();
                 } else {
@@ -209,34 +152,32 @@ class AccommodationsController extends RenderView
             }
         }
 
-
-
-        $accommodations = new AccommodationsModel();
-        $amenities = new AmenitiesModel();
-
+        // Carrega a view com os dados e possíveis erros
         $this->LoadView('AcomodacoesEditar', [
-            'acomodacao' => $accommodations->getAccommodationById($id_accommodation),
-            'amenidades_acomodacao' => $amenities->getAmenitiesAccommodations($id_accommodation),
-            'amenidades' => $amenities->listar(),
+            'acomodacao' => $this->accommodationsModel->getAccommodationById($id),
+            'amenidades_acomodacao' => $this->amenitiesModel->getAmenitiesAccommodations($id),
+            'amenidades' => $this->amenitiesModel->listar(),
             'Title' => 'Editar Acomodação',
             'father' => 'Acomodações',
             'page' => 'Editar',
             'errors' => $errors,
-            'imagens' => $accommodations->getImagesByAccommodationId($id_accommodation),
+            'imagens' => $this->accommodationsModel->getImagesByAccommodationId($id),
         ]);
     }
 
     public function delete()
     {
-        $id = $_POST['id'];
-        $accommodations = new AccommodationsModel();
-        $result = $accommodations->delete($id);
-        if ($result) {
-            echo "Acomodação excluída com sucesso!";
-        } else {
-            echo "Erro ao excluir acomodação.";
+        $id = $_POST['id'] ?? null;
+        if (!$id) {
+            header('Location: /RoomFlow/Acomodacoes?msg=error_invalid_id');
+            exit();
         }
-        header('Location: /RoomFlow/Acomodacoes?msg=success_delete');
+
+        if ($this->accommodationsModel->delete($id)) {
+            header('Location: /RoomFlow/Acomodacoes?msg=success_delete');
+        } else {
+            header('Location: /RoomFlow/Acomodacoes?msg=error_delete');
+        }
         exit();
     }
 }
