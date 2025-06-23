@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 26/05/2025 às 13:05
+-- Tempo de geração: 23/06/2025 às 23:46
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -52,7 +52,7 @@ INSERT INTO `acomodacoes` (`id`, `tipo`, `numero`, `descricao`, `status`, `capac
 (17, 'Suíte com cozinha', '1', 'Com ampla vista para o mar, esta acomodação possui cama de casal, cama extra, ar-condicionado e TV, além de possuir também uma pequena cozinha com utensílios básicos e banheiro. Na sua parte externa possui deck com churrasqueira. A acomodação é ideal para duas pessoas, podendo comportar até três.', 'disponivel', 3, 390.00, 2, 1, 1, '14:00:00', '10:00:00'),
 (18, 'Chalé família', '1', 'Esta acomodação possui dois quartos, um dos quartos com cama de casal e TV e o outro com cama de casal e uma de solteiro. Ambos os quartos são equipados com ar-condicionado. Possui também banheiro, cozinha com utensílios básicos e churrasqueira. Na sua parte externa possui sacada com ampla vista para o mar. A acomodação é ideal para até cinco pessoas.', 'disponivel', 5, 590.00, 2, 2, 1, '14:00:00', '10:00:00'),
 (19, 'Cabana', '1', 'Esta acomodação está localizada em uma área mais reservada da pousada. Possui cama de casal, uma cama de solteiro, cama extra, ar-condicionado, TV, cozinha com utensílios básicos e banheiro. Na área externa possui varanda e deck com churrasqueira, tendo ampla vista para o mar. A acomodação é ideal para três pessoas, podendo comportar até quatro.', 'disponivel', 3, 490.00, 2, 1, 1, '14:00:00', '10:00:00'),
-(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'disponivel', 4, 100.00, 2, 0, 0, '14:00:00', '10:00:00');
+(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'manutencao', 4, 100.00, 2, 0, 0, '14:00:00', '10:00:00');
 
 -- --------------------------------------------------------
 
@@ -96,23 +96,6 @@ CREATE TABLE `amenidades_acomodacoes` (
 --
 
 INSERT INTO `amenidades_acomodacoes` (`id`, `id_amenidades`, `id_acomodacoes`) VALUES
-(70, 13, 17),
-(71, 14, 17),
-(72, 16, 17),
-(73, 17, 17),
-(74, 20, 17),
-(75, 13, 18),
-(76, 14, 18),
-(77, 16, 18),
-(78, 17, 18),
-(79, 20, 18),
-(80, 13, 19),
-(81, 14, 19),
-(82, 16, 19),
-(83, 17, 19),
-(84, 20, 19),
-(85, 15, 20),
-(86, 17, 20),
 (274, 13, 16),
 (275, 14, 16),
 (276, 15, 16),
@@ -120,14 +103,31 @@ INSERT INTO `amenidades_acomodacoes` (`id`, `id_amenidades`, `id_acomodacoes`) V
 (278, 17, 16),
 (279, 18, 16),
 (280, 20, 16),
-(289, 13, 15),
-(290, 14, 15),
-(291, 15, 15),
-(292, 16, 15),
-(293, 17, 15),
-(294, 18, 15),
-(295, 19, 15),
-(296, 20, 15);
+(297, 13, 15),
+(298, 14, 15),
+(299, 15, 15),
+(300, 16, 15),
+(301, 17, 15),
+(302, 18, 15),
+(303, 19, 15),
+(304, 20, 15),
+(310, 13, 18),
+(311, 14, 18),
+(312, 16, 18),
+(313, 17, 18),
+(314, 20, 18),
+(315, 13, 19),
+(316, 14, 19),
+(317, 16, 19),
+(318, 17, 19),
+(319, 20, 19),
+(452, 13, 17),
+(453, 14, 17),
+(454, 16, 17),
+(455, 17, 17),
+(456, 20, 17),
+(457, 15, 20),
+(458, 17, 20);
 
 -- --------------------------------------------------------
 
@@ -154,11 +154,25 @@ CREATE TABLE `funcionarios` (
 CREATE TABLE `historico_reservas` (
   `id` int(11) NOT NULL,
   `id_reserva` int(11) NOT NULL,
-  `id_funcionario` int(11) DEFAULT NULL,
-  `acao` varchar(255) NOT NULL,
   `detalhes` text DEFAULT NULL,
-  `data_registro` timestamp NOT NULL DEFAULT current_timestamp()
+  `data_registro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id_hospede` int(11) NOT NULL,
+  `id_acomodacao` int(11) NOT NULL,
+  `data_checkin` date NOT NULL,
+  `data_checkout` date NOT NULL,
+  `status` enum('cancelada','finalizada') DEFAULT 'finalizada',
+  `valor_total` decimal(10,2) DEFAULT NULL,
+  `metodo_pagamento` enum('cartao-debito','cartao-credito','dinheiro','pix') DEFAULT 'cartao-debito',
+  `observacoes` text DEFAULT NULL,
+  `data_reserva` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `historico_reservas`
+--
+
+INSERT INTO `historico_reservas` (`id`, `id_reserva`, `detalhes`, `data_registro`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
+(11, 0, 'Reserva arquivada automaticamente por expiração.', '2025-06-23 19:41:20', 5, 16, '2025-06-01', '2025-06-02', 'finalizada', 590.00, 'dinheiro', 'tthrthtrhrh', '2025-06-09 01:56:33');
 
 -- --------------------------------------------------------
 
@@ -171,6 +185,7 @@ CREATE TABLE `hospedes` (
   `nome` varchar(100) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   `telefone` varchar(20) DEFAULT NULL,
+  `imagem` varchar(255) DEFAULT 'default.png',
   `documento` varchar(50) NOT NULL,
   `rua` varchar(150) DEFAULT NULL,
   `numero` varchar(10) DEFAULT NULL,
@@ -186,8 +201,9 @@ CREATE TABLE `hospedes` (
 -- Despejando dados para a tabela `hospedes`
 --
 
-INSERT INTO `hospedes` (`id`, `nome`, `email`, `telefone`, `documento`, `rua`, `numero`, `cidade`, `estado`, `cep`, `data_nascimento`, `data_cadastro`, `active`) VALUES
-(5, 'Davi Passos', 'davipassos213@gmail.com', '(35)98405-9573', '17172386612', 'José Cândido da Silva', '80', 'Itajubá', 'MG', '37504314', '2007-02-08', '2025-05-21 00:05:54', 1);
+INSERT INTO `hospedes` (`id`, `nome`, `email`, `telefone`, `imagem`, `documento`, `rua`, `numero`, `cidade`, `estado`, `cep`, `data_nascimento`, `data_cadastro`, `active`) VALUES
+(5, 'Davi Passos', 'davipassos213@gmail.com', '(35)98405-9573', '6859c773c7b7d-my-notion-face-portrait.png', '17172386612', 'José Cândido da Silva', '80', 'Itajubá', 'MG', '37504314', '2007-02-08', '2025-05-21 00:05:54', 1),
+(6, 'Daniela', 'daniela.pereira@email.com', '(35)98405-4324', '6859c78e70fd0-unnamed.jpg', '84526807087', 'Rua Barão do Rio Branco', '99', 'Itajubá', 'MG', '37505-000', '2000-05-05', '2025-06-23 20:19:35', 1);
 
 -- --------------------------------------------------------
 
@@ -227,7 +243,50 @@ INSERT INTO `imagens_acomodacoes` (`id`, `acomodacao_id`, `nome_arquivo`, `camin
 (42, 15, 'b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965119_b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', '2025-05-22 12:12:57', 0),
 (43, 15, 'b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9653f0_b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', '2025-05-22 12:12:57', 0),
 (44, 15, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9656e0_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(45, 15, 'b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965974_b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', '2025-05-22 12:12:57', 0);
+(45, 15, 'b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965974_b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', '2025-05-22 12:12:57', 0),
+(46, 17, 'b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a12a_b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', '2025-05-26 16:29:49', 0),
+(47, 17, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/683496fd4a678_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-26 16:29:49', 0),
+(48, 17, 'b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a945_b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', '2025-05-26 16:29:49', 0),
+(49, 17, 'b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4abf1_b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', '2025-05-26 16:29:49', 0),
+(50, 17, 'b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4aea0_b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', '2025-05-26 16:29:49', 0),
+(51, 17, 'b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b137_b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', '2025-05-26 16:29:49', 1),
+(52, 17, 'b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b409_b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', '2025-05-26 16:29:49', 0),
+(53, 17, 'b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b6bd_b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', '2025-05-26 16:29:49', 0),
+(54, 17, 'b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4baa2_b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', '2025-05-26 16:29:49', 0),
+(55, 17, 'b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bd4b_b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', '2025-05-26 16:29:49', 0),
+(56, 17, 'b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bfd2_b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', '2025-05-26 16:29:49', 0),
+(57, 18, 'b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', 'Public/uploads/acomodacoes/683497144a63f_b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', '2025-05-26 16:30:12', 1),
+(58, 18, 'b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', 'Public/uploads/acomodacoes/683497144a9ff_b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', '2025-05-26 16:30:12', 0),
+(59, 18, 'b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', 'Public/uploads/acomodacoes/683497144ad08_b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', '2025-05-26 16:30:12', 0),
+(60, 18, 'b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', 'Public/uploads/acomodacoes/683497144afe5_b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', '2025-05-26 16:30:12', 0),
+(61, 18, 'b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', 'Public/uploads/acomodacoes/683497144b2d8_b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', '2025-05-26 16:30:12', 0),
+(62, 18, 'b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', 'Public/uploads/acomodacoes/683497144b5bd_b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', '2025-05-26 16:30:12', 0),
+(63, 18, 'b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', 'Public/uploads/acomodacoes/683497144ba35_b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', '2025-05-26 16:30:12', 0),
+(64, 18, 'b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', 'Public/uploads/acomodacoes/683497144bd4d_b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', '2025-05-26 16:30:12', 0),
+(65, 18, 'b87f83_8d589652307341d888588070b458de81~mv2.jpg', 'Public/uploads/acomodacoes/683497144bffe_b87f83_8d589652307341d888588070b458de81~mv2.jpg', '2025-05-26 16:30:12', 0),
+(66, 18, 'b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', 'Public/uploads/acomodacoes/683497144c387_b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', '2025-05-26 16:30:12', 0),
+(67, 19, 'b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', 'Public/uploads/acomodacoes/68349721c270e_b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', '2025-05-26 16:30:25', 1),
+(68, 19, 'b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2a42_b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', '2025-05-26 16:30:25', 0),
+(69, 19, 'b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2da4_b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', '2025-05-26 16:30:25', 0),
+(70, 19, 'b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3047_b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', '2025-05-26 16:30:25', 0),
+(71, 19, 'b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', 'Public/uploads/acomodacoes/68349721c33bc_b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', '2025-05-26 16:30:25', 0),
+(72, 19, 'b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3759_b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', '2025-05-26 16:30:25', 0),
+(73, 19, 'b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3c19_b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', '2025-05-26 16:30:25', 0),
+(74, 19, 'b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c49d7_b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', '2025-05-26 16:30:25', 0),
+(75, 19, 'b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4d39_b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', '2025-05-26 16:30:25', 0),
+(76, 19, 'b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4f96_b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', '2025-05-26 16:30:25', 0),
+(77, 20, 'b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', 'Public/uploads/acomodacoes/6834972f724b3_b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', '2025-05-26 16:30:39', 1),
+(78, 20, 'b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', 'Public/uploads/acomodacoes/6834972f727d2_b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', '2025-05-26 16:30:39', 0),
+(79, 20, 'b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', 'Public/uploads/acomodacoes/6834972f72abf_b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', '2025-05-26 16:30:39', 0),
+(80, 20, 'b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72cde_b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', '2025-05-26 16:30:39', 0),
+(81, 20, 'b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72ec1_b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', '2025-05-26 16:30:39', 0),
+(82, 20, 'b87f83_89da331062774e919f434b54a7272a8f~mv2.png', 'Public/uploads/acomodacoes/6834972f7319a_b87f83_89da331062774e919f434b54a7272a8f~mv2.png', '2025-05-26 16:30:39', 0),
+(83, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', 'Public/uploads/acomodacoes/6834972f733df_b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', '2025-05-26 16:30:39', 0),
+(84, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', 'Public/uploads/acomodacoes/6834972f735f1_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', '2025-05-26 16:30:39', 0),
+(85, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', 'Public/uploads/acomodacoes/6834972f737f6_b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', '2025-05-26 16:30:39', 0),
+(86, 20, 'b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', 'Public/uploads/acomodacoes/6834972f739e1_b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', '2025-05-26 16:30:39', 0),
+(87, 20, 'b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', 'Public/uploads/acomodacoes/6834972f73be8_b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', '2025-05-26 16:30:39', 0),
+(88, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', 'Public/uploads/acomodacoes/6834972f73dbd_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', '2025-05-26 16:30:39', 0);
 
 -- --------------------------------------------------------
 
@@ -290,7 +349,8 @@ CREATE TABLE `preferencias_hospedes` (
 --
 
 INSERT INTO `preferencias_hospedes` (`id`, `id_hospede`, `descricao`) VALUES
-(9, 5, 'Intolerante a Lactose');
+(9, 5, 'Intolerante a Lactose'),
+(10, 6, 'Intolerante a Lactose');
 
 -- --------------------------------------------------------
 
@@ -310,6 +370,15 @@ CREATE TABLE `reservas` (
   `observacoes` text DEFAULT NULL,
   `data_reserva` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Despejando dados para a tabela `reservas`
+--
+
+INSERT INTO `reservas` (`id`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
+(16, 5, 16, '2025-06-23', '2025-06-25', 'pendente', 1180.00, 'pix', 'tthrthtrhrh', '2025-06-23 19:58:26'),
+(17, 5, 17, '2025-06-25', '2025-06-26', 'confirmada', 390.00, 'dinheiro', 'tthrthtrhrh', '2025-06-23 19:58:40'),
+(18, 5, 16, '2025-06-26', '2025-06-28', 'pendente', 1180.00, 'cartao-credito', 'tthrthtrhrh', '2025-06-23 19:58:57');
 
 --
 -- Índices para tabelas despejadas
@@ -347,8 +416,6 @@ ALTER TABLE `funcionarios`
 --
 ALTER TABLE `historico_reservas`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_reserva` (`id_reserva`),
-  ADD KEY `id_funcionario` (`id_funcionario`),
   ADD KEY `idx_data_registro` (`data_registro`);
 
 --
@@ -423,7 +490,7 @@ ALTER TABLE `amenidades`
 -- AUTO_INCREMENT de tabela `amenidades_acomodacoes`
 --
 ALTER TABLE `amenidades_acomodacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=297;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=459;
 
 --
 -- AUTO_INCREMENT de tabela `funcionarios`
@@ -435,19 +502,19 @@ ALTER TABLE `funcionarios`
 -- AUTO_INCREMENT de tabela `historico_reservas`
 --
 ALTER TABLE `historico_reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `hospedes`
 --
 ALTER TABLE `hospedes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `imagens_acomodacoes`
 --
 ALTER TABLE `imagens_acomodacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
 
 --
 -- AUTO_INCREMENT de tabela `logs_acesso`
@@ -471,13 +538,13 @@ ALTER TABLE `notificacoes`
 -- AUTO_INCREMENT de tabela `preferencias_hospedes`
 --
 ALTER TABLE `preferencias_hospedes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Restrições para tabelas despejadas
@@ -489,13 +556,6 @@ ALTER TABLE `reservas`
 ALTER TABLE `amenidades_acomodacoes`
   ADD CONSTRAINT `amenidades_acomodacoes_ibfk_1` FOREIGN KEY (`id_amenidades`) REFERENCES `amenidades` (`id`),
   ADD CONSTRAINT `amenidades_acomodacoes_ibfk_2` FOREIGN KEY (`id_acomodacoes`) REFERENCES `acomodacoes` (`id`);
-
---
--- Restrições para tabelas `historico_reservas`
---
-ALTER TABLE `historico_reservas`
-  ADD CONSTRAINT `historico_reservas_ibfk_1` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `historico_reservas_ibfk_2` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionarios` (`id`) ON DELETE SET NULL;
 
 --
 -- Restrições para tabelas `imagens_acomodacoes`
