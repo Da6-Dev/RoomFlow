@@ -205,9 +205,26 @@ class AccommodationsModel extends Database
 
             
             // Atualizar a imagem de capa
-            $query = "SELECT * FROM imagens_acomodacoes WHERE id = :acomodacao_id";
+            $query = "SELECT id FROM imagens_acomodacoes WHERE capa_acomodacao = 1 AND acomodacao_id = :acomodacao_id";
             $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $data['imagem_capa'], PDO::PARAM_INT);
+            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $imagemCapaAtual = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            if ($imagemCapaAtual) {
+                foreach ($imagemCapaAtual as $imagemCapa) {
+                    // Verifica se a imagem de capa atual existe no banco de dados
+                    if ($imagemCapa['id'] != $data['imagem_capa']) {
+                        // Se a imagem de capa atual não é a que está sendo definida, remove a marcação de capa
+                        $query = "UPDATE imagens_acomodacoes SET capa_acomodacao = 0 WHERE id = :imagem_capa_id";
+                        $stmt = $this->pdo->prepare($query);
+                        $stmt->bindParam(':imagem_capa_id', $imagemCapa['id'], PDO::PARAM_INT);
+                        $stmt->execute();
+                    }
+                }
+            }
+            $query = "SELECT * FROM imagens_acomodacoes WHERE id = :id";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->bindParam(':id', $data['imagem_capa'], PDO::PARAM_INT);
             $stmt->execute();
             $imagem = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($imagem && file_exists($imagem['caminho_arquivo'])) {
