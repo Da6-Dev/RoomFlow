@@ -2,6 +2,9 @@
 
 class ReservationsModel extends Database
 {
+    /**
+     * @var PDO A instância da conexão com o banco de dados.
+     */
     private $pdo;
 
     public function __construct()
@@ -9,89 +12,165 @@ class ReservationsModel extends Database
         $this->pdo = $this->getConnection();
     }
 
+    /**
+     * Busca todos os hóspedes ativos para serem listados em formulários de reserva.
+     * @return array
+     */
     public function hospedesGetAll()
     {
-        $stmt = $this->pdo->query("SELECT * FROM hospedes WHERE active = 1");
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            return [];
-        }
+        $stmt = $this->pdo->query("SELECT id, nome FROM hospedes WHERE active = 1 ORDER BY nome ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Busca todas as acomodações para serem listadas em formulários de reserva.
+     * Nota: Este método não filtra por disponibilidade de data, apenas lista todas as acomodações existentes.
+     * @return array
+     */
     public function acomodacoesGetDisponiveis()
     {
-        $stmt = $this->pdo->query("SELECT * FROM acomodacoes");
-
-        $stmt->execute();
-
-        $acomodacoesDisponiveis = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return $acomodacoesDisponiveis;
+        $stmt = $this->pdo->query("SELECT id, tipo, numero FROM acomodacoes ORDER BY tipo, numero ASC");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Cria uma nova reserva no banco de dados.
+     * @param array $data Dados da reserva.
+     * @return bool
+     */
     public function create($data)
     {
+        // Calcula o valor total da reserva com base no preço da diária e no número de dias.
+        $stmtPreco = $this->pdo->prepare("SELECT preco FROM acomodacoes WHERE id = :id_acomodacao");
+        $stmtPreco->execute([':id_acomodacao' => $data['acomodacao']]);
+        $acomodacao = $stmtPreco->fetch(PDO::FETCH_ASSOC);
 
-        $query = "SELECT preco FROM acomodacoes WHERE id = :acomodacao";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':acomodacao', $data['acomodacao']);
-        $stmt->execute();
-        $acomodacao = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($acomodacao) {
-            $preco = $acomodacao['preco'];
-            $data_checkin = new DateTime($data['data_checkin']);
-            $data_checkout = new DateTime($data['data_checkout']);
-            $diferenca = $data_checkin->diff($data_checkout)->days;
-            $valor_total = $preco * $diferenca;
-        } else {
-            return false; // Acomodação não encontrada
+        if (!$acomodacao) {
+            return false; // Acomodação não encontrada.
         }
 
-        $query = "INSERT INTO reservas (id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes) VALUES (:hospede, :acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':hospede', $data['hospede']);
-        $stmt->bindParam(':acomodacao', $data['acomodacao']);
-        $stmt->bindParam(':data_checkin', $data['data_checkin']);
-        $stmt->bindParam(':data_checkout', $data['data_checkout']);
-        $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':metodo_pagamento', $data['metodo_pagamento']);
-        $stmt->bindParam(':observacoes', $data['observacoes']);
-        $stmt->bindParam(':valor_total', $valor_total, PDO::PARAM_STR);
+        $data_checkin = new DateTime($data['data_checkin']);
+        $data_checkout = new DateTime($data['data_checkout']);
+        $diferenca = $data_checkin->diff($data_checkout)->days;
+        $valor_total = $acomodacao['preco'] * $diferenca;
 
-        if ($stmt->execute()) {
-            return true;
-        } else {
-            return false;
-        }
+        $query = "INSERT INTO reservas (id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes) 
+                  VALUES (:hospede, :acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes)";
+        $stmt = $this->pdo->prepare($query);
+
+        return $stmt->execute([
+            ':hospede' => $data['hospede'],
+            ':acomodacao' => $data['acomodacao'],
+            ':data_checkin' => $data['data_checkin'],
+            ':data_checkout' => $data['data_checkout'],
+            ':status' => $data['status'],
+            ':valor_total' => $valor_total,
+            ':metodo_pagamento' => $data['metodo_pagamento'],
+            ':observacoes' => $data['observacoes']
+        ]);
     }
 
+    /**
+     * Atualiza uma reserva existente.
+     * @param array $data Dados da reserva, incluindo o 'id'.
+     * @return bool
+     */
+    public function update($data)
+    {
+        // **CORREÇÃO DE BUG**: Recalcula o valor total em caso de alteração de datas ou acomodação.
+        $stmtPreco = $this->pdo->prepare("SELECT preco FROM acomodacoes WHERE id = :id_acomodacao");
+        $stmtPreco->execute([':id_acomodacao' => $data['acomodacao']]);
+        $acomodacao = $stmtPreco->fetch(PDO::FETCH_ASSOC);
+
+        if (!$acomodacao) {
+            return false; // Acomodação não encontrada.
+        }
+
+        $data_checkin = new DateTime($data['data_checkin']);
+        $data_checkout = new DateTime($data['data_checkout']);
+        $diferenca = $data_checkin->diff($data_checkout)->days;
+        $valor_total = $acomodacao['preco'] * $diferenca;
+
+        $query = "UPDATE reservas SET id_hospede = :hospede, id_acomodacao = :acomodacao, data_checkin = :data_checkin, data_checkout = :data_checkout, status = :status, valor_total = :valor_total, metodo_pagamento = :metodo_pagamento, observacoes = :observacoes WHERE id = :id";
+        $stmt = $this->pdo->prepare($query);
+
+        return $stmt->execute([
+            ':id' => $data['id'],
+            ':hospede' => $data['hospede'],
+            ':acomodacao' => $data['acomodacao'],
+            ':data_checkin' => $data['data_checkin'],
+            ':data_checkout' => $data['data_checkout'],
+            ':status' => $data['status'],
+            ':valor_total' => $valor_total,
+            ':metodo_pagamento' => $data['metodo_pagamento'],
+            ':observacoes' => $data['observacoes']
+        ]);
+    }
+
+    /**
+     * Busca todas as reservas ativas (não canceladas).
+     * @return array
+     */
     public function getAllReservations()
     {
         $stmt = $this->pdo->query("SELECT * FROM reservas WHERE status != 'cancelada'");
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            return [];
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Busca uma reserva específica pelo ID.
+     * @param int $id
+     * @return array|null
+     */
+    public function getReservationById($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM reservas WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
+
+    /**
+     * Deleta uma reserva permanentemente.
+     * @param int $id
+     * @return bool
+     */
+    public function delete($id)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM reservas WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
+
+    // --- MÉTODOS DE CONSULTA E RELATÓRIOS ---
+
+    /**
+     * Obtém o nome/tipo de uma acomodação pelo ID.
+     * @param int $id_acomodacao
+     * @return string|false
+     */
     public function getNameAccommodationById($id_acomodacao)
     {
         $stmt = $this->pdo->prepare("SELECT tipo FROM acomodacoes WHERE id = :id_acomodacao");
-        $stmt->bindParam(':id_acomodacao', $id_acomodacao);
-        $stmt->execute();
+        $stmt->execute([':id_acomodacao' => $id_acomodacao]);
         return $stmt->fetchColumn();
     }
 
+    /**
+     * Obtém o nome de um hóspede pelo ID.
+     * @param int $id_hospede
+     * @return string|false
+     */
     public function getNameGuestById($id_hospede)
     {
         $stmt = $this->pdo->prepare("SELECT nome FROM hospedes WHERE id = :id_hospede");
-        $stmt->bindParam(':id_hospede', $id_hospede);
-        $stmt->execute();
+        $stmt->execute([':id_hospede' => $id_hospede]);
         return $stmt->fetchColumn();
     }
 
+    /**
+     * Cria um array de datas reservadas para cada acomodação, ideal para calendários.
+     * @return array
+     */
     public function getReservationsDate()
     {
         $stmt = $this->pdo->prepare('SELECT id_acomodacao, data_checkin, data_checkout FROM reservas');
@@ -99,66 +178,94 @@ class ReservationsModel extends Database
         $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $datasReservadas = [];
+        $intervalo = new DateInterval('P1D'); // Intervalo de 1 dia
 
-        foreach ($reservas as $row) {
-            $id = $row['id_acomodacao'];
-            $checkin = new DateTime($row['data_checkin']);
-            $checkout = new DateTime($row['data_checkout']);
+        foreach ($reservas as $reserva) {
+            $id = $reserva['id_acomodacao'];
+            $periodo = new DatePeriod(new DateTime($reserva['data_checkin']), $intervalo, new DateTime($reserva['data_checkout']));
 
-            // Vamos iterar por todas as datas entre checkin e checkout
-            $interval = new DateInterval('P1D'); // 1 dia
-            $period = new DatePeriod($checkin, $interval, $checkout);
+            if (!isset($datasReservadas[$id])) {
+                $datasReservadas[$id] = [];
+            }
 
-            foreach ($period as $date) {
-                $dataStr = $date->format('Y-m-d');
-
-                // Inicializa o array se ainda não existir
-                if (!isset($datasReservadas[$id])) {
-                    $datasReservadas[$id] = [];
-                }
-
-                // Adiciona a data se ainda não estiver no array (evita duplicata)
-                if (!in_array($dataStr, $datasReservadas[$id])) {
-                    $datasReservadas[$id][] = $dataStr;
-                }
+            foreach ($periodo as $data) {
+                $datasReservadas[$id][] = $data->format('Y-m-d');
             }
         }
         return $datasReservadas;
     }
 
-    public function delete($id)
+    /**
+     * Busca check-ins agendados para a data atual.
+     * @return array
+     */
+    public function getCheckinsHoje()
     {
-        $stmt = $this->pdo->prepare("DELETE FROM reservas WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
+        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, a.numero 
+                  FROM reservas r
+                  JOIN hospedes h ON r.id_hospede = h.id
+                  JOIN acomodacoes a ON r.id_acomodacao = a.id
+                  WHERE r.data_checkin = CURDATE() AND r.status != 'cancelada'";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getReservationById($id)
+    /**
+     * Busca check-outs agendados para a data atual.
+     * @return array
+     */
+    public function getCheckoutsHoje()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM reservas WHERE id = :id");
-        $stmt->bindParam(':id', $id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, a.numero 
+                  FROM reservas r
+                  JOIN hospedes h ON r.id_hospede = h.id
+                  JOIN acomodacoes a ON r.id_acomodacao = a.id
+                  WHERE r.data_checkout = CURDATE() AND r.status != 'cancelada'";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function update($data)
+    /**
+     * Busca reservas com status 'pendente', ordenadas pela data de check-in.
+     * @return array
+     */
+    public function getReservasPendentes()
     {
-        $query = "UPDATE reservas SET id_hospede = :hospede, id_acomodacao = :acomodacao, data_checkin = :data_checkin, data_checkout = :data_checkout, status = :status, metodo_pagamento = :metodo_pagamento, observacoes = :observacoes WHERE id = :id";
+        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, r.data_checkin 
+                  FROM reservas r
+                  JOIN hospedes h ON r.id_hospede = h.id
+                  JOIN acomodacoes a ON r.id_acomodacao = a.id
+                  WHERE r.status = 'pendente' ORDER BY r.data_checkin ASC";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Busca o histórico de reservas arquivadas.
+     * @return array
+     */
+    public function getHistoricoReservas()
+    {
+        $query = "SELECT 
+                        hr.id_reserva, hr.data_registro as data_arquivamento, hr.detalhes,
+                        h.nome as nome_hospede, a.tipo as nome_acomodacao, a.numero as numero_acomodacao,
+                        hr.data_checkin, hr.data_checkout, hr.valor_total, hr.status
+                  FROM historico_reservas hr
+                  LEFT JOIN hospedes h ON hr.id_hospede = h.id
+                  LEFT JOIN acomodacoes a ON hr.id_acomodacao = a.id
+                  ORDER BY hr.data_registro DESC";
+
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':id', $data['id']);
-        $stmt->bindParam(':hospede', $data['hospede']);
-        $stmt->bindParam(':acomodacao', $data['acomodacao']);
-        $stmt->bindParam(':data_checkin', $data['data_checkin']);
-        $stmt->bindParam(':data_checkout', $data['data_checkout']);
-        $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':metodo_pagamento', $data['metodo_pagamento']);
-        $stmt->bindParam(':observacoes', $data['observacoes']);
-        return $stmt->execute();
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Move reservas expiradas (check-out anterior a hoje) da tabela principal para o histórico.
+     * @return array
+     */
     public function arquivarReservasExpiradas()
     {
-        // Pega as reservas onde a data de checkout é anterior a hoje.
         $stmt = $this->pdo->prepare("SELECT * FROM reservas WHERE data_checkout < CURDATE()");
         $stmt->execute();
         $reservasExpiradas = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -170,40 +277,33 @@ class ReservationsModel extends Database
         $arquivadasComSucesso = 0;
         $erros = [];
 
+        $insertSql = "INSERT INTO historico_reservas (id_reserva, detalhes, id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes, data_reserva)
+                    VALUES (:id_reserva, :detalhes, :id_hospede, :id_acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes, :data_reserva)";
+        $deleteSql = "DELETE FROM reservas WHERE id = :id";
+
         foreach ($reservasExpiradas as $reserva) {
             try {
-                // Inicia uma transação para garantir a integridade dos dados
                 $this->pdo->beginTransaction();
 
-                // 1. Insere a reserva na tabela de histórico com a nova estrutura
-                $insertStmt = $this->pdo->prepare(
-                    "INSERT INTO historico_reservas (id_reserva, detalhes, id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes, data_reserva)
-                     VALUES (:id_reserva, :detalhes, :id_hospede, :id_acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes, :data_reserva)"
-                );
-
-                $insertStmt->execute([
-                    ':id_reserva'       => $reserva['id'], // O ID original da reserva
-                    ':detalhes'         => 'Reserva arquivada automaticamente por expiração.',
-                    ':id_hospede'       => $reserva['id_hospede'],
-                    ':id_acomodacao'    => $reserva['id_acomodacao'],
-                    ':data_checkin'     => $reserva['data_checkin'],
-                    ':data_checkout'    => $reserva['data_checkout'],
-                    ':status'           => 'finalizada', // Define o status como 'finalizada'
-                    ':valor_total'      => $reserva['valor_total'],
+                $this->pdo->prepare($insertSql)->execute([
+                    ':id_reserva' => $reserva['id'],
+                    ':detalhes' => 'Reserva arquivada automaticamente por expiração.',
+                    ':id_hospede' => $reserva['id_hospede'],
+                    ':id_acomodacao' => $reserva['id_acomodacao'],
+                    ':data_checkin' => $reserva['data_checkin'],
+                    ':data_checkout' => $reserva['data_checkout'],
+                    ':status' => 'finalizada',
+                    ':valor_total' => $reserva['valor_total'],
                     ':metodo_pagamento' => $reserva['metodo_pagamento'],
-                    ':observacoes'      => $reserva['observacoes'],
-                    ':data_reserva'     => $reserva['data_reserva']
+                    ':observacoes' => $reserva['observacoes'],
+                    ':data_reserva' => $reserva['data_reserva']
                 ]);
 
-                // 2. Deleta a reserva da tabela principal
-                $deleteStmt = $this->pdo->prepare("DELETE FROM reservas WHERE id = :id");
-                $deleteStmt->execute([':id' => $reserva['id']]);
+                $this->pdo->prepare($deleteSql)->execute([':id' => $reserva['id']]);
 
-                // Se tudo deu certo, confirma a transação
                 $this->pdo->commit();
                 $arquivadasComSucesso++;
             } catch (PDOException $e) {
-                // Se algo der errado, desfaz a transação e registra o erro
                 $this->pdo->rollBack();
                 $erros[] = "Erro ao arquivar reserva ID " . $reserva['id'] . ": " . $e->getMessage();
             }
@@ -215,78 +315,37 @@ class ReservationsModel extends Database
             return ['status' => 'error', 'message' => "Ocorreram erros durante o arquivamento.", 'details' => $erros];
         }
     }
-
-    public function getCheckinsHoje()
-    {
-        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, a.numero 
-                  FROM reservas r
-                  JOIN hospedes h ON r.id_hospede = h.id
-                  JOIN acomodacoes a ON r.id_acomodacao = a.id
-                  WHERE r.data_checkin = CURDATE()";
-        $stmt = $this->pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getCheckoutsHoje()
-    {
-        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, a.numero 
-                  FROM reservas r
-                  JOIN hospedes h ON r.id_hospede = h.id
-                  JOIN acomodacoes a ON r.id_acomodacao = a.id
-                  WHERE r.data_checkout = CURDATE()";
-        $stmt = $this->pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getReservasPendentes()
-    {
-        $query = "SELECT r.id, h.nome as nome_hospede, a.tipo as nome_acomodacao, r.data_checkin 
-                  FROM reservas r
-                  JOIN hospedes h ON r.id_hospede = h.id
-                  JOIN acomodacoes a ON r.id_acomodacao = a.id
-                  WHERE r.status = 'pendente' ORDER BY r.data_checkin ASC"; //
-        $stmt = $this->pdo->query($query);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
+    /**
+     * Calcula a receita total de reservas finalizadas em um determinado período.
+     * @param string $dataInicio Data de início no formato 'YYYY-MM-DD'.
+     * @param string $dataFim Data de fim no formato 'YYYY-MM-DD'.
+     * @return float Retorna o valor total da receita.
+     */
     public function getReceitaNoPeriodo($dataInicio, $dataFim)
     {
         $query = "SELECT SUM(valor_total) as total FROM historico_reservas WHERE status = 'finalizada' AND data_registro BETWEEN :dataInicio AND :dataFim";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':dataInicio' => $dataInicio, ':dataFim' => $dataFim]);
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $resultado['total'] ?? 0;
+        
+        // Garante que o retorno seja um float.
+        return (float) ($resultado['total'] ?? 0);
     }
 
+    /**
+     * Conta o número de reservas finalizadas em um determinado período.
+     * @param string $dataInicio Data de início no formato 'YYYY-MM-DD'.
+     * @param string $dataFim Data de fim no formato 'YYYY-MM-DD'.
+     * @return int Retorna o número total de reservas.
+     */
     public function getContagemReservasFinalizadasNoPeriodo($dataInicio, $dataFim)
     {
         $query = "SELECT COUNT(id) as total FROM historico_reservas WHERE status = 'finalizada' AND data_registro BETWEEN :dataInicio AND :dataFim";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':dataInicio' => $dataInicio, ':dataFim' => $dataFim]);
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $resultado['total'] ?? 0;
-    }
 
-    public function getHistoricoReservas()
-    {
-        $query = "SELECT 
-                        hr.id_reserva,
-                        hr.data_registro as data_arquivamento,
-                        hr.detalhes,
-                        h.nome as nome_hospede,
-                        a.tipo as nome_acomodacao,
-                        a.numero as numero_acomodacao,
-                        hr.data_checkin,
-                        hr.data_checkout,
-                        hr.valor_total,
-                        hr.status
-                  FROM historico_reservas hr
-                  LEFT JOIN hospedes h ON hr.id_hospede = h.id
-                  LEFT JOIN acomodacoes a ON hr.id_acomodacao = a.id
-                  ORDER BY hr.data_registro DESC"; // Ordena pelas mais recentes
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Garante que o retorno seja um inteiro.
+        return (int) ($resultado['total'] ?? 0);
     }
 }
