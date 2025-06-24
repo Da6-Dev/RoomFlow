@@ -88,6 +88,8 @@ class AccommodationsController extends RenderView
         ]);
     }
 
+    
+
     public function create()
     {
         $errors = [];

@@ -2,6 +2,9 @@
 
 class AccommodationsModel extends Database
 {
+    /**
+     * @var PDO A instância da conexão com o banco de dados.
+     */
     private $pdo;
 
     public function __construct()
@@ -9,315 +12,349 @@ class AccommodationsModel extends Database
         $this->pdo = $this->getConnection();
     }
 
+    /**
+     * Lista todas as acomodações.
+     * @return array
+     */
     public function listar()
     {
-        $query = "SELECT * FROM acomodacoes";
+        $query = "SELECT * FROM acomodacoes ORDER BY tipo, numero ASC";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Busca todas as imagens que estão definidas como capa de suas respectivas acomodações.
+     * @return array
+     */
+    public function getImagensCapa()
+    {
+        $query = "SELECT ia.*, a.tipo as tipo_acomodacao 
+                FROM imagens_acomodacoes ia
+                JOIN acomodacoes a ON ia.acomodacao_id = a.id
+                WHERE ia.capa_acomodacao = 1";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Busca uma acomodação pelo seu ID.
+     * @param int $id
+     * @return array|null
+     */
     public function getAccommodationById($id)
     {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if (!$id) return null;
+
         $query = "SELECT * FROM acomodacoes WHERE id = :id";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 
+    /**
+     * Busca uma acomodação pelo seu nome/tipo.
+     * @param string $name
+     * @return array|null
+     */
     public function getAccommodationByName($name)
     {
         $query = "SELECT * FROM acomodacoes WHERE tipo = :name";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':name', $name, PDO::PARAM_STR);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 
+    /**
+     * Busca uma acomodação pelo seu número.
+     * Útil para verificar se um número de quarto/acomodação já existe.
+     * @param int $number O número da acomodação.
+     * @return array|null Retorna os dados da acomodação ou nulo se não encontrar.
+     */
     public function getAccommodationByNumber($number)
     {
+        $number = filter_var($number, FILTER_VALIDATE_INT);
+        if (!$number) {
+            return null;
+        }
+
         $query = "SELECT * FROM acomodacoes WHERE numero = :number";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':number', $number, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 
-    public function  getImagesByAccommodationId($id)
+    /**
+     * Busca os IDs de todas as imagens associadas a uma acomodação.
+     * @param int $id O ID da acomodação.
+     * @return array
+     */
+    public function getImagesByAccommodationId($id)
     {
-        $query = "SELECT * FROM imagens_acomodacoes WHERE acomodacao_id = :id";
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if (!$id) return [];
+
+        $query = "SELECT * FROM imagens_acomodacoes WHERE acomodacao_id = :id ORDER BY capa_acomodacao DESC, id ASC";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getImagensCapa(){
-        $query = "SELECT * FROM imagens_acomodacoes WHERE capa_acomodacao = 1";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
+    /**
+     * Cria uma nova acomodação, suas amenidades e imagens de forma transacional.
+     * @param array $data Os dados da acomodação.
+     * @return bool
+     */
     public function create($data)
     {
-        // Inserir a acomodação na tabela accommodations
-        $query = "INSERT INTO acomodacoes (tipo, numero, descricao, status, capacidade, preco, minimo_noites, camas_casal, camas_solteiro, hora_checkin, hora_checkout) VALUES (:tipo, :numero, :descricao, :status, :capacidade, :preco, :minimo_noites, :camas_casal, :camas_solteiro, :check_in_time, :check_out_time)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':tipo', $data['tipo']);
-        $stmt->bindParam(':numero', $data['numero']);
-        $stmt->bindParam(':descricao', $data['descricao']);
-        $stmt->bindParam(':status', $data['status']);
-        $stmt->bindParam(':capacidade', $data['capacidade'], PDO::PARAM_INT);
-        $stmt->bindParam(':preco', $data['preco'],);
-        $stmt->bindParam(':minimo_noites', $data['minimo_noites'], PDO::PARAM_INT);
-        $stmt->bindParam(':camas_casal', $data['camas_casal'], PDO::PARAM_INT);
-        $stmt->bindParam(':camas_solteiro', $data['camas_solteiro'], PDO::PARAM_INT);
-        $stmt->bindParam(':check_in_time', $data['check_in_time']);
-        $stmt->bindParam(':check_out_time', $data['check_out_time']);
+        try {
+            $this->pdo->beginTransaction();
 
+            $query = "INSERT INTO acomodacoes (tipo, numero, descricao, status, capacidade, preco, minimo_noites, camas_casal, camas_solteiro, hora_checkin, hora_checkout) VALUES (:tipo, :numero, :descricao, :status, :capacidade, :preco, :minimo_noites, :camas_casal, :camas_solteiro, :check_in_time, :check_out_time)";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute([
+                ':tipo' => $data['tipo'],
+                ':numero' => $data['numero'],
+                ':descricao' => $data['descricao'],
+                ':status' => $data['status'],
+                ':capacidade' => $data['capacidade'],
+                ':preco' => $data['preco'],
+                ':minimo_noites' => $data['minimo_noites'],
+                ':camas_casal' => $data['camas_casal'],
+                ':camas_solteiro' => $data['camas_solteiro'],
+                ':check_in_time' => $data['check_in_time'],
+                ':check_out_time' => $data['check_out_time']
+            ]);
 
-        if ($stmt->execute()) {
-            // Obtém o ID da acomodação recém inserida
             $accommodationId = $this->pdo->lastInsertId();
 
-            // Inserir as amenidades na tabela acomodacao_amenidade
-            foreach ($data['amenidades'] as $amenity) {
-                $query = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':acomodacao_id', $accommodationId, PDO::PARAM_INT);
-                $stmt->bindParam(':amenidade_id', $amenity, PDO::PARAM_INT);
-                echo $stmt->execute();
-            }
-            if ($stmt->execute()) {
-                $uploadDir = 'Public/uploads/acomodacoes/';
-                if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
-                $capa_definida = false;
-
-                foreach ($data['imagens']['tmp_name'] as $key => $tmp) {
-                    if ($data['imagens']['error'][$key] === UPLOAD_ERR_OK && getimagesize($tmp)) {
-                        $nome_original = basename($_FILES['imagens']['name'][$key]);
-                        $caminho = $uploadDir . uniqid() . "_" . $nome_original;
-
-                        if (move_uploaded_file($tmp, $caminho)) {
-                            // Define se essa imagem será a capa (apenas a primeira válida)
-                            $capa = $capa_definida ? 0 : 1;
-                            $capa_definida = true;
-
-                            $query = "INSERT INTO imagens_acomodacoes (acomodacao_id, nome_arquivo, caminho_arquivo, capa_acomodacao) VALUES (:acomodacao_id, :nome_arquivo, :caminho_arquivo, :capa_acomodacao)";
-                            $stmt = $this->pdo->prepare($query);
-                            $stmt->bindParam(":acomodacao_id", $accommodationId, PDO::PARAM_INT);
-                            $stmt->bindParam(":nome_arquivo", $nome_original);
-                            $stmt->bindParam(":caminho_arquivo", $caminho);
-                            $stmt->bindParam(":capa_acomodacao", $capa, PDO::PARAM_INT);
-                            $stmt->execute();
-                        }
-                    }
+            // Insere as amenidades
+            if (!empty($data['amenidades'])) {
+                $queryAmenity = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
+                $stmtAmenity = $this->pdo->prepare($queryAmenity);
+                foreach ($data['amenidades'] as $amenityId) {
+                    $stmtAmenity->execute([':acomodacao_id' => $accommodationId, ':amenidade_id' => $amenityId]);
                 }
-                // Retorna true se a inserção for bem-sucedida
-                return true;
-            } else {
-                return false; // Retorna false se a inserção falhar
             }
-        } else {
-            return false; // Retorna false se a inserção falhar
+
+            // Processa e insere as imagens
+            $this->processarImagens($accommodationId, $data['imagens']);
+
+            $this->pdo->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            error_log("Erro ao criar acomodação: " . $e->getMessage());
+            return false;
         }
     }
 
+    /**
+     * Atualiza uma acomodação, suas amenidades e imagens de forma transacional.
+     * @param int $id O ID da acomodação.
+     * @param array $data Os dados para atualização.
+     * @return bool
+     */
     public function update($id, $data)
     {
         try {
-            // Iniciar uma transação
             $this->pdo->beginTransaction();
 
-            // Atualizar os dados da acomodação na tabela accommodations
+            // Atualiza os dados principais da acomodação
             $query = "UPDATE acomodacoes SET tipo = :tipo, numero = :numero, descricao = :descricao, status = :status, capacidade = :capacidade, preco = :preco, minimo_noites = :minimo_noites, camas_casal = :camas_casal, camas_solteiro = :camas_solteiro, hora_checkin = :check_in_time, hora_checkout = :check_out_time WHERE id = :id";
             $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':tipo', $data['tipo']);
-            $stmt->bindParam(':numero', $data['numero']);
-            $stmt->bindParam(':descricao', $data['descricao']);
-            $stmt->bindParam(':status', $data['status']);
-            $stmt->bindParam(':capacidade', $data['capacidade'], PDO::PARAM_INT);
-            $stmt->bindParam(':preco', $data['preco']);
-            $stmt->bindParam(':minimo_noites', $data['minimo_noites'], PDO::PARAM_INT);
-            $stmt->bindParam(':camas_casal', $data['camas_casal'], PDO::PARAM_INT);
-            $stmt->bindParam(':camas_solteiro', $data['camas_solteiro'], PDO::PARAM_INT);
-            $stmt->bindParam(':check_in_time', $data['check_in_time']);
-            $stmt->bindParam(':check_out_time', $data['check_out_time']);
-            $stmt->execute();
+            $stmt->execute([
+                ':id' => $id,
+                ':tipo' => $data['tipo'],
+                ':numero' => $data['numero'],
+                ':descricao' => $data['descricao'],
+                ':status' => $data['status'],
+                ':capacidade' => $data['capacidade'],
+                ':preco' => $data['preco'],
+                ':minimo_noites' => $data['minimo_noites'],
+                ':camas_casal' => $data['camas_casal'],
+                ':camas_solteiro' => $data['camas_solteiro'],
+                ':check_in_time' => $data['check_in_time'],
+                ':check_out_time' => $data['check_out_time']
+            ]);
 
-            // Remover as amenidades antigas da tabela acomodacao_amenidade
-            $query = "DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :acomodacao_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            
-            
-            // Inserir as novas amenidades na tabela acomodacao_amenidade
-            foreach ($data['amenidades'] as $amenityId) {
-                $query = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-                $stmt->bindParam(':amenidade_id', $amenityId, PDO::PARAM_INT);
-                $stmt->execute();
-            }
-
-            $uploadDir = 'Public/uploads/acomodacoes/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-
-            foreach ($data['imagens']['tmp_name'] as $key => $tmp) {
-                if ($data['imagens']['error'][$key] === UPLOAD_ERR_OK && getimagesize($tmp)) {
-                    $nome_original = basename($_FILES['imagens']['name'][$key]);
-                    $caminho = $uploadDir . uniqid() . "_" . $nome_original;
-
-                    if (move_uploaded_file($tmp, $caminho)) {
-                        $query = "INSERT INTO imagens_acomodacoes (acomodacao_id, nome_arquivo, caminho_arquivo) VALUES (:acomodacao_id, :nome_arquivo, :caminho_arquivo)";
-                        $stmt = $this->pdo->prepare($query);
-                        $stmt->bindParam(":acomodacao_id", $id, PDO::PARAM_INT);
-                        $stmt->bindParam(":nome_arquivo", $nome_original);
-                        $stmt->bindParam(":caminho_arquivo", $caminho);
-                        $stmt->execute();
-                    }
+            // Atualiza as amenidades (método "delete-then-insert")
+            $this->pdo->prepare("DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :id")->execute([':id' => $id]);
+            if (!empty($data['amenidades'])) {
+                $queryAmenity = "INSERT INTO amenidades_acomodacoes (id_acomodacoes, id_amenidades) VALUES (:acomodacao_id, :amenidade_id)";
+                $stmtAmenity = $this->pdo->prepare($queryAmenity);
+                foreach ($data['amenidades'] as $amenityId) {
+                    $stmtAmenity->execute([':acomodacao_id' => $id, ':amenidade_id' => $amenityId]);
                 }
             }
 
-            // Deletar as imagens que foram marcadas para exclusão
-            foreach ($data['delete_imagens'] as $deleteId) {
-                $query = "SELECT caminho_arquivo FROM imagens_acomodacoes WHERE id = :id";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':id', $deleteId, PDO::PARAM_INT);
-                $stmt->execute();
-                $imagem = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($imagem && file_exists($imagem['caminho_arquivo'])) {
-                    unlink($imagem['caminho_arquivo']);
-                }
-
-                // Remover a imagem do banco de dados
-                $query = "DELETE FROM imagens_acomodacoes WHERE id = :id";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':id', $deleteId, PDO::PARAM_INT);
-                $stmt->execute();
+            // Adiciona novas imagens
+            if (!empty($data['imagens']['tmp_name'][0])) {
+                $this->processarImagens($id, $data['imagens'], false); // false para não definir capa automaticamente
             }
 
-            
-            // Atualizar a imagem de capa
-            $query = "SELECT id FROM imagens_acomodacoes WHERE capa_acomodacao = 1 AND acomodacao_id = :acomodacao_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $imagemCapaAtual = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if ($imagemCapaAtual) {
-                foreach ($imagemCapaAtual as $imagemCapa) {
-                    // Verifica se a imagem de capa atual existe no banco de dados
-                    if ($imagemCapa['id'] != $data['imagem_capa']) {
-                        // Se a imagem de capa atual não é a que está sendo definida, remove a marcação de capa
-                        $query = "UPDATE imagens_acomodacoes SET capa_acomodacao = 0 WHERE id = :imagem_capa_id";
-                        $stmt = $this->pdo->prepare($query);
-                        $stmt->bindParam(':imagem_capa_id', $imagemCapa['id'], PDO::PARAM_INT);
-                        $stmt->execute();
-                    }
-                }
-            }
-            $query = "SELECT * FROM imagens_acomodacoes WHERE id = :id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':id', $data['imagem_capa'], PDO::PARAM_INT);
-            $stmt->execute();
-            $imagem = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($imagem && file_exists($imagem['caminho_arquivo'])) {
-                $query = "UPDATE imagens_acomodacoes SET capa_acomodacao = 1 WHERE id = :acomodacao_id";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':acomodacao_id', $data['imagem_capa'], PDO::PARAM_INT);
-                $stmt->execute();
+            // Deleta imagens marcadas para exclusão
+            if (!empty($data['delete_imagens'])) {
+                $this->deletarImagens($data['delete_imagens']);
             }
 
-            // Verifica se a capa atual nao foi excluida
-            $query = "SELECT * FROM imagens_acomodacoes WHERE acomodacao_id = :acomodacao_id AND capa_acomodacao = 1";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $imagem = $stmt->fetch(PDO::FETCH_ASSOC);
-            // Se a imagem de capa foi excluída, define a primeira imagem como capa
-            if (!$imagem) {
-                $query = "UPDATE imagens_acomodacoes SET capa_acomodacao = 1 WHERE acomodacao_id = :acomodacao_id LIMIT 1";
-                $stmt = $this->pdo->prepare($query);
-                $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-                $stmt->execute();
+            // Atualiza a imagem de capa de forma simplificada
+            if (!empty($data['imagem_capa'])) {
+                // Primeiro, remove a flag de capa de todas as imagens desta acomodação
+                $this->pdo->prepare("UPDATE imagens_acomodacoes SET capa_acomodacao = 0 WHERE acomodacao_id = :id")->execute([':id' => $id]);
+                // Depois, define a nova capa
+                $this->pdo->prepare("UPDATE imagens_acomodacoes SET capa_acomodacao = 1 WHERE id = :capa_id")->execute([':capa_id' => $data['imagem_capa']]);
             }
 
-            // Confirmar a transação
+            // Garante que sempre haja uma imagem de capa se houver imagens
+            $this->garantirImagemCapa($id);
+
             $this->pdo->commit();
-
             return true;
         } catch (PDOException $e) {
-            // Em caso de erro, desfazer a transação
             $this->pdo->rollBack();
             error_log("Erro ao atualizar acomodação: " . $e->getMessage());
             return false;
         }
     }
 
+    /**
+     * Exclui uma acomodação e todos os seus dados relacionados (imagens, amenidades).
+     * @param int $id
+     * @return bool
+     */
     public function delete($id)
     {
         try {
-            // Inicia uma transação
             $this->pdo->beginTransaction();
 
-            //Deletar as imagens do diretório
-            $query = "SELECT caminho_arquivo FROM imagens_acomodacoes WHERE acomodacao_id = :acomodacao_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $imagens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // Deleta os arquivos físicos das imagens antes de remover do DB
+            $imagens = $this->getImagesByAccommodationId($id);
             foreach ($imagens as $imagem) {
-                $caminho = $imagem['caminho_arquivo'];
-                if (file_exists($caminho)) {
-                    unlink($caminho);
+                if (file_exists($imagem['caminho_arquivo'])) {
+                    unlink($imagem['caminho_arquivo']);
                 }
             }
 
-            // Remover as imagens relacionadas
-            $query = "DELETE FROM imagens_acomodacoes WHERE acomodacao_id = :acomodacao_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
+            // Remove as referências do banco de dados
+            $this->pdo->prepare("DELETE FROM imagens_acomodacoes WHERE acomodacao_id = :id")->execute([':id' => $id]);
+            $this->pdo->prepare("DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :id")->execute([':id' => $id]);
 
+            // Remove a acomodação principal
+            $this->pdo->prepare("DELETE FROM acomodacoes WHERE id = :id")->execute([':id' => $id]);
 
-            // Remover as amenidades relacionadas
-            $query = "DELETE FROM amenidades_acomodacoes WHERE id_acomodacoes = :acomodacao_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':acomodacao_id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Remover a acomodação principal
-            $query = "DELETE FROM acomodacoes WHERE id = :id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Finaliza a transação
             $this->pdo->commit();
             return true;
         } catch (PDOException $e) {
-            // Reverte se der erro
             $this->pdo->rollBack();
             error_log("Erro ao deletar acomodação: " . $e->getMessage());
             return false;
         }
     }
 
-    public function getStatusAcomodacoes() {
-        $query = "SELECT status, COUNT(id) as total FROM acomodacoes GROUP BY status"; //
+    // --- MÉTODOS DE RELATÓRIO E AUXILIARES ---
+
+    public function getStatusAcomodacoes()
+    {
+        $query = "SELECT status, COUNT(id) as total FROM acomodacoes GROUP BY status";
         $stmt = $this->pdo->query($query);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAcomodacoesEmManutencao() {
-    $query = "SELECT tipo, numero FROM acomodacoes WHERE status = 'manutencao'";
-    $stmt = $this->pdo->query($query);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+    public function getAcomodacoesEmManutencao()
+    {
+        $query = "SELECT tipo, numero FROM acomodacoes WHERE status = 'manutencao'";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // --- MÉTODOS PRIVADOS PARA REUSO DE CÓDIGO ---
+
+    /**
+     * Processa e salva arquivos de imagem para uma acomodação.
+     * @param int $accommodationId
+     * @param array $imagensData array de $_FILES['imagens']
+     * @param bool $definirPrimeiraComoCapa
+     */
+    private function processarImagens($accommodationId, $imagensData, $definirPrimeiraComoCapa = true)
+    {
+        $uploadDir = 'Public/uploads/acomodacoes/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $capa_definida = !$definirPrimeiraComoCapa;
+
+        $query = "INSERT INTO imagens_acomodacoes (acomodacao_id, nome_arquivo, caminho_arquivo, capa_acomodacao) VALUES (:acomodacao_id, :nome_arquivo, :caminho_arquivo, :capa_acomodacao)";
+        $stmt = $this->pdo->prepare($query);
+
+        foreach ($imagensData['tmp_name'] as $key => $tmp) {
+            if ($imagensData['error'][$key] === UPLOAD_ERR_OK) {
+                $nome_original = basename($imagensData['name'][$key]);
+                $caminho = $uploadDir . uniqid() . "_" . $nome_original;
+
+                if (move_uploaded_file($tmp, $caminho)) {
+                    $capa = $capa_definida ? 0 : 1;
+                    $capa_definida = true;
+
+                    $stmt->execute([
+                        ":acomodacao_id" => $accommodationId,
+                        ":nome_arquivo" => $nome_original,
+                        ":caminho_arquivo" => $caminho,
+                        ":capa_acomodacao" => $capa
+                    ]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Deleta imagens do banco de dados e do sistema de arquivos.
+     * @param array $idsParaDeletar
+     */
+    private function deletarImagens($idsParaDeletar)
+    {
+        $querySelect = "SELECT caminho_arquivo FROM imagens_acomodacoes WHERE id = :id";
+        $stmtSelect = $this->pdo->prepare($querySelect);
+
+        $queryDelete = "DELETE FROM imagens_acomodacoes WHERE id = :id";
+        $stmtDelete = $this->pdo->prepare($queryDelete);
+
+        foreach ($idsParaDeletar as $deleteId) {
+            $stmtSelect->execute([':id' => $deleteId]);
+            $imagem = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+
+            if ($imagem && file_exists($imagem['caminho_arquivo'])) {
+                unlink($imagem['caminho_arquivo']);
+            }
+            $stmtDelete->execute([':id' => $deleteId]);
+        }
+    }
+
+    /**
+     * Assegura que uma acomodação tenha uma imagem de capa se ela tiver alguma imagem.
+     * @param int $accommodationId
+     */
+    private function garantirImagemCapa($accommodationId)
+    {
+        $queryCheck = "SELECT COUNT(*) FROM imagens_acomodacoes WHERE acomodacao_id = :id AND capa_acomodacao = 1";
+        $stmtCheck = $this->pdo->prepare($queryCheck);
+        $stmtCheck->execute([':id' => $accommodationId]);
+
+        if ($stmtCheck->fetchColumn() == 0) {
+            // Se nenhuma capa estiver definida, define a primeira imagem da lista como capa.
+            $queryUpdate = "UPDATE imagens_acomodacoes SET capa_acomodacao = 1 WHERE acomodacao_id = :id ORDER BY id LIMIT 1";
+            $this->pdo->prepare($queryUpdate)->execute([':id' => $accommodationId]);
+        }
+    }
 }
