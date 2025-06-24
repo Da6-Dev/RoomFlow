@@ -38,35 +38,61 @@ switch ($msg) {
         $alertMessage = '';
         break;
 }
-
+/**
+ * Função para retornar a classe do badge e o texto traduzido com base no status.
+ * @param string $status O status da reserva.
+ * @return array Um array com a 'class' e o 'text'.
+ */
+function getStatusBadge($status) {
+    switch (strtolower($status)) {
+        case 'pendente':
+            return ['class' => 'bg-gradient-warning', 'text' => 'Pendente'];
+        case 'confirmada':
+            return ['class' => 'bg-gradient-success', 'text' => 'Confirmada'];
+        case 'cancelada':
+            return ['class' => 'bg-gradient-danger', 'text' => 'Cancelada'];
+        case 'finalizada':
+            return ['class' => 'bg-gradient-secondary', 'text' => 'Finalizada'];
+        default:
+            return ['class' => 'bg-gradient-light', 'text' => ucfirst($status)];
+    }
+}
 ?>
 
-<div class="container-fluid py-2">
+<div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
+            <?php if ($alertMessage): ?>
+            <div class="alert <?php echo $alertClass; ?> text-white alert-dismissible fade show" role="alert" id="alertMessage">
+                <span class="alert-icon align-middle"><i class="material-symbols-rounded">check_circle</i></span>
+                <span class="alert-text"><strong>Sucesso!</strong> <?php echo $alertMessage; ?></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <?php endif; ?>
+
             <div class="card my-4">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                    <?php if ($alertMessage): ?>
-                        <div class="alert <?php echo $alertClass; ?> text-white" role="alert" id="alertMessage">
-                            <?php echo $alertMessage; ?>
+                <div class="card-header p-3 border-bottom">
+                    <div class="row">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h6 class="mb-0">Gerenciamento de Reservas</h6>
                         </div>
-                    <?php endif; ?>
-                    <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Reservas</h6>
+                        <div class="col-md-6 text-end">
+                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Reservas/Cadastrar/">
+                                <i class="material-symbols-rounded">add_circle</i>&nbsp;&nbsp;Nova Reserva
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
-                    <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
+                    <div class="table-responsive p-3">
+                        <table class="table table-striped table-hover align-items-center mb-0" id="reservasTable">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Acomodação</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Hóspede</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Preço</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Checkin</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Checkout</th>
-                                    <th class="text-secondary opacity-7"></th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Acomodação</th>
+                                    <th class="text-uppercase text-secondary text-sm font-weight-bolder opacity-7 ps-2">Hóspede</th>
+                                    <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Período</th>
+                                    <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Status</th>
+                                    <th class="text-center text-uppercase text-secondary text-sm font-weight-bolder opacity-7">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,47 +101,44 @@ switch ($msg) {
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div>
-                                                        <!-- Adicione uma imagem representativa, se necessário -->
-                                                        <img src="/RoomFlow/public/assets/img/drake.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="room_image">
+                                                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-primary text-center me-3">
+                                                        <i class="material-symbols-rounded opacity-10">king_bed</i>
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
-                                                        <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($reserva['acomodacao']); ?></h6>
+                                                        <h6 class="mb-0 text-md"><?php echo htmlspecialchars($reserva['acomodacao']); ?></h6>
+                                                        <p class="text-sm text-secondary mb-0">R$ <?php echo number_format($reserva['valor_total'], 2, ',', '.'); ?></p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="text-xs font-weight-bold mb-0"><?php echo htmlspecialchars($reserva['hospede']); ?></p>
+                                                <p class="text-sm font-weight-bold mb-0"><?php echo htmlspecialchars($reserva['hospede']); ?></p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="text-sm font-weight-bold mb-0">
+                                                    <?php echo (new DateTime($reserva['data_checkin']))->format('d/m/Y'); ?>
+                                                </p>
+                                                <p class="text-sm text-secondary mb-0">
+                                                    <?php echo (new DateTime($reserva['data_checkout']))->format('d/m/Y'); ?>
+                                                </p>
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success"><?php echo 'R$ ' . number_format($reserva['valor_total'], 2, ',', '.'); ?></span>
+                                                <?php $badge = getStatusBadge($reserva['status']); ?>
+                                                <span class="badge badge-sm <?php echo $badge['class']; ?>"><?php echo $badge['text']; ?></span>
                                             </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($reserva['status']); ?></span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($reserva['data_checkin']); ?></span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold"><?php echo ucfirst($reserva['data_checkout']); ?></span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Editar Reserva">
-                                                    Editar
-                                                </a>
-                                                <form action="/RoomFlow/Reservas/Deletar" method="POST" class="d-inline">
+                                            <td class="align-middle text-center text-sm">
+                                                <form action="/RoomFlow/Reservas/Deletar" method="POST" id="form-delete-<?php echo $reserva['id']; ?>" class="d-none">
                                                     <input type="hidden" name="id" value="<?php echo $reserva['id']; ?>">
-                                                    <button type="submit" class="text-danger font-weight-bold text-xs" onclick="return confirm('Tem certeza que deseja excluir esta acomodação?');">
-                                                        Deletar
-                                                    </button>
                                                 </form>
+
+                                                <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver / Editar Reserva">
+                                                    <i class="material-symbols-rounded">edit</i>
+                                                </a>
+                                                <a href="#" class="text-danger ms-2" onclick="confirmDelete(<?php echo $reserva['id']; ?>, 'reserva para <?php echo htmlspecialchars(addslashes($reserva['hospede'])); ?>')" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir Reserva">
+                                                    <i class="material-symbols-rounded">delete</i>
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="5" class="text-center">Nenhuma Reserva encontrada.</td>
-                                    </tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
@@ -126,9 +149,52 @@ switch ($msg) {
     </div>
 </div>
 
-<?php 
-
+<?php
 $content = ob_get_clean();
+// Inclui o layout principal
 include __DIR__ . '/Layout.php';
-
 ?>
+
+<script>
+// A mesma função de delete que usamos para hóspedes
+function confirmDelete(reservaId, reservaName) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        html: `Você está prestes a excluir a <strong>${reservaName}</strong>.<br>Esta ação não pode ser desfeita!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-delete-' + reservaId).submit();
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Inicializa o DataTable para a tabela de reservas
+    const reservasTable = new simpleDatatables.DataTable("#reservasTable", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 10,
+        labels: {
+            placeholder: "Buscar reserva...",
+            perPage: " reservas por página",
+            noRows: "Nenhuma reserva encontrada",
+            info: "Mostrando {start} a {end} de {rows} reservas"
+        }
+    });
+
+    // Faz a mensagem de alerta desaparecer após 5 segundos
+    const alertMessage = document.getElementById('alertMessage');
+    if (alertMessage) {
+        setTimeout(() => {
+            new bootstrap.Alert(alertMessage).close();
+        }, 5000);
+    }
+});
+</script>
