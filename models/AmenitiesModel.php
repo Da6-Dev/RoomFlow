@@ -2,6 +2,9 @@
 
 class AmenitiesModel extends Database
 {
+    /**
+     * @var PDO A instância da conexão com o banco de dados.
+     */
     private $pdo;
 
     public function __construct()
@@ -9,145 +12,144 @@ class AmenitiesModel extends Database
         $this->pdo = $this->getConnection();
     }
 
+    /**
+     * Lista todas as amenidades cadastradas.
+     * @return array
+     */
     public function listar()
     {
-        $stmt = $this->pdo->query("SELECT * FROM amenidades");
-        if ($stmt->rowCount() > 0) {
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            return [];
-        }
+        $stmt = $this->pdo->query("SELECT * FROM amenidades ORDER BY nome ASC");
+        // A função fetchAll já retorna um array vazio se não houver resultados.
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Busca uma amenidade pelo seu ID.
+     * @param int $id
+     * @return array|null
+     */
     public function getAmenityById($id)
     {
         try {
-            if (!$this->pdo) {
-                throw new Exception("Erro: conexão com o banco de dados não está ativa.");
-            }
-
-            // Garante que o ID seja um número válido
             $id = filter_var($id, FILTER_VALIDATE_INT);
             if (!$id) {
-                throw new Exception("ID inválido fornecido.");
+                return null; // Retorna nulo se o ID for inválido.
             }
 
-            $stmt = $this->pdo->prepare("SELECT * FROM amenidades WHERE id = ?");
-            $stmt->execute([$id]);
+            $stmt = $this->pdo->prepare("SELECT * FROM amenidades WHERE id = :id");
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
 
             $amenity = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (!$amenity) {
-                return null; // Retorna null se nenhuma comodidade for encontrada
-            }
+            return $amenity ?: null; // Retorna a amenidade ou nulo se não for encontrada.
 
-            return $amenity;
         } catch (Exception $e) {
-            error_log($e->getMessage()); // Registra o erro no log do servidor
+            error_log($e->getMessage());
             return null;
         }
     }
 
+    /**
+     * Cria uma nova amenidade.
+     * @param array $data Deve conter a chave 'nome'.
+     * @return bool
+     */
     public function create($data)
     {
         $stmt = $this->pdo->prepare("INSERT INTO amenidades (nome) VALUES (:name)");
-
-        // Bind dos parâmetros usando PDO
         $stmt->bindValue(':name', $data['nome']);
 
-        // Verificando se a inserção foi bem-sucedida
         return $stmt->execute();
     }
 
+    /**
+     * Atualiza o nome de uma amenidade existente.
+     * @param array $data Deve conter as chaves 'id' e 'nome'.
+     * @return bool
+     */
     public function update($data)
     {
         $stmt = $this->pdo->prepare("UPDATE amenidades SET nome = :name WHERE id = :id");
-
-        // Bind dos parâmetros usando PDO
         $stmt->bindValue(':id', $data['id'], PDO::PARAM_INT);
         $stmt->bindValue(':name', $data['nome']);
 
-        // Verificando se a atualização foi bem-sucedida
         return $stmt->execute();
     }
 
+    /**
+     * Exclui uma amenidade de forma segura, removendo primeiro suas associações.
+     * @param int $id O ID da amenidade a ser excluída.
+     * @return bool
+     */
     public function delete($id)
     {
         try {
-            // Iniciar uma transação
-            $this->pdo->beginTransaction();
+            $this->pdo->beginTransaction(); // Inicia a transação.
 
-            // Desativar a comodidade na tabela amenities
+            // 1. Remove as referências da amenidade na tabela de junção com acomodações.
+            $stmtAcomodacoes = $this->pdo->prepare("DELETE FROM amenidades_acomodacoes WHERE id_amenidades = :id");
+            $stmtAcomodacoes->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmtAcomodacoes->execute();
+
+            // 3. Finalmente, remove a amenidade principal.
             $stmt = $this->pdo->prepare("DELETE FROM amenidades WHERE id = :id");
-
-            // Bind do parâmetro usando PDO
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-            // Executar a exclusão
             $stmt->execute();
 
-            // Confirmar a transação
-            $this->pdo->commit();
+            $this->pdo->commit(); // Confirma as alterações se tudo deu certo.
 
-            // Retorna true em caso de sucesso
             return true;
+
         } catch (PDOException $e) {
-            // Em caso de erro, desfazer a transação
-            $this->pdo->rollBack();
-            error_log("Erro ao excluir comodidade: " . $e->getMessage());
+            $this->pdo->rollBack(); // Desfaz tudo em caso de erro.
+            error_log("Erro ao excluir amenidade: " . $e->getMessage());
             return false;
         }
     }
 
+    /**
+     * Busca uma amenidade pelo nome.
+     * @param string $name
+     * @return array|null
+     */
+    public function getAmenityByName($name)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM amenidades WHERE nome = :name");
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->execute();
 
-public function getAmenityByName($name)
-{
-    try {
-        if (!$this->pdo) {
-            throw new Exception("Erro: conexão com o banco de dados não está ativa.");
+            $amenity = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $amenity ?: null; // Retorna a amenidade ou nulo.
+
+        } catch (Exception $e) {
+            error_log($e->getMessage());
+            return null;
         }
+    }
 
-        $stmt = $this->pdo->prepare("SELECT * FROM amenidades WHERE nome = ?");
-        $stmt->execute([$name]);
+    /**
+     * Busca os IDs de todas as amenidades associadas a uma acomodação específica.
+     * @param int $id O ID da acomodação.
+     * @return array|null
+     */
+    public function getAmenitiesAccommodations($id)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT id_amenidades FROM amenidades_acomodacoes WHERE id_acomodacoes = :id_acomodacoes");
+            $stmt->bindParam(':id_acomodacoes', $id, PDO::PARAM_INT);
+            $stmt->execute();
 
-        $amenity = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Retorna um array simples contendo apenas os IDs das amenidades.
+            $ids_amenidades = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-        if (!$amenity) {
-            return null; // Retorna null se nenhuma comodidade for encontrada
+            return $ids_amenidades ?: null;
+
+        } catch(Exception $e) {
+            error_log($e->getMessage());
+            return null;
         }
-
-        return $amenity;
-    } catch (Exception $e) {
-        error_log($e->getMessage()); // Registra o erro no log do servidor
-        return null;
     }
 }
-
-public function getAmenitiesAccommodations($id)
-{
-try{
-    if (!$this->pdo) {
-        throw new Exception("Erro: conexão com o banco de dados não está ativa.");
-    }
-
-    $stmt = $this->pdo->prepare("SELECT id_amenidades FROM amenidades_acomodacoes WHERE id_acomodacoes = ?");
-    $stmt->execute([$id]);
-
-    $amenity = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    $ids_amenidades = array_column($amenity, 'id_amenidades');
-
-    if(!$ids_amenidades){
-        return null;
-    }
-
-    return $ids_amenidades;
-}catch(Exception $e){
-    error_log($e->getMessage());
-    return null;
-
-}
-}
-}
-
-
-?>
