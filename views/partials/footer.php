@@ -43,6 +43,8 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/RoomFlow/Public/assets/js/core/popper.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/core/bootstrap.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/plugins/perfect-scrollbar.min.js"></script>
