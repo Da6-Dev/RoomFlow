@@ -4,13 +4,11 @@ class AmenitiesController extends RenderView
 {
     private $amenitiesModel;
 
-    // 1. O construtor inicializa o model.
     public function __construct()
     {
         $this->amenitiesModel = new AmenitiesModel();
     }
 
-    // Método privado para coletar dados do formulário.
     private function collectDataFromRequest()
     {
         return [
@@ -18,20 +16,16 @@ class AmenitiesController extends RenderView
         ];
     }
 
-    // Método privado para validar os dados.
     private function validateData($data, $id = null)
     {
         $errors = [];
-
-        // Validar nome
         if (empty($data['nome'])) {
             $errors['nome'] = 'O campo nome é obrigatório.';
         } elseif (strlen($data['nome']) < 3) {
             $errors['nome'] = 'O nome deve ter pelo menos 3 caracteres.';
-        } elseif (!preg_match("/^[a-zA-Z\s]+$/", $data['nome'])) {
-            $errors['nome'] = 'O nome deve conter apenas letras e espaços.';
+        } elseif (!preg_match("/^[\p{L}\s-]+$/u", $data['nome'])) {
+            $errors['nome'] = 'O nome deve conter apenas letras, espaços e hífen.';
         } else {
-            // Verifica se a comodidade já existe (ignorando o ID atual na edição)
             $existingAmenity = $this->amenitiesModel->getAmenityByName($data['nome']);
             if ($existingAmenity && $existingAmenity['id'] != $id) {
                 $errors['nome'] = 'Essa comodidade já existe.';
@@ -43,7 +37,7 @@ class AmenitiesController extends RenderView
     public function list()
     {
         $this->LoadView('Comodidades', [
-            'Title' => 'Listagem de todas as Comodidades',
+            'Title' => 'Gestão de Comodidades',
             'Amenities' => $this->amenitiesModel->listar(),
             'father' => 'Comodidades',
             'page' => 'Listar',
@@ -61,46 +55,25 @@ class AmenitiesController extends RenderView
 
             if (empty($errors)) {
                 $this->amenitiesModel->create($data);
-                header('Location: /RoomFlow/Comodidades/Cadastrar?msg=success_create');
+                header('Location: /RoomFlow/Comodidades?msg=success_create');
                 exit();
             }
         }
 
-        $this->LoadView('ComodidadesCadastrar', [
-            'Title' => 'Cadastrar Comodidade',
+        // **CORREÇÃO AQUI**: Informa a view que o erro foi no formulário de 'create'
+        $this->LoadView('Comodidades', [
+            'Title' => 'Gestão de Comodidades',
+            'Amenities' => $this->amenitiesModel->listar(),
             'errors' => $errors,
             'data' => $data,
             'father' => 'Comodidades',
-            'page' => 'Cadastrar',
+            'page' => 'Listar',
+            'form_action' => 'create' // Identificador da ação
         ]);
     }
 
-    // A função 'editar' agora apenas exibe o formulário.
-    public function editar($id)
-    {
-        $data = $this->amenitiesModel->getAmenityById($id);
-
-        // Se a comodidade não existe, redireciona para a listagem
-        if (!$data) {
-            header('Location: /RoomFlow/Comodidades?msg=not_found');
-            exit();
-        }
-
-        $this->LoadView('ComodidadesEditar', [
-            'Title' => 'Editar Comodidade',
-            'errors' => [],
-            'data' => $data,
-            'father' => 'Comodidades',
-            'page' => 'Editar',
-        ]);
-    }
-
-    // A lógica de atualização foi movida para o método 'update'.
     public function update($id)
     {
-        $data = [];
-        $errors = [];
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->collectDataFromRequest();
             $errors = $this->validateData($data, $id);
@@ -111,24 +84,32 @@ class AmenitiesController extends RenderView
                 header('Location: /RoomFlow/Comodidades?msg=success_update');
                 exit();
             }
-        }
 
-        // Se houver erro, exibe o formulário novamente com os erros
-        $currentData = $this->amenitiesModel->getAmenityById($id);
-        $this->LoadView('ComodidadesEditar', [
-            'Title' => 'Editar Comodidade',
-            'errors' => $errors,
-            'data' => array_merge($currentData, $data), // Mantém o que o usuário digitou
-            'father' => 'Comodidades',
-            'page' => 'Editar',
-        ]);
+            // **CORREÇÃO AQUI**: Se houver erro, recarrega a view com os erros
+            // e informações para reabrir o modal correto.
+            $currentData = $this->amenitiesModel->getAmenityById($id);
+            $this->LoadView('Comodidades', [
+                'Title' => 'Editar Comodidade',
+                'errors' => $errors,
+                'data' => array_merge($currentData, $data), // Mantém o que o usuário digitou
+                'father' => 'Comodidades',
+                'page' => 'Editar',
+                'Amenities' => $this->amenitiesModel->listar(),
+                'form_action' => 'update', // Identificador da ação
+                'update_error_id' => $id    // ID do item com erro para reabrir o modal
+            ]);
+            exit(); // Garante que o script para aqui
+        }
+        
+        // Se o método for acessado via GET, redireciona para a lista
+        header('Location: /RoomFlow/Comodidades');
+        exit();
     }
 
 
     public function delete()
     {
         $id = $_POST['id'] ?? null;
-
         if ($id && $this->amenitiesModel->delete($id)) {
             header("Location: /RoomFlow/Comodidades?msg=success_delete");
         } else {

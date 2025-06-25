@@ -50,15 +50,9 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Acomodações</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Comodidades/Cadastrar/">
-                        <i class="material-symbols-rounded opacity-5">add_circle</i>
-                        <span class="nav-link-text ms-1">Cadastrar Comodidade</span>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-dark" href="/RoomFlow/Comodidades/">
                         <i class="material-symbols-rounded opacity-5">widgets</i>
-                        <span class="nav-link-text ms-1">Listar Comodidades</span>
+                        <span class="nav-link-text ms-1">Comodidades</span>
                     </a>
                 </li>
                 <li class="nav-item">

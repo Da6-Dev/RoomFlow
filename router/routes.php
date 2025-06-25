@@ -7,11 +7,13 @@ $Routes = [
     '/Hospedes/Update/@id' => 'GuestController@update',
     '/Hospedes/Cadastrar' => 'GuestController@create',
     '/Hospedes/Deletar' => 'GuestController@delete',
+
+    // Rotas de Comodidades Corrigidas
     '/Comodidades' => 'AmenitiesController@list',
     '/Comodidades/Cadastrar' => 'AmenitiesController@create',
-    '/Comodidades/@id' => 'AmenitiesController@editar',
     '/Comodidades/Update/@id' => 'AmenitiesController@update',
     '/Comodidades/Deletar' => 'AmenitiesController@delete',
+    
     '/Acomodacoes' => 'AccommodationsController@list',	
     '/Acomodacoes/Cadastrar' => 'AccommodationsController@create',
     '/Acomodacoes/@id' => 'AccommodationsController@editar',
