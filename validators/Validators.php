@@ -13,7 +13,7 @@ function validarNome($nome)
         return ['status' => 'error', 'msg' => 'O nome deve ter pelo menos 3 caracteres.'];
     }
 
-    if (!preg_match("/^[a-zA-Z\s]+$/", $nome)) {
+    if (!preg_match("/^[\p{L}\s-]+$/u", $nome)) {
         return ['status' => 'error', 'msg' => 'O nome deve conter apenas letras e espaços.'];
     }
 

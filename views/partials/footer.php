@@ -50,6 +50,8 @@
 <script src="/RoomFlow/Public/assets/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="/RoomFlow/Public/assets/js/plugins/smooth-scrollbar.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/imask"></script>
+
 <script>
   var win = navigator.platform.indexOf('Win') > -1;
   if (win && document.querySelector('#sidenav-scrollbar')) {

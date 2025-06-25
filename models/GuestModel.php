@@ -99,7 +99,7 @@ class GuestModel extends Database
                 $stmt = $this->pdo->prepare($sql);
                 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             }
-            
+
             $stmt->bindValue(':nome', $dados['nome']);
             $stmt->bindValue(':email', $dados['email']);
             $stmt->bindValue(':telefone', $dados['telefone']);
@@ -112,7 +112,7 @@ class GuestModel extends Database
             $stmt->bindValue(':data_nascimento', $dados['dataNasc']);
             $stmt->bindValue(':imagem', $nomeImagem);
             $stmt->execute();
-            
+
             // Define o ID do hóspede para usar na tabela de preferências
             $hospedeId = empty($id) ? $this->pdo->lastInsertId() : $id;
 
@@ -124,13 +124,15 @@ class GuestModel extends Database
 
             // 2. Inserir as novas preferências, se houver alguma.
             if (!empty($dados['preferencias']) && is_array($dados['preferencias'])) {
+                // Usamos a coluna "descricao" da sua tabela
                 $sqlPref = "INSERT INTO preferencias_hospedes (id_hospede, descricao) VALUES (:hospede_id, :descricao)";
                 $stmtPref = $this->pdo->prepare($sqlPref);
 
-                foreach ($dados['preferencias'] as $preferenciaId) {
+                // O loop agora usa uma variável com nome claro: $descricao
+                foreach ($dados['preferencias'] as $descricao) {
                     $stmtPref->execute([
                         ':hospede_id' => $hospedeId,
-                        ':descricao' => $preferenciaId
+                        ':descricao' => $descricao // Salva o texto da preferência
                     ]);
                 }
             }
@@ -206,7 +208,7 @@ class GuestModel extends Database
             return false;
         }
     }
-    
+
     /**
      * Conta quantos novos hóspedes foram cadastrados no dia atual.
      * @return int
@@ -250,7 +252,7 @@ class GuestModel extends Database
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0775, true);
         }
-        
+
         if (!is_writable($uploadDir)) {
             error_log("ERRO: O diretório de upload não tem permissão de escrita: " . $uploadDir);
             return null;

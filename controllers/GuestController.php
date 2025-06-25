@@ -19,11 +19,14 @@ class GuestController extends RenderView
 
     private function collectGuestDataFromRequest($currentGuest = null)
     {
+        // Lógica CORRIGIDA para coletar as preferências
         $preferencias = [];
-
-        foreach ($_POST as $key => $value) {
-            if (preg_match('/^pref\d+$/', $key)) {
-                $preferencias[] = trim($value);
+        if (isset($_POST['preferencias']) && is_array($_POST['preferencias'])) {
+            foreach ($_POST['preferencias'] as $preferencia) {
+                // Adiciona a preferência ao array se não estiver vazia, limpando a entrada
+                if (!empty(trim($preferencia))) {
+                    $preferencias[] = $this->cleanInput($preferencia);
+                }
             }
         }
 
@@ -31,15 +34,15 @@ class GuestController extends RenderView
             'nome' => $this->cleanInput($_POST['nome'] ?? ''),
             'email' => $this->cleanInput($_POST['email'] ?? ''),
             'telefone' => $this->cleanInput($_POST['telefone'] ?? ''),
-            'cpf' => preg_replace('/[^0-9]/', '', $this->cleanInput($_POST['cpf'] ?? '')), // Remove formatação do CPF
+            'cpf' => preg_replace('/[^0-9]/', '', $this->cleanInput($_POST['cpf'] ?? '')),
             'rua' => $this->cleanInput($_POST['rua'] ?? ''),
             'cidade' => $this->cleanInput($_POST['cidade'] ?? ''),
             'estado' => $this->cleanInput($_POST['estado'] ?? ''),
             'numero' => $this->cleanInput($_POST['numero'] ?? ''),
             'cep' => $this->cleanInput($_POST['cep'] ?? ''),
             'dataNasc' => $this->cleanInput($_POST['dataNasc'] ?? ''),
-            'preferencias' => $preferencias,
-            'imagem' => $_FILES['imagem'], // Passa o array do arquivo
+            'preferencias' => $preferencias, // AGORA contém os dados corretos
+            'imagem' => $_FILES['imagem'],
             'imagem_atual' => $currentGuest['imagem'] ?? null
         ];
     }
