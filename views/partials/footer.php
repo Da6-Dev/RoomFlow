@@ -14,7 +14,7 @@
           <i class="material-symbols-rounded">clear</i>
         </button>
       </div>
-      </div>
+    </div>
     <hr class="horizontal dark my-1">
     <div class="card-body pt-sm-3 pt-0">
       <div class="mt-3">
@@ -39,9 +39,9 @@
           <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)">
         </div>
       </div>
-      </div>
     </div>
   </div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -51,6 +51,9 @@
 <script src="/RoomFlow/Public/assets/js/plugins/smooth-scrollbar.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/imask"></script>
+<script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
+<script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <script>
   var win = navigator.platform.indexOf('Win') > -1;

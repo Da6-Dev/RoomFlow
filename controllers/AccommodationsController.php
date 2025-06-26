@@ -1,5 +1,6 @@
 <?php
 
+
 class AccommodationsController extends RenderView
 {
     private $accommodationsModel;
@@ -21,22 +22,25 @@ class AccommodationsController extends RenderView
     // 3. Método privado para coletar dados do formulário.
     private function collectDataFromRequest()
     {
+        $precoFormatado = $_POST['preco'] ?? '0';
+        $precoSemSimbolos = str_replace(['R$', ' ', '.'], '', $precoFormatado);
+        $precoNumerico = str_replace(',', '.', $precoSemSimbolos);
+
         return [
             'tipo' => $this->cleanInput($_POST['tipo'] ?? ''),
             'numero' => $this->cleanInput($_POST['numero'] ?? ''),
             'descricao' => $this->cleanInput($_POST['descricao'] ?? ''),
             'status' => $this->cleanInput($_POST['status'] ?? ''),
             'capacidade' => $this->cleanInput($_POST['capacidade'] ?? ''),
-            'preco' => $this->cleanInput($_POST['preco'] ?? ''),
+            'preco' => $this->cleanInput($precoNumerico), // Usa o preço limpo
             'minimo_noites' => $this->cleanInput($_POST['minimo_noites'] ?? ''),
             'camas_casal' => $this->cleanInput($_POST['camas_casal'] ?? ''),
             'camas_solteiro' => $this->cleanInput($_POST['camas_solteiro'] ?? ''),
             'check_in_time' => $this->cleanInput($_POST['check_in_time'] ?? ''),
             'check_out_time' => $this->cleanInput($_POST['check_out_time'] ?? ''),
             'amenidades' => $_POST['amenidades'] ?? [],
-            'imagens' => $_FILES['imagens'] ?? [],
             'delete_imagens' => $_POST['delete_imagens'] ?? [],
-            'imagem_capa' => $_POST['imagem_capa'] ?? '',
+            'imagens' => $_FILES['imagens'] ?? [],
         ];
     }
 
@@ -88,7 +92,7 @@ class AccommodationsController extends RenderView
         ]);
     }
 
-    
+
 
     public function create()
     {
@@ -104,7 +108,7 @@ class AccommodationsController extends RenderView
                     $errors['exists'] = 'Essa acomodação já existe.';
                 } else {
                     if ($this->accommodationsModel->create($data)) {
-                        header('Location: /RoomFlow/Acomodacoes/Cadastrar?msg=success_create');
+                        header('Location: /RoomFlow/Acomodacoes?msg=success_create');
                         exit();
                     } else {
                         $errors['general'] = 'Erro ao cadastrar a acomodação. Tente novamente.';
@@ -144,7 +148,11 @@ class AccommodationsController extends RenderView
             $data = $this->collectDataFromRequest();
             $errors = $this->validateData($data);
 
+            // Adiciona a ordem das imagens aos dados que serão enviados para o Model
+            $data['image_order'] = $_POST['image_order'] ?? [];
+
             if (empty($errors)) {
+                // A lógica de reordenar será movida para dentro do Model
                 if ($this->accommodationsModel->update($id, $data)) {
                     header('Location: /RoomFlow/Acomodacoes?msg=success_update');
                     exit();

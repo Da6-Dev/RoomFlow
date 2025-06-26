@@ -255,6 +255,10 @@ function validarCapacidade($capacidade)
 
 function validarPreco($preco)
 {
+
+    
+
+
     // Verifica se o campo preço não está vazio
     if (empty($preco)) {
         return ['status' => 'error', 'msg' => 'O campo Preço é obrigatório.'];

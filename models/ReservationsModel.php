@@ -261,14 +261,26 @@ class ReservationsModel extends Database
     }
 
     /**
-     * Move reservas expiradas (check-out anterior a hoje) da tabela principal para o histórico.
-     * @return array
+     * Arquiva reservas expiradas, associando a ação a um funcionário.
+     * @param int $idFuncionario O ID do funcionário (ou sistema) que está realizando a operação.
      */
     public function arquivarReservasExpiradas()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM reservas WHERE data_checkout < CURDATE()");
-        $stmt->execute();
-        $reservasExpiradas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // 1. A consulta SQL para buscar as reservas corretas (com JOIN e hora específica)
+        $sqlSelect = "
+        SELECT
+            reservas.*
+        FROM
+            reservas
+        JOIN
+            acomodacoes ON reservas.id_acomodacao = acomodacoes.id
+        WHERE
+            TIMESTAMP(reservas.data_checkout, acomodacoes.hora_checkout) < NOW()
+    ";
+
+        $stmtSelect = $this->pdo->prepare($sqlSelect);
+        $stmtSelect->execute();
+        $reservasExpiradas = $stmtSelect->fetchAll(PDO::FETCH_ASSOC);
 
         if (empty($reservasExpiradas)) {
             return ['status' => 'success', 'message' => 'Nenhuma reserva expirada para arquivar.', 'arquivadas' => 0];
@@ -277,29 +289,38 @@ class ReservationsModel extends Database
         $arquivadasComSucesso = 0;
         $erros = [];
 
-        $insertSql = "INSERT INTO historico_reservas (id_reserva, detalhes, id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes, data_reserva)
-                    VALUES (:id_reserva, :detalhes, :id_hospede, :id_acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes, :data_reserva)";
+        // 2. Prepara as queries de INSERÇÃO e DELEÇÃO (sem o campo id_funcionario)
+        $insertSql = "INSERT INTO historico_reservas 
+                    (id_reserva, id_hospede, id_acomodacao, data_checkin, data_checkout, status, valor_total, metodo_pagamento, observacoes, data_reserva, detalhes)
+                  VALUES 
+                    (:id_reserva, :id_hospede, :id_acomodacao, :data_checkin, :data_checkout, :status, :valor_total, :metodo_pagamento, :observacoes, :data_reserva, :detalhes)";
+
         $deleteSql = "DELETE FROM reservas WHERE id = :id";
 
+        $insertStmt = $this->pdo->prepare($insertSql);
+        $deleteStmt = $this->pdo->prepare($deleteSql);
+
+        // 3. Loop para arquivar cada reserva
         foreach ($reservasExpiradas as $reserva) {
             try {
                 $this->pdo->beginTransaction();
 
-                $this->pdo->prepare($insertSql)->execute([
-                    ':id_reserva' => $reserva['id'],
-                    ':detalhes' => 'Reserva arquivada automaticamente por expiração.',
-                    ':id_hospede' => $reserva['id_hospede'],
-                    ':id_acomodacao' => $reserva['id_acomodacao'],
-                    ':data_checkin' => $reserva['data_checkin'],
-                    ':data_checkout' => $reserva['data_checkout'],
-                    ':status' => 'finalizada',
-                    ':valor_total' => $reserva['valor_total'],
+                // Executa a inserção no histórico (sem o campo id_funcionario)
+                $insertStmt->execute([
+                    ':id_reserva'       => $reserva['id'],
+                    ':id_hospede'       => $reserva['id_hospede'],
+                    ':id_acomodacao'    => $reserva['id_acomodacao'],
+                    ':data_checkin'     => $reserva['data_checkin'],
+                    ':data_checkout'    => $reserva['data_checkout'],
+                    ':status'           => 'finalizada',
+                    ':valor_total'      => $reserva['valor_total'],
                     ':metodo_pagamento' => $reserva['metodo_pagamento'],
-                    ':observacoes' => $reserva['observacoes'],
-                    ':data_reserva' => $reserva['data_reserva']
+                    ':observacoes'      => $reserva['observacoes'],
+                    ':data_reserva'     => $reserva['data_reserva'],
+                    ':detalhes'         => 'Reserva arquivada automaticamente por expiração.'
                 ]);
 
-                $this->pdo->prepare($deleteSql)->execute([':id' => $reserva['id']]);
+                $deleteStmt->execute([':id' => $reserva['id']]);
 
                 $this->pdo->commit();
                 $arquivadasComSucesso++;
@@ -309,12 +330,14 @@ class ReservationsModel extends Database
             }
         }
 
+        // 4. Retorna o resultado da operação
         if (empty($erros)) {
-            return ['status' => 'success', 'message' => "Operação concluída.", 'arquivadas' => $arquivadasComSucesso];
+            return ['status' => 'success', 'message' => "Operação concluída com sucesso.", 'arquivadas' => $arquivadasComSucesso];
         } else {
-            return ['status' => 'error', 'message' => "Ocorreram erros durante o arquivamento.", 'details' => $erros];
+            return ['status' => 'error', 'message' => "Ocorreram erros durante o arquivamento.", 'arquivadas' => $arquivadasComSucesso, 'details' => $erros];
         }
     }
+
     /**
      * Calcula a receita total de reservas finalizadas em um determinado período.
      * @param string $dataInicio Data de início no formato 'YYYY-MM-DD'.
@@ -327,7 +350,7 @@ class ReservationsModel extends Database
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([':dataInicio' => $dataInicio, ':dataFim' => $dataFim]);
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         // Garante que o retorno seja um float.
         return (float) ($resultado['total'] ?? 0);
     }

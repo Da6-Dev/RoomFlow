@@ -2,7 +2,7 @@
 // Coloque no início de um arquivo de alta visibilidade, como o seu Layout.php
 
 $lockFile = __DIR__ . '/last_archive_run.txt';
-$runInterval = 86400; // 24 horas em segundos
+$runInterval = 6000; // 24 horas em segundos
 
 // Verifica se o arquivo existe e quando foi modificado pela última vez
 if (!file_exists($lockFile) || (time() - filemtime($lockFile)) > $runInterval) {

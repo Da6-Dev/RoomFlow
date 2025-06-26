@@ -80,7 +80,7 @@ function getAcomodacaoStatusBadge($status)
                             <h6 class="mb-0">Acomodações</h6>
                         </div>
                         <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Acomodacoes/nova">
+                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Acomodacoes/Cadastrar">
                                 <i class="material-symbols-rounded">add</i>&nbsp;&nbsp;Adicionar Acomodação
                             </a>
                         </div>
