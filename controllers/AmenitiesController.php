@@ -41,6 +41,7 @@ class AmenitiesController extends RenderView
             'Amenities' => $this->amenitiesModel->listar(),
             'father' => 'Comodidades',
             'page' => 'Listar',
+            'page_script' => 'Comodidades.js',
         ]);
     }
 
@@ -54,13 +55,15 @@ class AmenitiesController extends RenderView
             $errors = $this->validateData($data);
 
             if (empty($errors)) {
-                $this->amenitiesModel->create($data);
-                header('Location: /RoomFlow/Comodidades?msg=success_create');
+                if ($this->amenitiesModel->create($data)) {
+                    header('Location: /RoomFlow/Comodidades?msg=success_create');
+                } else {
+                    $errors['general'] = 'Ocorreu um erro ao salvar a comodidade.';
+                }
                 exit();
             }
         }
 
-        // **CORREÇÃO AQUI**: Informa a view que o erro foi no formulário de 'create'
         $this->LoadView('Comodidades', [
             'Title' => 'Gestão de Comodidades',
             'Amenities' => $this->amenitiesModel->listar(),
@@ -68,7 +71,8 @@ class AmenitiesController extends RenderView
             'data' => $data,
             'father' => 'Comodidades',
             'page' => 'Listar',
-            'form_action' => 'create' // Identificador da ação
+            'form_action' => 'create',
+            'page_script' => 'Comodidades.js',
         ]);
     }
 
@@ -80,28 +84,28 @@ class AmenitiesController extends RenderView
 
             if (empty($errors)) {
                 $data['id'] = $id;
-                $this->amenitiesModel->update($data);
-                header('Location: /RoomFlow/Comodidades?msg=success_update');
+                if ($this->amenitiesModel->update($data)) {
+                    header('Location: /RoomFlow/Comodidades?msg=success_update');
+                } else {
+                    $errors['general'] = 'Ocorreu um erro ao atualizar a comodidade.';
+                }
                 exit();
             }
 
-            // **CORREÇÃO AQUI**: Se houver erro, recarrega a view com os erros
-            // e informações para reabrir o modal correto.
-            $currentData = $this->amenitiesModel->getAmenityById($id);
             $this->LoadView('Comodidades', [
                 'Title' => 'Editar Comodidade',
                 'errors' => $errors,
-                'data' => array_merge($currentData, $data), // Mantém o que o usuário digitou
+                'data' => $data, 
                 'father' => 'Comodidades',
                 'page' => 'Editar',
                 'Amenities' => $this->amenitiesModel->listar(),
-                'form_action' => 'update', // Identificador da ação
-                'update_error_id' => $id    // ID do item com erro para reabrir o modal
+                'form_action' => 'update',
+                'update_error_id' => $id,
+                'page_script' => 'Comodidades.js',
             ]);
-            exit(); // Garante que o script para aqui
+            exit();
         }
         
-        // Se o método for acessado via GET, redireciona para a lista
         header('Location: /RoomFlow/Comodidades');
         exit();
     }
