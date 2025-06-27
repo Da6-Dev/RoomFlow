@@ -1,25 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="/RoomFlow/public/assets/img/icons/Roomflow.svg">
     <link rel="icon" type="image/png" href="/RoomFlow/public/assets/img/icons/Roomflow.svg">
+    
     <title>
-        Material Dashboard 3 by Creative Tim
+        <?php echo isset($Title) ? htmlspecialchars($Title) . ' - RoomFlow' : 'RoomFlow'; ?>
     </title>
+    
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <link href="/RoomFlow/public/assets/css/nucleo-icons" />
-    <link href="/RoomFlow/public/assets/css/nucleo-svg.css" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-    <link id="pagestyle" href="/RoomFlow/public/assets/css/material-dashboard.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=home" />
+    
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
+    
+    <link id="pagestyle" href="/RoomFlow/public/assets/css/material-dashboard.min.css" rel="stylesheet" />
+    <link href="/RoomFlow/public/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="/RoomFlow/public/assets/css/nucleo-svg.css" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">

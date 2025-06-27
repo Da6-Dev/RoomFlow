@@ -1,33 +1,39 @@
 <?php
 ob_start();
 
-// Garante que as variáveis sempre existam
+// Garante que as variáveis globais sempre existam para evitar erros.
 $acomodacao = $acomodacao ?? [];
 $amenidades = $amenidades ?? [];
 $amenidades_acomodacao = $amenidades_acomodacao ?? [];
 $imagens = $imagens ?? [];
 $errors = $errors ?? [];
 
+// Lógica para determinar o valor a ser exibido: usa o dado do POST se existir, senão, o do banco.
+function get_form_value($name, $db_record, $db_key = null, $is_numeric = false) {
+    if ($db_key === null) {
+        $db_key = $name;
+    }
+    
+    if (isset($_POST[$name])) {
+        return htmlspecialchars($_POST[$name]);
+    }
+    
+    if (isset($db_record[$db_key])) {
+        $value = $db_record[$db_key];
+        // Formata o preço apenas na carga inicial
+        if ($name === 'preco') {
+            return number_format((float)$value, 2, ',', '.');
+        }
+        return htmlspecialchars($value);
+    }
+    
+    return $is_numeric ? '0' : '';
+}
+
 ?>
 
 <style>
-    /* Estilos para FilePond e SortableJS */
-    .filepond--root {
-        font-family: 'Roboto', sans-serif;
-    }
-
-    .sortable-ghost {
-        opacity: 0.4;
-        background: #f0f0f0;
-    }
-
-    .image-card-handle {
-        cursor: grab;
-    }
-
-    .image-card-handle:active {
-        cursor: grabbing;
-    }
+    .filepond--root{font-family:'Roboto',sans-serif;}.sortable-ghost{opacity:0.4;background:#f0f0f0;}.image-card-handle{cursor:grab;}.image-card-handle:active{cursor:grabbing;}
 </style>
 
 <div class="container-fluid py-4">
@@ -52,46 +58,80 @@ $errors = $errors ?? [];
                     <div class="tab-pane fade show active" id="info" role="tabpanel">
                         <div class="row mt-4">
                             <div class="col-md-6">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Tipo</label><input type="text" class="form-control" name="tipo" value="<?php echo htmlspecialchars($_POST['tipo'] ?? $acomodacao['tipo']); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Tipo</label>
+                                    <input type="text" class="form-control" name="tipo" value="<?php echo get_form_value('tipo', $acomodacao); ?>" required>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Número</label><input type="text" class="form-control" name="numero" value="<?php echo htmlspecialchars($_POST['numero'] ?? $acomodacao['numero']); ?>" required></div>
+                             <div class="col-md-6">
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Número</label>
+                                    <input type="number" class="form-control" name="numero" value="<?php echo get_form_value('numero', $acomodacao); ?>" required>
+                                </div>
                             </div>
                             <div class="col-12">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Descrição</label><textarea class="form-control" name="descricao" rows="5" required><?php echo htmlspecialchars($_POST['descricao'] ?? $acomodacao['descricao']); ?></textarea></div>
+                                 <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Descrição</label>
+                                    <textarea class="form-control" name="descricao" rows="5" required><?php echo get_form_value('descricao', $acomodacao); ?></textarea>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="input-group input-group-static my-3"><label>Status</label><select class="form-control" name="status" required>
-                                        <option value="disponivel" <?php echo (($_POST['status'] ?? $acomodacao['status']) == 'disponivel') ? 'selected' : ''; ?>>Disponível</option>
-                                        <option value="ocupado" <?php echo (($_POST['status'] ?? $acomodacao['status']) == 'ocupado') ? 'selected' : ''; ?>>Ocupado</option>
-                                        <option value="manutencao" <?php echo (($_POST['status'] ?? $acomodacao['status']) == 'manutencao') ? 'selected' : ''; ?>>Manutenção</option>
-                                    </select></div>
+                                <div class="input-group input-group-static my-3">
+                                    <label>Status</label>
+                                    <select class="form-control" name="status" required>
+                                        <?php $statusValue = get_form_value('status', $acomodacao); ?>
+                                        <option value="disponivel" <?php echo ($statusValue == 'disponivel') ? 'selected' : ''; ?>>Disponível</option>
+                                        <option value="ocupado" <?php echo ($statusValue == 'ocupado') ? 'selected' : ''; ?>>Ocupado</option>
+                                        <option value="manutencao" <?php echo ($statusValue == 'manutencao') ? 'selected' : ''; ?>>Manutenção</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="tab-pane fade" id="details" role="tabpanel">
-                        <div class="row mt-4">
+                         <div class="row mt-4">
                             <div class="col-md-4">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Preço (R$)</label><input type="text" class="form-control" name="preco" id="preco-input" value="<?php echo isset($_POST['preco']) ? htmlspecialchars($_POST['preco']) : number_format($acomodacao['preco'], 2, ',', '.'); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Preço (R$)</label>
+                                    <input type="text" class="form-control" id="preco-input" name="preco" value="<?php echo get_form_value('preco', $acomodacao); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Capacidade</label><input type="number" class="form-control" name="capacidade" value="<?php echo htmlspecialchars($_POST['capacidade'] ?? $acomodacao['capacidade']); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Capacidade</label>
+                                    <input type="number" class="form-control" name="capacidade" value="<?php echo get_form_value('capacidade', $acomodacao); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Mínimo de Noites</label><input type="number" class="form-control" name="minimo_noites" value="<?php echo htmlspecialchars($_POST['minimo_noites'] ?? $acomodacao['minimo_noites']); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Mínimo de Noites</label>
+                                    <input type="number" class="form-control" name="minimo_noites" value="<?php echo get_form_value('minimo_noites', $acomodacao); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Camas de Casal</label><input type="number" class="form-control" name="camas_casal" value="<?php echo htmlspecialchars($_POST['camas_casal'] ?? $acomodacao['camas_casal']); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Camas de Casal</label>
+                                    <input type="number" class="form-control" name="camas_casal" value="<?php echo get_form_value('camas_casal', $acomodacao, null, true); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="input-group input-group-outline my-3 is-filled"><label class="form-label">Camas de Solteiro</label><input type="number" class="form-control" name="camas_solteiro" value="<?php echo htmlspecialchars($_POST['camas_solteiro'] ?? $acomodacao['camas_solteiro']); ?>" required></div>
+                                <div class="input-group input-group-outline my-3 is-filled">
+                                    <label class="form-label">Camas de Solteiro</label>
+                                    <input type="number" class="form-control" name="camas_solteiro" value="<?php echo get_form_value('camas_solteiro', $acomodacao, null, true); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="input-group input-group-static my-3"><label>Hora de Check-in</label><input type="time" class="form-control" name="check_in_time" value="<?php echo htmlspecialchars($_POST['check_in_time'] ?? $acomodacao['hora_checkin']); ?>" required></div>
+                                <div class="input-group input-group-static my-3">
+                                    <label>Hora de Check-in</label>
+                                    <input type="time" class="form-control" name="check_in_time" value="<?php echo get_form_value('check_in_time', $acomodacao, 'hora_checkin'); ?>" required>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="input-group input-group-static my-3"><label>Hora de Check-out</label><input type="time" class="form-control" name="check_out_time" value="<?php echo htmlspecialchars($_POST['check_out_time'] ?? $acomodacao['hora_checkout']); ?>" required></div>
+                                <div class="input-group input-group-static my-3">
+                                    <label>Hora de Check-out</label>
+                                    <input type="time" class="form-control" name="check_out_time" value="<?php echo get_form_value('check_out_time', $acomodacao, 'hora_checkout'); ?>" required>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -99,10 +139,10 @@ $errors = $errors ?? [];
                     <div class="tab-pane fade" id="amenities" role="tabpanel">
                         <div class="row mt-4">
                             <?php
-                            // Pega as amenidades atuais da acomodação para pré-selecionar os checkboxes
+                            // --- CORREÇÃO APLICADA AQUI ---
+                            // Removemos o "array_column" para usar o array de IDs diretamente.
                             $current_amenities = $_POST['amenidades'] ?? $amenidades_acomodacao;
-
-                            // Loop para exibir todas as amenidades disponíveis
+                            
                             foreach ($amenidades as $amenity):
                             ?>
                                 <div class="col-md-4 col-sm-6 mb-3">
@@ -119,31 +159,26 @@ $errors = $errors ?? [];
                         <div class="mt-4">
                             <h5>Adicionar Novas Fotos</h5>
                             <input type="file" class="filepond" name="imagens[]" id="image-upload" multiple>
-
                             <hr class="horizontal dark mt-5">
-
                             <h5>Imagens Atuais</h5>
                             <p class="text-sm">Arraste as imagens para reordenar. A primeira imagem será a capa.</p>
-
                             <div class="row" id="sortable-images">
                                 <?php if (empty($imagens)): ?>
                                     <p class="text-center">Nenhuma imagem cadastrada.</p>
-                                <?php else: ?>
-                                    <?php foreach ($imagens as $imagem): ?>
-                                        <div class="col-xl-3 col-md-4 col-sm-6 mb-4 image-card-handle">
-                                            <div class="card h-100">
-                                                <img src="/RoomFlow/<?php echo htmlspecialchars($imagem['caminho_arquivo']); ?>" class="card-img-top" style="height: 180px; object-fit: cover;">
-                                                <div class="card-body text-center">
-                                                    <div class="form-check form-switch d-flex justify-content-center">
-                                                        <input class="form-check-input" type="checkbox" name="delete_imagens[]" value="<?php echo $imagem['id']; ?>" id="delete_<?php echo $imagem['id']; ?>">
-                                                        <label class="form-check-label" for="delete_<?php echo $imagem['id']; ?>">Excluir</label>
-                                                    </div>
+                                <?php else: foreach ($imagens as $imagem): ?>
+                                    <div class="col-xl-3 col-md-4 col-sm-6 mb-4 image-card-handle">
+                                        <div class="card h-100">
+                                            <img src="/RoomFlow/<?php echo htmlspecialchars($imagem['caminho_arquivo']); ?>" class="card-img-top" style="height: 180px; object-fit: cover;">
+                                            <div class="card-body text-center py-2">
+                                                <div class="form-check form-switch d-flex justify-content-center">
+                                                    <input class="form-check-input" type="checkbox" name="delete_imagens[]" value="<?php echo $imagem['id']; ?>" id="delete_<?php echo $imagem['id']; ?>">
+                                                    <label class="form-check-label" for="delete_<?php echo $imagem['id']; ?>">Excluir</label>
                                                 </div>
-                                                <input type="hidden" name="image_order[]" value="<?php echo $imagem['id']; ?>">
                                             </div>
+                                            <input type="hidden" name="image_order[]" value="<?php echo $imagem['id']; ?>">
                                         </div>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
+                                    </div>
+                                <?php endforeach; endif; ?>
                             </div>
                         </div>
                     </div>
@@ -165,45 +200,3 @@ $errors = $errors ?? [];
 $content = ob_get_clean();
 include __DIR__ . '/Layout.php';
 ?>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // 1. Ativar a máscara de preço (IMask.js)
-        const precoInput = document.getElementById('preco-input');
-        if (precoInput) {
-            IMask(precoInput, {
-                mask: 'R$ num',
-                blocks: {
-                    num: {
-                        mask: Number,
-                        scale: 2,
-                        thousandsSeparator: '.',
-                        padFractionalZeros: true,
-                        radix: ',',
-                        mapToRadix: ['.']
-                    }
-                }
-            });
-        }
-
-        // 2. Ativar o upload de arquivos (FilePond)
-        const uploadInput = document.getElementById('image-upload');
-        if (uploadInput) {
-            FilePond.create(uploadInput, {
-                labelIdle: `Arraste e solte seus arquivos ou <span class="filepond--label-action">Procure</span>`,
-                allowMultiple: true,
-                acceptedFileTypes: ['image/*'],
-            });
-        }
-
-        // 3. Ativar o reordenamento de imagens (SortableJS)
-        const sortableContainer = document.getElementById('sortable-images');
-        if (sortableContainer) {
-            new Sortable(sortableContainer, {
-                animation: 150,
-                ghostClass: 'sortable-ghost',
-                handle: '.image-card-handle',
-            });
-        }
-    });
-</script>
