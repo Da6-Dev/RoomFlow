@@ -1,25 +1,21 @@
 <?php
 
-
 class AccommodationsController extends RenderView
 {
     private $accommodationsModel;
     private $amenitiesModel;
 
-    // 1. O construtor inicializa os models, que serão usados em toda a classe.
     public function __construct()
     {
         $this->accommodationsModel = new AccommodationsModel();
         $this->amenitiesModel = new AmenitiesModel();
     }
 
-    // 2. Método para limpar a entrada de dados.
     private function cleanInput($data)
     {
         return htmlspecialchars(stripslashes(trim($data)));
     }
 
-    // 3. Método privado para coletar dados do formulário.
     private function collectDataFromRequest()
     {
         $precoFormatado = $_POST['preco'] ?? '0';
@@ -32,7 +28,7 @@ class AccommodationsController extends RenderView
             'descricao' => $this->cleanInput($_POST['descricao'] ?? ''),
             'status' => $this->cleanInput($_POST['status'] ?? ''),
             'capacidade' => $this->cleanInput($_POST['capacidade'] ?? ''),
-            'preco' => $this->cleanInput($precoNumerico), // Usa o preço limpo
+            'preco' => $this->cleanInput($precoNumerico),
             'minimo_noites' => $this->cleanInput($_POST['minimo_noites'] ?? ''),
             'camas_casal' => $this->cleanInput($_POST['camas_casal'] ?? ''),
             'camas_solteiro' => $this->cleanInput($_POST['camas_solteiro'] ?? ''),
@@ -41,11 +37,10 @@ class AccommodationsController extends RenderView
             'amenidades' => $_POST['amenidades'] ?? [],
             'delete_imagens' => $_POST['delete_imagens'] ?? [],
             'imagens' => $_FILES['imagens'] ?? [],
-            'image_order' => $_POST['image_order'] ?? [], // Adiciona a ordem das imagens
+            'image_order' => $_POST['image_order'] ?? [],
         ];
     }
 
-    // 4. Método privado para validar os dados coletados.
     private function validateData($data)
     {
         $errors = [];
@@ -89,31 +84,31 @@ class AccommodationsController extends RenderView
             'Accommodations' => $this->accommodationsModel->listar(),
             'father' => 'Acomodações',
             'page' => 'Listar',
-            'imagens_capa' => $this->accommodationsModel->getImagensCapa(),
+            'page_script' => 'Acomodacoes.js',
         ]);
     }
-
-
 
     public function create()
     {
         $errors = [];
-        $data = []; // Inicializa para evitar erro na view no primeiro carregamento
+        $data = [];
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->collectDataFromRequest();
             $errors = $this->validateData($data);
+            
+            // VALIDAÇÃO CORRIGIDA: Verifica a combinação de tipo e número.
+            if ($this->accommodationsModel->findByTypeAndNumber($data['tipo'], $data['numero'])) {
+                // Usando 'general' para exibir o erro no alerta principal do topo do formulário.
+                $errors['general'] = 'Já existe uma acomodação com este mesmo Tipo e Número.';
+            }
 
             if (empty($errors)) {
-                if ($this->accommodationsModel->getAccommodationByName($data['tipo']) && $this->accommodationsModel->getAccommodationByNumber($data['numero'])) {
-                    $errors['exists'] = 'Essa acomodação já existe.';
+                if ($this->accommodationsModel->create($data)) {
+                    header('Location: /RoomFlow/Acomodacoes?msg=success_create');
+                    exit();
                 } else {
-                    if ($this->accommodationsModel->create($data)) {
-                        header('Location: /RoomFlow/Acomodacoes?msg=success_create');
-                        exit();
-                    } else {
-                        $errors['general'] = 'Erro ao cadastrar a acomodação. Tente novamente.';
-                    }
+                    $errors['general'] = 'Erro ao cadastrar a acomodação. Tente novamente.';
                 }
             }
         }
@@ -121,10 +116,11 @@ class AccommodationsController extends RenderView
         $this->LoadView('AcomodacoesCadastrar', [
             'Title' => 'Cadastrar Acomodação',
             'errors' => $errors,
-            'data' => $data, // Envia dados submetidos de volta para preencher o formulário
+            'data' => $data,
             'father' => 'Acomodações',
             'page' => 'Cadastrar',
             'Amenities' => $this->amenitiesModel->listar(),
+            'page_script' => 'AcomodacoesCadastrar.js',
         ]);
     }
 
@@ -138,6 +134,7 @@ class AccommodationsController extends RenderView
             'father' => 'Acomodações',
             'page' => 'Editar',
             'imagens' => $this->accommodationsModel->getImagesByAccommodationId($id),
+            'page_script' => 'AcomodacoesEditar.js',
         ]);
     }
 
@@ -149,8 +146,12 @@ class AccommodationsController extends RenderView
             $data = $this->collectDataFromRequest();
             $errors = $this->validateData($data);
 
+            // VALIDAÇÃO CORRIGIDA: Verifica a combinação, ignorando o próprio registro que está sendo editado.
+            if ($this->accommodationsModel->findByTypeAndNumber($data['tipo'], $data['numero'], $id)) {
+                $errors['general'] = 'Já existe outra acomodação com este mesmo Tipo e Número.';
+            }
+
             if (empty($errors)) {
-                // A lógica de reordenar será movida para dentro do Model
                 if ($this->accommodationsModel->update($id, $data)) {
                     header('Location: /RoomFlow/Acomodacoes?msg=success_update');
                     exit();
@@ -160,7 +161,7 @@ class AccommodationsController extends RenderView
             }
         }
 
-        // Carrega a view com os dados e possíveis erros
+        // Ao falhar, recarrega a view de edição com os erros
         $this->LoadView('AcomodacoesEditar', [
             'acomodacao' => $this->accommodationsModel->getAccommodationById($id),
             'amenidades_acomodacao' => $this->amenitiesModel->getAmenitiesAccommodations($id),
@@ -170,6 +171,7 @@ class AccommodationsController extends RenderView
             'page' => 'Editar',
             'errors' => $errors,
             'imagens' => $this->accommodationsModel->getImagesByAccommodationId($id),
+            'page_script' => 'AcomodacoesEditar.js',
         ]);
     }
 
