@@ -1,10 +1,57 @@
 <?php
 ob_start();
 
-// Supondo que o Controller agora envia a lista de todas as comodidades disponíveis
-// Ex: $this->LoadView('HospedeCadastrar', ['errors' => $errors, 'comodidades' => $allAmenities]);
-$allAmenities = $comodidades ?? []; // Garante que a variável exista
-$hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências já marcadas em caso de erro
+// Garante que as variáveis para o formulário sempre existam.
+$errors = $errors ?? [];
+$data = $data ?? [];
+
+/**
+ * Função auxiliar para renderizar um campo de formulário completo.
+ * CORRIGIDO: Agora recebe $data e $errors como parâmetros para garantir o escopo correto.
+ *
+ * @param string $name O atributo 'name' do campo.
+ * @param string $label O texto para a label do campo.
+ * @param array $data Os dados do formulário para repopulação.
+ * @param array $errors Os erros de validação a serem exibidos.
+ * @param array $options Opções como 'type', 'col_class', 'id', etc.
+ */
+function render_form_field($name, $label, $data, $errors, $options = []) {
+    // REMOVIDO: A linha "global $errors, $data;" que causava o erro.
+
+    // Configurações padrão
+    $type = $options['type'] ?? 'text';
+    $col_class = $options['col_class'] ?? 'col-md-12';
+    $id = $options['id'] ?? "{$name}-input";
+    $required = $options['required'] ?? true;
+    
+    // Define o valor do campo (usa o valor do array $data passado como argumento)
+    $value = htmlspecialchars($data[$name] ?? '');
+
+    // Define a classe do grupo de input
+    $group_class = ($type === 'date') ? 'input-group-static' : 'input-group-outline';
+    $filled_class = !empty($value) ? 'is-filled' : '';
+
+    // Inicia a renderização do campo
+    echo "<div class='{$col_class}'>";
+    echo "  <div class='input-group {$group_class} my-3 {$filled_class}'>";
+    
+    if ($type === 'date') {
+        echo "<label>{$label}</label>";
+    } else {
+        echo "<label class='form-label'>{$label}</label>";
+    }
+
+    echo "<input type='{$type}' class='form-control' name='{$name}' id='{$id}' value='{$value}' " . ($required ? 'required' : '') . ">";
+    
+    echo "  </div>";
+    
+    // Exibe a mensagem de erro, se houver (usa o array $errors passado como argumento)
+    if (!empty($errors[$name])) {
+        echo "<div class='text-danger text-xs mt-n2 ms-1'>{$errors[$name]}</div>";
+    }
+    
+    echo "</div>";
+}
 
 ?>
 
@@ -22,117 +69,27 @@ $hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências j�
 
                         <h6 class="text-dark text-sm mt-4">Dados Pessoais</h6>
                         <div class="row">
-                            <div class="col-md-8">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Nome Completo</label>
-                                    <input type="text" class="form-control" name="nome"
-                                        value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['nome'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['nome']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="input-group input-group-static my-3">
-                                    <label>Data de Nascimento</label>
-                                    <input type="date" class="form-control" name="dataNasc"
-                                        value="<?php echo htmlspecialchars($_POST['dataNasc'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['dataNasc'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['dataNasc']; ?></div>
-                                <?php endif; ?>
-                            </div>
+                            <?php render_form_field('nome', 'Nome Completo', $data, $errors, ['col_class' => 'col-md-8']); ?>
+                            <?php render_form_field('dataNasc', 'Data de Nascimento', $data, $errors, ['type' => 'date', 'col_class' => 'col-md-4']); ?>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" name="email"
-                                        value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['email'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['email']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">CPF</label>
-                                    <input type="text" class="form-control" name="cpf" id="cpf-input"
-                                        value="<?php echo htmlspecialchars($_POST['cpf'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['cpf'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['cpf']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Telefone</label>
-                                    <input type="tel" class="form-control" name="telefone" id="telefone-input"
-                                        value="<?php echo htmlspecialchars($_POST['telefone'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['telefone'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['telefone']; ?></div>
-                                <?php endif; ?>
-                            </div>
+                            <?php render_form_field('email', 'Email', $data, $errors, ['type' => 'email', 'col_class' => 'col-md-6']); ?>
+                            <?php render_form_field('cpf', 'CPF', $data, $errors, ['col_class' => 'col-md-3']); ?>
+                            <?php render_form_field('telefone', 'Telefone', $data, $errors, ['type' => 'tel', 'col_class' => 'col-md-3']); ?>
                         </div>
 
                         <hr class="horizontal dark my-4">
 
                         <h6 class="text-dark text-sm">Endereço</h6>
                         <div class="row">
-                            <div class="col-md-3">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">CEP</label>
-                                    <input type="text" class="form-control" name="cep" id="cep-input"
-                                        value="<?php echo htmlspecialchars($_POST['cep'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['cep'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['cep']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-7">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Rua / Logradouro</label>
-                                    <input type="text" class="form-control" name="rua" id="rua-input"
-                                        value="<?php echo htmlspecialchars($_POST['rua'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['rua'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['rua']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Número</label>
-                                    <input type="text" class="form-control" name="numero" id="numero-input"
-                                        value="<?php echo htmlspecialchars($_POST['numero'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['numero'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['numero']; ?></div>
-                                <?php endif; ?>
-                            </div>
+                            <?php render_form_field('cep', 'CEP', $data, $errors, ['col_class' => 'col-md-3']); ?>
+                            <?php render_form_field('rua', 'Rua / Logradouro', $data, $errors, ['col_class' => 'col-md-7']); ?>
+                            <?php render_form_field('numero', 'Número', $data, $errors, ['col_class' => 'col-md-2']); ?>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Cidade</label>
-                                    <input type="text" class="form-control" name="cidade" id="cidade-input"
-                                        value="<?php echo htmlspecialchars($_POST['cidade'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['cidade'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['cidade']; ?></div>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="input-group input-group-outline my-3">
-                                    <label class="form-label">Estado</label>
-                                    <input type="text" class="form-control" name="estado" id="estado-input"
-                                        value="<?php echo htmlspecialchars($_POST['estado'] ?? ''); ?>" required>
-                                </div>
-                                <?php if (!empty($errors['estado'])): ?>
-                                    <div class="text-danger text-xs mt-n2 ms-1"><?php echo $errors['estado']; ?></div>
-                                <?php endif; ?>
-                            </div>
+                            <?php render_form_field('cidade', 'Cidade', $data, $errors, ['col_class' => 'col-md-6']); ?>
+                            <?php render_form_field('estado', 'Estado', $data, $errors, ['col_class' => 'col-md-6']); ?>
                         </div>
 
                         <hr class="horizontal dark my-4">
@@ -145,26 +102,23 @@ $hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências j�
                                         alt="preview" class="avatar avatar-xxl me-3 shadow-sm border-radius-lg"
                                         style="object-fit: cover;">
                                     <div>
-                                        <label for="image-upload" class="btn btn-sm btn-outline-dark mb-0">Escolher
-                                            Imagem</label>
-                                        <input type="file" name="imagem" id="image-upload" class="d-none">
-                                        <p id="file-name" class="text-xs text-secondary mt-1 mb-0">Nenhum arquivo
-                                            selecionado.</p>
+                                        <label for="image-upload" class="btn btn-sm btn-outline-dark mb-0">Escolher Imagem</label>
+                                        <input type="file" name="imagem" id="image-upload" class="d-none" accept="image/*">
+                                        <p id="file-name" class="text-xs text-secondary mt-1 mb-0">Nenhum arquivo selecionado.</p>
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-7">
                                 <h6 class="text-dark text-sm">Preferências / Observações</h6>
                                 <p class="text-xs text-secondary mb-3">Ex: Intolerância a lactose, andar baixo, etc.</p>
 
                                 <div id="preferences-container">
                                     <?php
-                                    // Se houver erros de validação e o formulário for reenviado,
-                                    // este loop recria os campos de preferência que o usuário já havia preenchido.
-                                    $posted_preferences = $_POST['preferencias'] ?? [];
+                                    $posted_preferences = $data['preferencias'] ?? [];
                                     if (!empty($posted_preferences)):
-                                        foreach ($posted_preferences as $index => $pref_text):
-                                            if (!empty($pref_text)): // Só recria se não estiver vazio
+                                        foreach ($posted_preferences as $pref_text):
+                                            if (!empty($pref_text)):
                                                 ?>
                                                 <div class="row align-items-center preference-item mb-2">
                                                     <div class="col-10">
@@ -175,9 +129,7 @@ $hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências j�
                                                         </div>
                                                     </div>
                                                     <div class="col-2">
-                                                        <button type="button"
-                                                            class="btn btn-icon-only btn-link text-danger remove-pref-btn"
-                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Remover">
+                                                        <button type="button" class="btn btn-icon-only btn-link text-danger remove-pref-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover">
                                                             <i class="material-symbols-rounded">delete</i>
                                                         </button>
                                                     </div>
@@ -189,8 +141,7 @@ $hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências j�
                                     ?>
                                 </div>
 
-                                <button type="button" id="add-preference-btn"
-                                    class="btn btn-sm btn-outline-primary mt-2">
+                                <button type="button" id="add-preference-btn" class="btn btn-sm btn-outline-primary mt-2">
                                     <i class="material-symbols-rounded align-middle">add</i>
                                     Adicionar Preferência
                                 </button>
@@ -212,72 +163,3 @@ $hospedePreferencias = $_POST['preferencias'] ?? []; // Pega as preferências j�
 $content = ob_get_clean();
 include __DIR__ . '/Layout.php';
 ?>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-        // ... (as lógicas de máscara e CEP continuam as mesmas) ...
-        IMask(document.getElementById('cpf-input'), { mask: '000.000.000-00' });
-        IMask(document.getElementById('cep-input'), { mask: '00000-000' });
-        IMask(document.getElementById('telefone-input'), { mask: '(00) 00000-0000' });
-        // ... (a lógica do ViaCEP continua a mesma) ...
-
-        // ==========================================================
-        // NOVA LÓGICA PARA GERENCIAR PREFERÊNCIAS
-        // ==========================================================
-        const addPrefBtn = document.getElementById('add-preference-btn');
-        const preferencesContainer = document.getElementById('preferences-container');
-
-        // Função para adicionar um novo campo de preferência
-        addPrefBtn.addEventListener('click', function () {
-            const newPreferenceItem = document.createElement('div');
-            newPreferenceItem.classList.add('row', 'align-items-center', 'preference-item', 'mb-2');
-
-            newPreferenceItem.innerHTML = `
-            <div class="col-10">
-                <div class="input-group input-group-outline is-filled my-3">
-                    <label class="form-label">Preferência</label>
-                    <input type="text" class="form-control" name="preferencias[]">
-                </div>
-            </div>
-            <div class="col-2">
-                <button type="button" class="btn btn-icon-only btn-link text-danger remove-pref-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover">
-                    <i class="material-symbols-rounded">delete</i>
-                </button>
-            </div>
-        `;
-
-            preferencesContainer.appendChild(newPreferenceItem);
-            // Foca no novo campo criado
-            newPreferenceItem.querySelector('input').focus();
-        });
-
-        // Função para remover um campo de preferência (usando delegação de evento)
-        preferencesContainer.addEventListener('click', function (event) {
-            // Procura pelo botão de remover mais próximo do elemento que foi clicado
-            const removeButton = event.target.closest('.remove-pref-btn');
-            if (removeButton) {
-                // Remove o elemento pai do botão, que é a linha inteira da preferência
-                removeButton.closest('.preference-item').remove();
-            }
-        });
-
-
-        // 3. PRÉ-VISUALIZAÇÃO DA IMAGEM
-        const imageUpload = document.getElementById('image-upload');
-        const imagePreview = document.getElementById('image-preview');
-        const fileName = document.getElementById('file-name');
-
-        imageUpload.addEventListener('change', function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreview.src = e.target.result;
-                }
-                reader.readAsDataURL(file);
-                fileName.textContent = file.name;
-            }
-        });
-    });
-</script>

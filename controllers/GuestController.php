@@ -1,9 +1,7 @@
 <?php
 
-
 class GuestController extends RenderView
 {
-
     private $guestModel;
 
     public function __construct()
@@ -11,7 +9,6 @@ class GuestController extends RenderView
         $this->guestModel = new GuestModel();
     }
 
-    // 1. Convertido de função local para método privado para consistência.
     private function cleanInput($data)
     {
         return htmlspecialchars(stripslashes(trim($data)));
@@ -19,11 +16,9 @@ class GuestController extends RenderView
 
     private function collectGuestDataFromRequest($currentGuest = null)
     {
-        // Lógica CORRIGIDA para coletar as preferências
         $preferencias = [];
         if (isset($_POST['preferencias']) && is_array($_POST['preferencias'])) {
             foreach ($_POST['preferencias'] as $preferencia) {
-                // Adiciona a preferência ao array se não estiver vazia, limpando a entrada
                 if (!empty(trim($preferencia))) {
                     $preferencias[] = $this->cleanInput($preferencia);
                 }
@@ -31,26 +26,27 @@ class GuestController extends RenderView
         }
 
         return [
-            'nome' => $this->cleanInput($_POST['nome'] ?? ''),
-            'email' => $this->cleanInput($_POST['email'] ?? ''),
-            'telefone' => $this->cleanInput($_POST['telefone'] ?? ''),
-            'cpf' => preg_replace('/[^0-9]/', '', $this->cleanInput($_POST['cpf'] ?? '')),
-            'rua' => $this->cleanInput($_POST['rua'] ?? ''),
-            'cidade' => $this->cleanInput($_POST['cidade'] ?? ''),
-            'estado' => $this->cleanInput($_POST['estado'] ?? ''),
-            'numero' => $this->cleanInput($_POST['numero'] ?? ''),
-            'cep' => $this->cleanInput($_POST['cep'] ?? ''),
-            'dataNasc' => $this->cleanInput($_POST['dataNasc'] ?? ''),
-            'preferencias' => $preferencias, // AGORA contém os dados corretos
-            'imagem' => $_FILES['imagem'],
-            'imagem_atual' => $currentGuest['imagem'] ?? null
+            'id'             => $currentGuest['id'] ?? null,
+            'nome'           => $this->cleanInput($_POST['nome'] ?? ''),
+            'email'          => $this->cleanInput($_POST['email'] ?? ''),
+            'telefone'       => $this->cleanInput($_POST['telefone'] ?? ''),
+            'cpf'            => $this->cleanInput($_POST['cpf'] ?? ''), // Limpeza de CPF feita no Model
+            'rua'            => $this->cleanInput($_POST['rua'] ?? ''),
+            'cidade'         => $this->cleanInput($_POST['cidade'] ?? ''),
+            'estado'         => $this->cleanInput($_POST['estado'] ?? ''),
+            'numero'         => $this->cleanInput($_POST['numero'] ?? ''),
+            'cep'            => $this->cleanInput($_POST['cep'] ?? ''),
+            'dataNasc'       => $this->cleanInput($_POST['dataNasc'] ?? ''),
+            'preferencias'   => $preferencias,
+            'imagem'         => $_FILES['imagem'] ?? null,
+            'imagem_atual'   => $currentGuest['imagem'] ?? null
         ];
     }
 
     private function validateGuestData(array $data)
     {
         $errors = [];
-
+        // As funções de validação (validarNome, etc.) devem existir em outro arquivo de helpers.
         $validations = [
             'nome' => validarNome($data['nome']),
             'email' => validarEmail($data['email']),
@@ -69,38 +65,20 @@ class GuestController extends RenderView
                 $errors[$field] = $validation['msg'];
             }
         }
-
         return $errors;
     }
 
     public function list()
     {
         $this->LoadView('Hospedes', [
-            'Title' => 'Listagem de todos os Ususarios',
+            'Title' => 'Listagem de Hóspedes',
             'Guests' => $this->guestModel->listar(),
-            'father' => 'Hospedes;',
-            'page' => 'Listar',
-        ]);
-    }
-
-    public function editar($id)
-    {
-        $guest = $this->guestModel->getHospedeById($id);
-        if (!$guest) {
-            header("Location: /RoomFlow/Hospedes?msg=not_found");
-            exit();
-        }
-
-        $this->LoadView('HospedeEditar', [
-            'Title' => 'Editar Hóspede',
-            'guest' => $guest,
-            'preferencias' => $this->guestModel->getPreferencesById($id),
             'father' => 'Hospedes',
-            'page' => 'Editar',
+            'page' => 'Listar',
+            'page_script' => 'Hospedes.js',
         ]);
     }
 
-    // 2. Removido o parâmetro $id, que não era utilizado.
     public function create()
     {
         $errors = [];
@@ -128,23 +106,40 @@ class GuestController extends RenderView
             'data' => $data,
             'father' => 'Hospedes',
             'page' => 'Cadastrar',
+            'page_script' => 'HospedeCadastrar.js',
         ]);
     }
 
-    public function update($id)
+    public function editar($id)
     {
-        $errors = [];
         $guest = $this->guestModel->getHospedeById($id);
-
         if (!$guest) {
             header("Location: /RoomFlow/Hospedes?msg=not_found");
             exit();
         }
 
+        $this->LoadView('HospedeEditar', [
+            'Title' => 'Editar Hóspede',
+            'guest' => $guest,
+            'preferencias' => $this->guestModel->getPreferencesById($id),
+            'father' => 'Hospedes',
+            'page' => 'Editar',
+            'page_script' => 'HospedeEditar.js',
+        ]);
+    }
+
+    public function update($id)
+    {
+        $guest = $this->guestModel->getHospedeById($id);
+        if (!$guest) {
+            header("Location: /RoomFlow/Hospedes?msg=not_found");
+            exit();
+        }
+
+        $data = [];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->collectGuestDataFromRequest($guest);
             $data['id'] = $id;
-
             $errors = $this->validateGuestData($data);
 
             if (empty($errors)) {
@@ -162,10 +157,11 @@ class GuestController extends RenderView
         $this->LoadView('HospedeEditar', [
             'Title' => 'Editar Hóspede',
             'errors' => $errors,
-            'guest' => array_merge($guest, $_POST), // Mescla para preencher o form com dados novos
-            'preferencias' => $this->guestModel->getPreferencesById($id),
+            'guest' => array_merge($guest, $_POST),
+            'preferencias' => $_POST['preferencias'] ?? $this->guestModel->getPreferencesById($id),
             'father' => 'Hospedes',
             'page' => 'Editar',
+            'page_script' => 'HospedeEditar.js',
         ]);
     }
 
@@ -182,4 +178,3 @@ class GuestController extends RenderView
         exit();
     }
 }
-// 3. Removida a chave "}" extra que estava aqui.
