@@ -54,7 +54,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://unpkg.com/imask"></script> <script src="https://unpkg.com/filepond/dist/filepond.min.js"></script>
 <script src="https://unpkg.com/jquery-filepond/filepond.jquery.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> <script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/pt.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
@@ -62,7 +63,7 @@
 
 <script src="/RoomFlow/Public/assets/js/preferences.js"></script>
 <script src="/RoomFlow/Public/assets/js/alerts.js"></script>
-<script src="/RoomFlow/Public/assets/js/reservas.js"></script>
+<script src="/RoomFlow/Public/assets/js/Calendar.js"></script>
 <script src="/RoomFlow/Public/assets/js/masks.js"></script>
 <script src="/RoomFlow/Public/assets/js/buscacep.js"></script>
 

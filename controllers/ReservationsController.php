@@ -98,6 +98,7 @@ class ReservationsController extends RenderView
             'datasReservadas' => $this->reservationsModel->getReservationsDate(),
             'errors' => $errors,
             'formData' => $data, // Envia dados de volta para o form
+            'page_script' => 'ReservasCadastrar.js',
         ]);
     }
 
@@ -114,6 +115,7 @@ class ReservationsController extends RenderView
             'father' => 'Reservas',
             'page' => 'Listar',
             'Reservas' => $reservas,
+            'page_script' => 'Reservas.js',
         ]);
     }
 
@@ -149,6 +151,7 @@ class ReservationsController extends RenderView
             'acomodacoes' => $this->reservationsModel->acomodacoesGetDisponiveis(),
             'data' => date('Y-m-d'),
             'datasReservadas' => $this->reservationsModel->getReservationsDate(),
+            'page_script' => 'ReservasEditar.js',
         ]);
     }
 
@@ -182,6 +185,7 @@ class ReservationsController extends RenderView
             'errors' => $errors,
             'data' => date('Y-m-d'),
             'datasReservadas' => $this->reservationsModel->getReservationsDate(),
+            'page_script' => 'ReservasEditar.js',
         ]);
     }
 
@@ -191,7 +195,8 @@ class ReservationsController extends RenderView
             'Title' => 'Histórico de Reservas',
             'father' => 'Reservas',
             'page' => 'Histórico',
-            'historico' => $this->reservationsModel->getHistoricoReservas()
+            'historico' => $this->reservationsModel->getHistoricoReservas(),
+            'page_script' => 'ReservasHistorico.js',
         ]);
     }
 }

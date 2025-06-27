@@ -1,48 +1,40 @@
-$datas_reservadas = JSON.parse(
-    document.getElementById("datasReservadas").value
-);
-
-document.getElementById("acomodacao").addEventListener("change", function () {
-    atualizarValorAcomodacao();
-    document.getElementById("data_checkin").value = '';
-    document.getElementById("data_checkout").value = '';
-});
-
-function atualizarValorAcomodacao() {
-    $id_acomodacao = document.getElementById("acomodacao").value;
-    if ($datas_reservadas[$id_acomodacao]) {
-        flatpickr("#data_checkin", {
-            disable: $datas_reservadas[$id_acomodacao],
-            minDate: "today",
-            dateFormat: "Y-m-d",
-        });
-        flatpickr("#data_checkout", {
-            disable: $datas_reservadas[$id_acomodacao],
-            minDate: "today",
-            dateFormat: "Y-m-d",
-        });
-    } else {
-        flatpickr("#data_checkin", {
-            disable: [],
-            minDate: "today",
-            dateFormat: "Y-m-d",
-        });
-        flatpickr("#data_checkout", {
-            disable: [],
-            minDate: "today",
-            dateFormat: "Y-m-d",
-        });
-    }
+function confirmDelete(reservaId, reservaName) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        html: `Você está prestes a excluir a <strong>${reservaName}</strong>.<br>Esta ação não pode ser desfeita!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('form-delete-' + reservaId).submit();
+        }
+    });
 }
 
-flatpickr("#data_checkin", {
-    enable: [],
-    minDate: "today",
-    dateFormat: "Y-m-d",
-});
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Inicializa o DataTable para a tabela de reservas
+    const reservasTable = new simpleDatatables.DataTable("#reservasTable", {
+        searchable: true,
+        fixedHeight: false,
+        perPage: 10,
+        labels: {
+            placeholder: "Buscar reserva...",
+            perPage: " reservas por página",
+            noRows: "Nenhuma reserva encontrada",
+            info: "Mostrando {start} a {end} de {rows} reservas"
+        }
+    });
 
-flatpickr("#data_checkout", {
-    enable: [],
-    minDate: "today",
-    dateFormat: "Y-m-d",
+    // Faz a mensagem de alerta desaparecer após 5 segundos
+    const alertMessage = document.getElementById('alertMessage');
+    if (alertMessage) {
+        setTimeout(() => {
+            new bootstrap.Alert(alertMessage).close();
+        }, 5000);
+    }
 });

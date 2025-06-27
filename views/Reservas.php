@@ -101,9 +101,6 @@ function getStatusBadge($status) {
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-gradient-primary text-center me-3">
-                                                        <i class="material-symbols-rounded opacity-10">king_bed</i>
-                                                    </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-md"><?php echo htmlspecialchars($reserva['acomodacao']); ?></h6>
                                                         <p class="text-sm text-secondary mb-0">R$ <?php echo number_format($reserva['valor_total'], 2, ',', '.'); ?></p>
@@ -156,45 +153,5 @@ include __DIR__ . '/Layout.php';
 ?>
 
 <script>
-// A mesma função de delete que usamos para hóspedes
-function confirmDelete(reservaId, reservaName) {
-    Swal.fire({
-        title: 'Tem certeza?',
-        html: `Você está prestes a excluir a <strong>${reservaName}</strong>.<br>Esta ação não pode ser desfeita!`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, excluir!',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('form-delete-' + reservaId).submit();
-        }
-    });
-}
 
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // Inicializa o DataTable para a tabela de reservas
-    const reservasTable = new simpleDatatables.DataTable("#reservasTable", {
-        searchable: true,
-        fixedHeight: false,
-        perPage: 10,
-        labels: {
-            placeholder: "Buscar reserva...",
-            perPage: " reservas por página",
-            noRows: "Nenhuma reserva encontrada",
-            info: "Mostrando {start} a {end} de {rows} reservas"
-        }
-    });
-
-    // Faz a mensagem de alerta desaparecer após 5 segundos
-    const alertMessage = document.getElementById('alertMessage');
-    if (alertMessage) {
-        setTimeout(() => {
-            new bootstrap.Alert(alertMessage).close();
-        }, 5000);
-    }
-});
 </script>
