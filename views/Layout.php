@@ -6,7 +6,12 @@ require_once __DIR__ . '/../Models/Database.php';
 require_once __DIR__ . '/../Models/ReservationsModel.php';
 
 $reservationsModel = new ReservationsModel();
+
+// 1. Arquiva reservas que já expiraram
 $reservationsModel->arquivarReservasExpiradas();
+
+// 2. Atualiza o status das acomodações para ocupado/disponível (NOVA LINHA)
+$reservationsModel->atualizarStatusAcomodacoes();
 
 ?>
 
@@ -20,14 +25,12 @@ $reservationsModel->arquivarReservasExpiradas();
     <link rel="stylesheet" href="/RoomFlow/public/css/style.css">
 </head>
 
-<!-- Incluindo a Navbar -->
 <?php include __DIR__ . '/partials/navbar.php'; ?>
 
 <main>
     <?= $content ?>
 </main>
 
-<!-- Incluindo o Footer -->
 <?php include __DIR__ . '/partials/footer.php'; ?>
 
 </body>

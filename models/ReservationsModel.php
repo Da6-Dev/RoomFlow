@@ -371,4 +371,49 @@ class ReservationsModel extends Database
         // Garante que o retorno seja um inteiro.
         return (int) ($resultado['total'] ?? 0);
     }
+
+    /**
+     * Atualiza o status das acomodações para 'ocupado' ou 'disponivel'
+     * com base nas datas das reservas ativas.
+     * É executado em duas etapas para garantir a consistência.
+     */
+    public function atualizarStatusAcomodacoes()
+    {
+        try {
+            // Etapa 1: Liberar acomodações que não estão mais ocupadas.
+            // Pega todas as acomodações que estão como 'ocupado' mas não têm uma reserva ativa para hoje
+            // e as retorna para 'disponivel'. Isso não afeta acomodações em 'manutencao'.
+            $sqlLiberar = "
+                UPDATE acomodacoes a
+                LEFT JOIN reservas r ON a.id = r.id_acomodacao
+                    AND r.status IN ('confirmada', 'check-in realizado')
+                    AND CURDATE() >= r.data_checkin
+                    AND CURDATE() < r.data_checkout
+                SET a.status = 'disponivel'
+                WHERE
+                    a.status = 'ocupado'
+                    AND r.id IS NULL;
+            ";
+            $this->pdo->exec($sqlLiberar);
+
+            // Etapa 2: Ocupar acomodações com reservas ativas.
+            // Pega todas as acomodações que têm uma reserva confirmada para hoje e define seu status como 'ocupado'.
+            $sqlOcupar = "
+                UPDATE acomodacoes a
+                JOIN reservas r ON a.id = r.id_acomodacao
+                SET a.status = 'ocupado'
+                WHERE
+                    r.status IN ('confirmada', 'check-in realizado')
+                    AND CURDATE() >= r.data_checkin
+                    AND CURDATE() < r.data_checkout;
+            ";
+            $this->pdo->exec($sqlOcupar);
+
+            return ['status' => 'success', 'message' => 'Status das acomodações verificado e atualizado.'];
+        } catch (PDOException $e) {
+            // Em caso de erro, você pode querer logar a mensagem.
+            // error_log('Erro ao atualizar status de acomodações: ' . $e->getMessage());
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
 }
