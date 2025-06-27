@@ -29,7 +29,7 @@ class ReservationsModel extends Database
      */
     public function acomodacoesGetDisponiveis()
     {
-        $stmt = $this->pdo->query("SELECT id, tipo, numero FROM acomodacoes ORDER BY tipo, numero ASC");
+        $stmt = $this->pdo->query("SELECT id, tipo, numero, preco FROM acomodacoes ORDER BY tipo, numero ASC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

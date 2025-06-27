@@ -41,6 +41,7 @@ class AccommodationsController extends RenderView
             'amenidades' => $_POST['amenidades'] ?? [],
             'delete_imagens' => $_POST['delete_imagens'] ?? [],
             'imagens' => $_FILES['imagens'] ?? [],
+            'image_order' => $_POST['image_order'] ?? [], // Adiciona a ordem das imagens
         ];
     }
 
@@ -147,9 +148,6 @@ class AccommodationsController extends RenderView
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = $this->collectDataFromRequest();
             $errors = $this->validateData($data);
-
-            // Adiciona a ordem das imagens aos dados que serão enviados para o Model
-            $data['image_order'] = $_POST['image_order'] ?? [];
 
             if (empty($errors)) {
                 // A lógica de reordenar será movida para dentro do Model

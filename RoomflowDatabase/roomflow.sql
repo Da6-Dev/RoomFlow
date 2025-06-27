@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 23/06/2025 às 23:46
+-- Tempo de geração: 27/06/2025 às 17:05
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -52,7 +52,8 @@ INSERT INTO `acomodacoes` (`id`, `tipo`, `numero`, `descricao`, `status`, `capac
 (17, 'Suíte com cozinha', '1', 'Com ampla vista para o mar, esta acomodação possui cama de casal, cama extra, ar-condicionado e TV, além de possuir também uma pequena cozinha com utensílios básicos e banheiro. Na sua parte externa possui deck com churrasqueira. A acomodação é ideal para duas pessoas, podendo comportar até três.', 'disponivel', 3, 390.00, 2, 1, 1, '14:00:00', '10:00:00'),
 (18, 'Chalé família', '1', 'Esta acomodação possui dois quartos, um dos quartos com cama de casal e TV e o outro com cama de casal e uma de solteiro. Ambos os quartos são equipados com ar-condicionado. Possui também banheiro, cozinha com utensílios básicos e churrasqueira. Na sua parte externa possui sacada com ampla vista para o mar. A acomodação é ideal para até cinco pessoas.', 'disponivel', 5, 590.00, 2, 2, 1, '14:00:00', '10:00:00'),
 (19, 'Cabana', '1', 'Esta acomodação está localizada em uma área mais reservada da pousada. Possui cama de casal, uma cama de solteiro, cama extra, ar-condicionado, TV, cozinha com utensílios básicos e banheiro. Na área externa possui varanda e deck com churrasqueira, tendo ampla vista para o mar. A acomodação é ideal para três pessoas, podendo comportar até quatro.', 'disponivel', 3, 490.00, 2, 1, 1, '14:00:00', '10:00:00'),
-(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'manutencao', 4, 100.00, 2, 0, 0, '14:00:00', '10:00:00');
+(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'manutencao', 4, 100.00, 2, 0, 0, '14:00:00', '10:00:00'),
+(32, 'Domo', '2', 'Podre Coco lixo', 'disponivel', 1, 111100.00, 1, 1, 1, '14:00:00', '12:00:00');
 
 -- --------------------------------------------------------
 
@@ -127,7 +128,11 @@ INSERT INTO `amenidades_acomodacoes` (`id`, `id_amenidades`, `id_acomodacoes`) V
 (455, 17, 17),
 (456, 20, 17),
 (457, 15, 20),
-(458, 17, 20);
+(458, 17, 20),
+(459, 13, 32),
+(460, 19, 32),
+(461, 18, 32),
+(462, 14, 32);
 
 -- --------------------------------------------------------
 
@@ -172,7 +177,9 @@ CREATE TABLE `historico_reservas` (
 --
 
 INSERT INTO `historico_reservas` (`id`, `id_reserva`, `detalhes`, `data_registro`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
-(11, 0, 'Reserva arquivada automaticamente por expiração.', '2025-06-23 19:41:20', 5, 16, '2025-06-01', '2025-06-02', 'finalizada', 590.00, 'dinheiro', 'tthrthtrhrh', '2025-06-09 01:56:33');
+(11, 0, 'Reserva arquivada automaticamente por expiração.', '2025-06-23 19:41:20', 5, 16, '2025-06-01', '2025-06-02', 'finalizada', 590.00, 'dinheiro', 'tthrthtrhrh', '2025-06-09 01:56:33'),
+(12, 16, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 16, '2025-06-23', '2025-06-25', 'finalizada', 1180.00, 'pix', 'tthrthtrhrh', '2025-06-23 19:58:26'),
+(13, 17, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 17, '2025-06-25', '2025-06-26', 'finalizada', 390.00, 'dinheiro', 'tthrthtrhrh', '2025-06-23 19:58:40');
 
 -- --------------------------------------------------------
 
@@ -217,76 +224,79 @@ CREATE TABLE `imagens_acomodacoes` (
   `nome_arquivo` varchar(255) DEFAULT NULL,
   `caminho_arquivo` varchar(255) DEFAULT NULL,
   `data_upload` timestamp NOT NULL DEFAULT current_timestamp(),
-  `capa_acomodacao` int(11) NOT NULL DEFAULT 0
+  `ordem` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Despejando dados para a tabela `imagens_acomodacoes`
 --
 
-INSERT INTO `imagens_acomodacoes` (`id`, `acomodacao_id`, `nome_arquivo`, `caminho_arquivo`, `data_upload`, `capa_acomodacao`) VALUES
-(21, 16, 'b87f83_427a0844705c415b85cf8d45e2f221b2~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f1930ba_b87f83_427a0844705c415b85cf8d45e2f221b2~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(22, 16, 'b87f83_928e441d10b74b3ba45cf455e8c12b0e~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193456_b87f83_928e441d10b74b3ba45cf455e8c12b0e~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(23, 16, 'b87f83_2195bb2abcea4970834f97af39aee9b3~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f1937ce_b87f83_2195bb2abcea4970834f97af39aee9b3~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(24, 16, 'b87f83_3984ca8f5d97472ebe0f78082100ec3a~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193b11_b87f83_3984ca8f5d97472ebe0f78082100ec3a~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(25, 16, 'b87f83_b585e69752e946568b5bafe0a957c720~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193e46_b87f83_b585e69752e946568b5bafe0a957c720~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(26, 16, 'b87f83_d2d7bd83c35c436d8715a34567485109~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f194117_b87f83_d2d7bd83c35c436d8715a34567485109~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(27, 16, 'b87f83_d5005769bdab47a688c07915ffe7b4bc~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f19441b_b87f83_d5005769bdab47a688c07915ffe7b4bc~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(28, 16, 'b87f83_e89ecfdd2aa84fa0812f6c8789225f20~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f19471d_b87f83_e89ecfdd2aa84fa0812f6c8789225f20~mv2.jpeg', '2025-05-20 22:28:01', 0),
-(29, 16, 'b87f83_0db328063a8c4b4ea1bb3dff437e8e46~mv2.jpeg', 'Public/uploads/acomodacoes/682d09c707c0e_b87f83_0db328063a8c4b4ea1bb3dff437e8e46~mv2.jpeg', '2025-05-20 23:01:27', 1),
-(36, 15, 'b87f83_5a54d8612da145a99bb18d7b3a22ff73~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c960389_b87f83_5a54d8612da145a99bb18d7b3a22ff73~mv2.jpeg', '2025-05-22 12:12:57', 1),
-(37, 15, 'b87f83_9dbd4e58f38a4c59ad7d8dbeea534562~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9606c4_b87f83_9dbd4e58f38a4c59ad7d8dbeea534562~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(38, 15, 'b87f83_61cd9f30603c4c0782d0dd8d262c0fcb~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c96092c_b87f83_61cd9f30603c4c0782d0dd8d262c0fcb~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(39, 15, 'b87f83_5256b82fef1a4bd1936c66a9e2acbb26~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c964155_b87f83_5256b82fef1a4bd1936c66a9e2acbb26~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(40, 15, 'b87f83_5580c08771c841089ccc440a82c2f298~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c96458b_b87f83_5580c08771c841089ccc440a82c2f298~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(41, 15, 'b87f83_af81b183079f4adfa6af570cb95eab09~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c964cef_b87f83_af81b183079f4adfa6af570cb95eab09~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(42, 15, 'b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965119_b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(43, 15, 'b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9653f0_b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(44, 15, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9656e0_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(45, 15, 'b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965974_b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', '2025-05-22 12:12:57', 0),
-(46, 17, 'b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a12a_b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', '2025-05-26 16:29:49', 0),
-(47, 17, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/683496fd4a678_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-26 16:29:49', 0),
-(48, 17, 'b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a945_b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', '2025-05-26 16:29:49', 0),
-(49, 17, 'b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4abf1_b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', '2025-05-26 16:29:49', 0),
-(50, 17, 'b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4aea0_b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', '2025-05-26 16:29:49', 0),
-(51, 17, 'b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b137_b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', '2025-05-26 16:29:49', 1),
-(52, 17, 'b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b409_b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', '2025-05-26 16:29:49', 0),
-(53, 17, 'b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b6bd_b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', '2025-05-26 16:29:49', 0),
-(54, 17, 'b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4baa2_b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', '2025-05-26 16:29:49', 0),
-(55, 17, 'b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bd4b_b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', '2025-05-26 16:29:49', 0),
-(56, 17, 'b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bfd2_b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', '2025-05-26 16:29:49', 0),
-(57, 18, 'b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', 'Public/uploads/acomodacoes/683497144a63f_b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', '2025-05-26 16:30:12', 1),
-(58, 18, 'b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', 'Public/uploads/acomodacoes/683497144a9ff_b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', '2025-05-26 16:30:12', 0),
-(59, 18, 'b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', 'Public/uploads/acomodacoes/683497144ad08_b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', '2025-05-26 16:30:12', 0),
-(60, 18, 'b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', 'Public/uploads/acomodacoes/683497144afe5_b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', '2025-05-26 16:30:12', 0),
-(61, 18, 'b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', 'Public/uploads/acomodacoes/683497144b2d8_b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', '2025-05-26 16:30:12', 0),
-(62, 18, 'b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', 'Public/uploads/acomodacoes/683497144b5bd_b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', '2025-05-26 16:30:12', 0),
-(63, 18, 'b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', 'Public/uploads/acomodacoes/683497144ba35_b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', '2025-05-26 16:30:12', 0),
-(64, 18, 'b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', 'Public/uploads/acomodacoes/683497144bd4d_b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', '2025-05-26 16:30:12', 0),
-(65, 18, 'b87f83_8d589652307341d888588070b458de81~mv2.jpg', 'Public/uploads/acomodacoes/683497144bffe_b87f83_8d589652307341d888588070b458de81~mv2.jpg', '2025-05-26 16:30:12', 0),
-(66, 18, 'b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', 'Public/uploads/acomodacoes/683497144c387_b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', '2025-05-26 16:30:12', 0),
-(67, 19, 'b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', 'Public/uploads/acomodacoes/68349721c270e_b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', '2025-05-26 16:30:25', 1),
-(68, 19, 'b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2a42_b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', '2025-05-26 16:30:25', 0),
-(69, 19, 'b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2da4_b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', '2025-05-26 16:30:25', 0),
-(70, 19, 'b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3047_b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', '2025-05-26 16:30:25', 0),
-(71, 19, 'b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', 'Public/uploads/acomodacoes/68349721c33bc_b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', '2025-05-26 16:30:25', 0),
-(72, 19, 'b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3759_b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', '2025-05-26 16:30:25', 0),
-(73, 19, 'b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3c19_b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', '2025-05-26 16:30:25', 0),
-(74, 19, 'b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c49d7_b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', '2025-05-26 16:30:25', 0),
-(75, 19, 'b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4d39_b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', '2025-05-26 16:30:25', 0),
-(76, 19, 'b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4f96_b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', '2025-05-26 16:30:25', 0),
-(77, 20, 'b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', 'Public/uploads/acomodacoes/6834972f724b3_b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', '2025-05-26 16:30:39', 1),
-(78, 20, 'b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', 'Public/uploads/acomodacoes/6834972f727d2_b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', '2025-05-26 16:30:39', 0),
-(79, 20, 'b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', 'Public/uploads/acomodacoes/6834972f72abf_b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', '2025-05-26 16:30:39', 0),
-(80, 20, 'b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72cde_b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', '2025-05-26 16:30:39', 0),
-(81, 20, 'b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72ec1_b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', '2025-05-26 16:30:39', 0),
-(82, 20, 'b87f83_89da331062774e919f434b54a7272a8f~mv2.png', 'Public/uploads/acomodacoes/6834972f7319a_b87f83_89da331062774e919f434b54a7272a8f~mv2.png', '2025-05-26 16:30:39', 0),
-(83, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', 'Public/uploads/acomodacoes/6834972f733df_b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', '2025-05-26 16:30:39', 0),
-(84, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', 'Public/uploads/acomodacoes/6834972f735f1_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', '2025-05-26 16:30:39', 0),
-(85, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', 'Public/uploads/acomodacoes/6834972f737f6_b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', '2025-05-26 16:30:39', 0),
-(86, 20, 'b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', 'Public/uploads/acomodacoes/6834972f739e1_b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', '2025-05-26 16:30:39', 0),
-(87, 20, 'b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', 'Public/uploads/acomodacoes/6834972f73be8_b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', '2025-05-26 16:30:39', 0),
-(88, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', 'Public/uploads/acomodacoes/6834972f73dbd_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', '2025-05-26 16:30:39', 0);
+INSERT INTO `imagens_acomodacoes` (`id`, `acomodacao_id`, `nome_arquivo`, `caminho_arquivo`, `data_upload`, `ordem`) VALUES
+(21, 16, 'b87f83_427a0844705c415b85cf8d45e2f221b2~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f1930ba_b87f83_427a0844705c415b85cf8d45e2f221b2~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(22, 16, 'b87f83_928e441d10b74b3ba45cf455e8c12b0e~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193456_b87f83_928e441d10b74b3ba45cf455e8c12b0e~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(23, 16, 'b87f83_2195bb2abcea4970834f97af39aee9b3~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f1937ce_b87f83_2195bb2abcea4970834f97af39aee9b3~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(24, 16, 'b87f83_3984ca8f5d97472ebe0f78082100ec3a~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193b11_b87f83_3984ca8f5d97472ebe0f78082100ec3a~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(25, 16, 'b87f83_b585e69752e946568b5bafe0a957c720~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f193e46_b87f83_b585e69752e946568b5bafe0a957c720~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(26, 16, 'b87f83_d2d7bd83c35c436d8715a34567485109~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f194117_b87f83_d2d7bd83c35c436d8715a34567485109~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(27, 16, 'b87f83_d5005769bdab47a688c07915ffe7b4bc~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f19441b_b87f83_d5005769bdab47a688c07915ffe7b4bc~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(28, 16, 'b87f83_e89ecfdd2aa84fa0812f6c8789225f20~mv2.jpeg', 'Public/uploads/acomodacoes/682d01f19471d_b87f83_e89ecfdd2aa84fa0812f6c8789225f20~mv2.jpeg', '2025-05-20 22:28:01', NULL),
+(29, 16, 'b87f83_0db328063a8c4b4ea1bb3dff437e8e46~mv2.jpeg', 'Public/uploads/acomodacoes/682d09c707c0e_b87f83_0db328063a8c4b4ea1bb3dff437e8e46~mv2.jpeg', '2025-05-20 23:01:27', NULL),
+(36, 15, 'b87f83_5a54d8612da145a99bb18d7b3a22ff73~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c960389_b87f83_5a54d8612da145a99bb18d7b3a22ff73~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(37, 15, 'b87f83_9dbd4e58f38a4c59ad7d8dbeea534562~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9606c4_b87f83_9dbd4e58f38a4c59ad7d8dbeea534562~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(38, 15, 'b87f83_61cd9f30603c4c0782d0dd8d262c0fcb~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c96092c_b87f83_61cd9f30603c4c0782d0dd8d262c0fcb~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(39, 15, 'b87f83_5256b82fef1a4bd1936c66a9e2acbb26~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c964155_b87f83_5256b82fef1a4bd1936c66a9e2acbb26~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(40, 15, 'b87f83_5580c08771c841089ccc440a82c2f298~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c96458b_b87f83_5580c08771c841089ccc440a82c2f298~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(41, 15, 'b87f83_af81b183079f4adfa6af570cb95eab09~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c964cef_b87f83_af81b183079f4adfa6af570cb95eab09~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(42, 15, 'b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965119_b87f83_c8f85aa203bb4a26a1dbe3633c00114b~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(43, 15, 'b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9653f0_b87f83_c72880f87ec948868f23310a25b1a518~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(44, 15, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c9656e0_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(45, 15, 'b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', 'Public/uploads/acomodacoes/682f14c965974_b87f83_5a42d6c11e7143e18cbeb41cbab190c0~mv2.jpeg', '2025-05-22 12:12:57', NULL),
+(46, 17, 'b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a12a_b87f83_ffb843fc4c484315aa4e4ab80ce909b1~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(47, 17, 'b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', 'Public/uploads/acomodacoes/683496fd4a678_b87f83_f07179544559435c967a19c767edd577~mv2.jpeg', '2025-05-26 16:29:49', NULL),
+(48, 17, 'b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4a945_b87f83_f7253080d75c4ca6aeb1a93f144a05bc~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(49, 17, 'b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4abf1_b87f83_de7918ffcf3947b6ba9b21ff2c56c40c~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(50, 17, 'b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4aea0_b87f83_cb768f930e7f460a88236e43bbb1258c~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(51, 17, 'b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b137_b87f83_bfc66e6435f34c23bfd60e2fccb3d499~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(52, 17, 'b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b409_b87f83_b6732012d563483b800222bd3e8b3165~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(53, 17, 'b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4b6bd_b87f83_9874647537df4460b22481153ec53e64~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(54, 17, 'b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4baa2_b87f83_372231fb9efe40798c040f28d773e461~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(55, 17, 'b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bd4b_b87f83_3b4acd8d82e342469093e71fb29a3632~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(56, 17, 'b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', 'Public/uploads/acomodacoes/683496fd4bfd2_b87f83_0ba13b9dfa2c42058f578180254fbed8~mv2.jpg', '2025-05-26 16:29:49', NULL),
+(57, 18, 'b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', 'Public/uploads/acomodacoes/683497144a63f_b87f83_fd189730414e46d39003c5767b995e9b~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(58, 18, 'b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', 'Public/uploads/acomodacoes/683497144a9ff_b87f83_f06e8eb7ad634e22bd69badcc538be73~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(59, 18, 'b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', 'Public/uploads/acomodacoes/683497144ad08_b87f83_d943676e56f24781b4aad20256b75eef~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(60, 18, 'b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', 'Public/uploads/acomodacoes/683497144afe5_b87f83_d3ae7c6f22ea4579bad3396eea56224f~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(61, 18, 'b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', 'Public/uploads/acomodacoes/683497144b2d8_b87f83_aaea0665e31b4b6aaa520cf6c66e761a~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(62, 18, 'b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', 'Public/uploads/acomodacoes/683497144b5bd_b87f83_8761455c1c024a8d8ebc1be8b1480cb8~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(63, 18, 'b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', 'Public/uploads/acomodacoes/683497144ba35_b87f83_217039df4a4049f19adf2e9d25c8d044~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(64, 18, 'b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', 'Public/uploads/acomodacoes/683497144bd4d_b87f83_0195aaa684b6473888723b3f0dd4ef58~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(65, 18, 'b87f83_8d589652307341d888588070b458de81~mv2.jpg', 'Public/uploads/acomodacoes/683497144bffe_b87f83_8d589652307341d888588070b458de81~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(66, 18, 'b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', 'Public/uploads/acomodacoes/683497144c387_b87f83_8af61408b80d4101a4979143825ff3e3~mv2.jpg', '2025-05-26 16:30:12', NULL),
+(67, 19, 'b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', 'Public/uploads/acomodacoes/68349721c270e_b87f83_cddbecc47620434aba0b38cdf9a47577~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(68, 19, 'b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2a42_b87f83_b77cefb65c4a44c2a44b265faad48fca~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(69, 19, 'b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', 'Public/uploads/acomodacoes/68349721c2da4_b87f83_b17e2c8c314b431285a94647be0d0b17~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(70, 19, 'b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3047_b87f83_aa9428b24cc74f5ab33e6b9ab8792361~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(71, 19, 'b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', 'Public/uploads/acomodacoes/68349721c33bc_b87f83_5905c982218e43a482df805768f753a0~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(72, 19, 'b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3759_b87f83_760d26da720349d383ddf9d888fc180c~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(73, 19, 'b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', 'Public/uploads/acomodacoes/68349721c3c19_b87f83_90c38d9ab2b1451f9f8500e1d3b8fc61~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(74, 19, 'b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', 'Public/uploads/acomodacoes/68349721c49d7_b87f83_23a56936773e4f7f812d0543c078138c~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(75, 19, 'b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4d39_b87f83_15d714ef677d4aeeb5ae94de940bd96e~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(76, 19, 'b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', 'Public/uploads/acomodacoes/68349721c4f96_b87f83_1f34bed210534eb2a8b788773ee8cbdf~mv2.jpg', '2025-05-26 16:30:25', NULL),
+(77, 20, 'b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', 'Public/uploads/acomodacoes/6834972f724b3_b87f83_f78b450dd08c4b0388b57674d817bc41~mv2.png', '2025-05-26 16:30:39', NULL),
+(78, 20, 'b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', 'Public/uploads/acomodacoes/6834972f727d2_b87f83_f4b318355c704575a4a6917c1a2f7401~mv2.jpg', '2025-05-26 16:30:39', NULL),
+(79, 20, 'b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', 'Public/uploads/acomodacoes/6834972f72abf_b87f83_a5851df51b1c4a338516426d8cb0c0fd~mv2.png', '2025-05-26 16:30:39', NULL),
+(80, 20, 'b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72cde_b87f83_476126075cd8451d80d41fd83781be0d~mv2.jpg', '2025-05-26 16:30:39', NULL),
+(81, 20, 'b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', 'Public/uploads/acomodacoes/6834972f72ec1_b87f83_543f73cd4409455a83b0751e78794057~mv2.jpg', '2025-05-26 16:30:39', NULL),
+(82, 20, 'b87f83_89da331062774e919f434b54a7272a8f~mv2.png', 'Public/uploads/acomodacoes/6834972f7319a_b87f83_89da331062774e919f434b54a7272a8f~mv2.png', '2025-05-26 16:30:39', NULL),
+(83, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', 'Public/uploads/acomodacoes/6834972f733df_b87f83_8c981a4259314d1e806103098ea0cd98~mv2 (1).png', '2025-05-26 16:30:39', NULL),
+(84, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', 'Public/uploads/acomodacoes/6834972f735f1_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2 (1).jpg', '2025-05-26 16:30:39', NULL),
+(85, 20, 'b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', 'Public/uploads/acomodacoes/6834972f737f6_b87f83_8c981a4259314d1e806103098ea0cd98~mv2.png', '2025-05-26 16:30:39', NULL),
+(86, 20, 'b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', 'Public/uploads/acomodacoes/6834972f739e1_b87f83_6d5124b7605f4c16aa9abac10dd14425~mv2.png', '2025-05-26 16:30:39', NULL),
+(87, 20, 'b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', 'Public/uploads/acomodacoes/6834972f73be8_b87f83_2e6022b3296a410886bc4641e30d6a7e~mv2.png', '2025-05-26 16:30:39', NULL),
+(88, 20, 'b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', 'Public/uploads/acomodacoes/6834972f73dbd_b87f83_1af509ade7ad46cc86b69b10fe2cd6c5~mv2.jpg', '2025-05-26 16:30:39', NULL),
+(89, 32, 'Encomende já (1).jpg', 'Public/uploads/acomodacoes/685eaff5d43d7_Encomende já (1).jpg', '2025-06-27 14:51:33', NULL),
+(90, 32, 'Encomende já.png', 'Public/uploads/acomodacoes/685eaff5d47f3_Encomende já.png', '2025-06-27 14:51:33', NULL),
+(91, 32, 'unnamed.jpg', 'Public/uploads/acomodacoes/685eaff5d4b10_unnamed.jpg', '2025-06-27 14:51:33', NULL);
 
 -- --------------------------------------------------------
 
@@ -376,8 +386,6 @@ CREATE TABLE `reservas` (
 --
 
 INSERT INTO `reservas` (`id`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
-(16, 5, 16, '2025-06-23', '2025-06-25', 'pendente', 1180.00, 'pix', 'tthrthtrhrh', '2025-06-23 19:58:26'),
-(17, 5, 17, '2025-06-25', '2025-06-26', 'confirmada', 390.00, 'dinheiro', 'tthrthtrhrh', '2025-06-23 19:58:40'),
 (18, 5, 16, '2025-06-26', '2025-06-28', 'pendente', 1180.00, 'cartao-credito', 'tthrthtrhrh', '2025-06-23 19:58:57');
 
 --
@@ -478,7 +486,7 @@ ALTER TABLE `reservas`
 -- AUTO_INCREMENT de tabela `acomodacoes`
 --
 ALTER TABLE `acomodacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de tabela `amenidades`
@@ -490,7 +498,7 @@ ALTER TABLE `amenidades`
 -- AUTO_INCREMENT de tabela `amenidades_acomodacoes`
 --
 ALTER TABLE `amenidades_acomodacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=459;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=471;
 
 --
 -- AUTO_INCREMENT de tabela `funcionarios`
@@ -502,7 +510,7 @@ ALTER TABLE `funcionarios`
 -- AUTO_INCREMENT de tabela `historico_reservas`
 --
 ALTER TABLE `historico_reservas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `hospedes`
@@ -514,7 +522,7 @@ ALTER TABLE `hospedes`
 -- AUTO_INCREMENT de tabela `imagens_acomodacoes`
 --
 ALTER TABLE `imagens_acomodacoes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
 
 --
 -- AUTO_INCREMENT de tabela `logs_acesso`
