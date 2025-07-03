@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 03/07/2025 às 12:52
--- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.2.12
+-- Tempo de geração: 03-Jul-2025 às 14:34
+-- Versão do servidor: 10.4.24-MariaDB
+-- versão do PHP: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `acomodacoes`
+-- Estrutura da tabela `acomodacoes`
 --
 
 CREATE TABLE `acomodacoes` (
@@ -40,33 +40,33 @@ CREATE TABLE `acomodacoes` (
   `camas_solteiro` int(11) NOT NULL,
   `hora_checkin` time NOT NULL,
   `hora_checkout` time NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `acomodacoes`
+-- Extraindo dados da tabela `acomodacoes`
 --
 
 INSERT INTO `acomodacoes` (`id`, `tipo`, `numero`, `descricao`, `status`, `capacidade`, `preco`, `minimo_noites`, `camas_casal`, `camas_solteiro`, `hora_checkin`, `hora_checkout`) VALUES
-(15, 'Charrua(Bus)', '1', 'O Charrua é uma das grandes novidades da pousada. A seguir alguns detalhes que acompanham esta acomodação especial: Roupas de cama; Roupas de banho; Banheira de hidromassagem; Cozinha básica; Taças; Churrasqueira; Televisão; Soundbar Jbl Cinema; Cafeteira com cápsula; Rede de descanso; Área com vista para o mar; Deck externo com fogueira; Acompanha uma cesta de café da manhã.', 'disponivel', 2, 490.00, 2, 1, 0, '14:00:00', '10:00:00'),
-(16, 'Domo', '1', 'O Domo é a grande novidade da pousada. Uma acomodação totalmente diferenciada construída nos padrões arquitetônicos dos domos geodésicos modernos.', 'disponivel', 3, 590.00, 2, 1, 1, '14:00:00', '10:00:00'),
-(17, 'Suíte com cozinha', '1', 'Com ampla vista para o mar, esta acomodação possui cama de casal, cama extra, ar-condicionado e TV, além de possuir também uma pequena cozinha com utensílios básicos e banheiro. Na sua parte externa possui deck com churrasqueira. A acomodação é ideal para duas pessoas, podendo comportar até três.', 'disponivel', 3, 390.00, 2, 1, 1, '14:00:00', '10:00:00'),
-(18, 'Chalé família', '1', 'Esta acomodação possui dois quartos, um dos quartos com cama de casal e TV e o outro com cama de casal e uma de solteiro. Ambos os quartos são equipados com ar-condicionado. Possui também banheiro, cozinha com utensílios básicos e churrasqueira. Na sua parte externa possui sacada com ampla vista para o mar. A acomodação é ideal para até cinco pessoas.', 'disponivel', 5, 590.00, 2, 2, 1, '14:00:00', '10:00:00'),
-(19, 'Cabana', '1', 'Esta acomodação está localizada em uma área mais reservada da pousada. Possui cama de casal, uma cama de solteiro, cama extra, ar-condicionado, TV, cozinha com utensílios básicos e banheiro. Na área externa possui varanda e deck com churrasqueira, tendo ampla vista para o mar. A acomodação é ideal para três pessoas, podendo comportar até quatro.', 'disponivel', 3, 490.00, 2, 1, 1, '14:00:00', '10:00:00'),
-(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'disponivel', 4, 100.00, 2, 0, 0, '14:00:00', '10:00:00');
+(15, 'Charrua(Bus)', '1', 'O Charrua é uma das grandes novidades da pousada. A seguir alguns detalhes que acompanham esta acomodação especial: Roupas de cama; Roupas de banho; Banheira de hidromassagem; Cozinha básica; Taças; Churrasqueira; Televisão; Soundbar Jbl Cinema; Cafeteira com cápsula; Rede de descanso; Área com vista para o mar; Deck externo com fogueira; Acompanha uma cesta de café da manhã.', 'disponivel', 2, '490.00', 2, 1, 0, '14:00:00', '10:00:00'),
+(16, 'Domo', '1', 'O Domo é a grande novidade da pousada. Uma acomodação totalmente diferenciada construída nos padrões arquitetônicos dos domos geodésicos modernos.', 'disponivel', 3, '590.00', 2, 1, 1, '14:00:00', '10:00:00'),
+(17, 'Suíte com cozinha', '1', 'Com ampla vista para o mar, esta acomodação possui cama de casal, cama extra, ar-condicionado e TV, além de possuir também uma pequena cozinha com utensílios básicos e banheiro. Na sua parte externa possui deck com churrasqueira. A acomodação é ideal para duas pessoas, podendo comportar até três.', 'disponivel', 3, '390.00', 2, 1, 1, '14:00:00', '10:00:00'),
+(18, 'Chalé família', '1', 'Esta acomodação possui dois quartos, um dos quartos com cama de casal e TV e o outro com cama de casal e uma de solteiro. Ambos os quartos são equipados com ar-condicionado. Possui também banheiro, cozinha com utensílios básicos e churrasqueira. Na sua parte externa possui sacada com ampla vista para o mar. A acomodação é ideal para até cinco pessoas.', 'disponivel', 5, '590.00', 2, 2, 1, '14:00:00', '10:00:00'),
+(19, 'Cabana', '1', 'Esta acomodação está localizada em uma área mais reservada da pousada. Possui cama de casal, uma cama de solteiro, cama extra, ar-condicionado, TV, cozinha com utensílios básicos e banheiro. Na área externa possui varanda e deck com churrasqueira, tendo ampla vista para o mar. A acomodação é ideal para três pessoas, podendo comportar até quatro.', 'ocupado', 3, '490.00', 2, 1, 1, '14:00:00', '10:00:00'),
+(20, 'Estacionamento para overlanders', '1', 'A pousada conta também com um espaço plano com vista para o mar, destinado a estacionamento de overlanders, tendo disponível para uso ponto de água e luz. Possui também banheiro e churrasqueira para uso comum destes viajantes.', 'disponivel', 4, '100.00', 2, 0, 0, '14:00:00', '10:00:00');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `amenidades`
+-- Estrutura da tabela `amenidades`
 --
 
 CREATE TABLE `amenidades` (
   `id` int(11) NOT NULL,
   `nome` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `amenidades`
+-- Extraindo dados da tabela `amenidades`
 --
 
 INSERT INTO `amenidades` (`id`, `nome`) VALUES
@@ -82,17 +82,17 @@ INSERT INTO `amenidades` (`id`, `nome`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `amenidades_acomodacoes`
+-- Estrutura da tabela `amenidades_acomodacoes`
 --
 
 CREATE TABLE `amenidades_acomodacoes` (
   `id` int(11) NOT NULL,
   `id_amenidades` int(11) NOT NULL,
   `id_acomodacoes` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `amenidades_acomodacoes`
+-- Extraindo dados da tabela `amenidades_acomodacoes`
 --
 
 INSERT INTO `amenidades_acomodacoes` (`id`, `id_amenidades`, `id_acomodacoes`) VALUES
@@ -132,23 +132,38 @@ INSERT INTO `amenidades_acomodacoes` (`id`, `id_amenidades`, `id_acomodacoes`) V
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `funcionarios`
+-- Estrutura da tabela `funcionarios`
 --
 
 CREATE TABLE `funcionarios` (
-  `id` int(11) NOT NULL,
-  `nome` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `senha_hash` varchar(255) NOT NULL,
-  `cargo` enum('admin','recepcao','limpeza') NOT NULL,
-  `status` enum('ativo','inativo') DEFAULT 'ativo',
-  `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `cpf` varchar(14) NOT NULL,
+  `nome` varchar(150) NOT NULL,
+  `data_nascimento` date NOT NULL,
+  `numero_telefone` varchar(20) DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `endereco` varchar(255) DEFAULT NULL,
+  `cargo` varchar(100) DEFAULT NULL,
+  `salario` decimal(10,2) DEFAULT NULL,
+  `data_admissao` date DEFAULT NULL,
+  `data_demissao` date DEFAULT NULL,
+  `status` enum('ativo','inativo') NOT NULL DEFAULT 'ativo',
+  `sexo` enum('Masculino','Feminino') NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp(),
+  `id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Extraindo dados da tabela `funcionarios`
+--
+
+INSERT INTO `funcionarios` (`cpf`, `nome`, `data_nascimento`, `numero_telefone`, `email`, `endereco`, `cargo`, `salario`, `data_admissao`, `data_demissao`, `status`, `sexo`, `senha`, `data_cadastro`, `id`) VALUES
+('403.753.040-61', 'CAUA VITOR DA SILVA RIBEIRO', '2002-01-04', '35999200191', 'cau@gmail.com', 'Casa', 'CEO', '5730.00', '2008-02-17', '2020-10-28', 'ativo', 'Masculino', '$2y$10$ZdrFlHb2L5oGRQY5xUfPVeFo8GbtaG0kEXLdm5Une/5R.v/neLJZ2', '2025-07-01 12:19:55', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `historico_reservas`
+-- Estrutura da tabela `historico_reservas`
 --
 
 CREATE TABLE `historico_reservas` (
@@ -165,25 +180,25 @@ CREATE TABLE `historico_reservas` (
   `metodo_pagamento` enum('cartao-debito','cartao-credito','dinheiro','pix') DEFAULT 'cartao-debito',
   `observacoes` text DEFAULT NULL,
   `data_reserva` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `historico_reservas`
+-- Extraindo dados da tabela `historico_reservas`
 --
 
 INSERT INTO `historico_reservas` (`id`, `id_reserva`, `detalhes`, `data_registro`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
-(11, 0, 'Reserva arquivada automaticamente por expiração.', '2025-06-23 19:41:20', 5, 16, '2025-06-01', '2025-06-02', 'finalizada', 590.00, 'dinheiro', 'tthrthtrhrh', '2025-06-09 01:56:33'),
-(12, 16, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 16, '2025-06-23', '2025-06-25', 'finalizada', 1180.00, 'pix', 'tthrthtrhrh', '2025-06-23 19:58:26'),
-(13, 17, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 17, '2025-06-25', '2025-06-26', 'finalizada', 390.00, 'dinheiro', 'tthrthtrhrh', '2025-06-23 19:58:40'),
-(14, 18, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 16, '2025-06-30', '2025-07-01', 'finalizada', 590.00, 'cartao-credito', 'tthrthtrhrh', '2025-06-23 19:58:57'),
-(15, 19, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 16, '2025-06-28', '2025-06-29', 'finalizada', 590.00, 'pix', 'Bosta liquida 12', '2025-06-27 15:18:21'),
-(16, 20, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 19, '2025-06-28', '2025-06-30', 'finalizada', 980.00, 'cartao-credito', 'Poste Liquido', '2025-06-27 15:49:43'),
-(17, 21, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 18, '2025-06-27', '2025-06-28', 'finalizada', 590.00, 'dinheiro', 'Bosta', '2025-06-27 16:42:01');
+(11, 0, 'Reserva arquivada automaticamente por expiração.', '2025-06-23 19:41:20', 5, 16, '2025-06-01', '2025-06-02', 'finalizada', '590.00', 'dinheiro', 'tthrthtrhrh', '2025-06-09 01:56:33'),
+(12, 16, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 16, '2025-06-23', '2025-06-25', 'finalizada', '1180.00', 'pix', 'tthrthtrhrh', '2025-06-23 19:58:26'),
+(13, 17, 'Reserva arquivada automaticamente por expiração.', '2025-06-27 14:50:01', 5, 17, '2025-06-25', '2025-06-26', 'finalizada', '390.00', 'dinheiro', 'tthrthtrhrh', '2025-06-23 19:58:40'),
+(14, 18, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 16, '2025-06-30', '2025-07-01', 'finalizada', '590.00', 'cartao-credito', 'tthrthtrhrh', '2025-06-23 19:58:57'),
+(15, 19, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 16, '2025-06-28', '2025-06-29', 'finalizada', '590.00', 'pix', 'Bosta liquida 12', '2025-06-27 15:18:21'),
+(16, 20, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 19, '2025-06-28', '2025-06-30', 'finalizada', '980.00', 'cartao-credito', 'Poste Liquido', '2025-06-27 15:49:43'),
+(17, 21, 'Reserva arquivada automaticamente por expiração.', '2025-07-02 11:20:02', 5, 18, '2025-06-27', '2025-06-28', 'finalizada', '590.00', 'dinheiro', 'Bosta', '2025-06-27 16:42:01');
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `hospedes`
+-- Estrutura da tabela `hospedes`
 --
 
 CREATE TABLE `hospedes` (
@@ -201,10 +216,10 @@ CREATE TABLE `hospedes` (
   `data_nascimento` date DEFAULT NULL,
   `data_cadastro` timestamp NOT NULL DEFAULT current_timestamp(),
   `active` tinyint(1) DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `hospedes`
+-- Extraindo dados da tabela `hospedes`
 --
 
 INSERT INTO `hospedes` (`id`, `nome`, `email`, `telefone`, `imagem`, `documento`, `rua`, `numero`, `cidade`, `estado`, `cep`, `data_nascimento`, `data_cadastro`, `active`) VALUES
@@ -215,21 +230,21 @@ INSERT INTO `hospedes` (`id`, `nome`, `email`, `telefone`, `imagem`, `documento`
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `imagens_acomodacoes`
+-- Estrutura da tabela `imagens_acomodacoes`
 --
 
 CREATE TABLE `imagens_acomodacoes` (
   `id` int(11) NOT NULL,
   `acomodacao_id` int(11) DEFAULT NULL,
-  `nome_arquivo` varchar(255) DEFAULT NULL,
-  `caminho_arquivo` varchar(255) DEFAULT NULL,
+  `nome_arquivo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `caminho_arquivo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `capa_acomodacao` tinyint(1) NOT NULL DEFAULT 0,
   `data_upload` timestamp NOT NULL DEFAULT current_timestamp(),
   `ordem` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Despejando dados para a tabela `imagens_acomodacoes`
+-- Extraindo dados da tabela `imagens_acomodacoes`
 --
 
 INSERT INTO `imagens_acomodacoes` (`id`, `acomodacao_id`, `nome_arquivo`, `caminho_arquivo`, `capa_acomodacao`, `data_upload`, `ordem`) VALUES
@@ -299,20 +314,21 @@ INSERT INTO `imagens_acomodacoes` (`id`, `acomodacao_id`, `nome_arquivo`, `camin
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `logs_acesso`
+-- Estrutura da tabela `logs_login`
 --
 
-CREATE TABLE `logs_acesso` (
+CREATE TABLE `logs_login` (
   `id` int(11) NOT NULL,
-  `id_funcionario` int(11) NOT NULL,
-  `data_acesso` timestamp NOT NULL DEFAULT current_timestamp(),
-  `ip_acesso` varchar(45) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `funcionario_id` int(11) NOT NULL,
+  `data_login` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ip` varchar(45) DEFAULT NULL,
+  `sucesso` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `manutencao`
+-- Estrutura da tabela `manutencao`
 --
 
 CREATE TABLE `manutencao` (
@@ -322,38 +338,22 @@ CREATE TABLE `manutencao` (
   `data_inicio` date NOT NULL,
   `data_fim` date DEFAULT NULL,
   `status` enum('pendente','em andamento','conclu?da') DEFAULT 'pendente'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `notificacoes`
---
-
-CREATE TABLE `notificacoes` (
-  `id` int(11) NOT NULL,
-  `id_reserva` int(11) DEFAULT NULL,
-  `id_funcionario` int(11) DEFAULT NULL,
-  `mensagem` text NOT NULL,
-  `tipo` enum('reserva','pagamento','manuten??o','outro') DEFAULT 'reserva',
-  `status` enum('pendente','enviado') DEFAULT 'pendente',
-  `data_criacao` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `preferencias_hospedes`
+-- Estrutura da tabela `preferencias_hospedes`
 --
 
 CREATE TABLE `preferencias_hospedes` (
   `id` int(11) NOT NULL,
   `id_hospede` int(11) NOT NULL,
   `descricao` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `preferencias_hospedes`
+-- Extraindo dados da tabela `preferencias_hospedes`
 --
 
 INSERT INTO `preferencias_hospedes` (`id`, `id_hospede`, `descricao`) VALUES
@@ -364,7 +364,7 @@ INSERT INTO `preferencias_hospedes` (`id`, `id_hospede`, `descricao`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `reservas`
+-- Estrutura da tabela `reservas`
 --
 
 CREATE TABLE `reservas` (
@@ -378,33 +378,46 @@ CREATE TABLE `reservas` (
   `metodo_pagamento` enum('cartao-debito','cartao-credito','dinheiro','pix') DEFAULT 'cartao-debito',
   `observacoes` text DEFAULT NULL,
   `data_reserva` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Despejando dados para a tabela `reservas`
+-- Extraindo dados da tabela `reservas`
 --
 
 INSERT INTO `reservas` (`id`, `id_hospede`, `id_acomodacao`, `data_checkin`, `data_checkout`, `status`, `valor_total`, `metodo_pagamento`, `observacoes`, `data_reserva`) VALUES
-(22, 5, 19, '2025-06-30', '2025-07-03', 'pendente', 1470.00, 'dinheiro', 'oioioi', '2025-06-27 18:50:29');
+(22, 5, 19, '2025-06-30', '2025-07-03', 'confirmada', '1470.00', 'dinheiro', 'oioioi', '2025-06-27 18:50:29');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `user_tokens`
+--
+
+CREATE TABLE `user_tokens` (
+  `id` int(11) NOT NULL,
+  `token` varchar(64) NOT NULL,
+  `expiry` datetime NOT NULL,
+  `funcionario_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Índices para tabelas despejadas
 --
 
 --
--- Índices de tabela `acomodacoes`
+-- Índices para tabela `acomodacoes`
 --
 ALTER TABLE `acomodacoes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `amenidades`
+-- Índices para tabela `amenidades`
 --
 ALTER TABLE `amenidades`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `amenidades_acomodacoes`
+-- Índices para tabela `amenidades_acomodacoes`
 --
 ALTER TABLE `amenidades_acomodacoes`
   ADD PRIMARY KEY (`id`),
@@ -412,21 +425,24 @@ ALTER TABLE `amenidades_acomodacoes`
   ADD KEY `id_acomodacoes` (`id_acomodacoes`);
 
 --
--- Índices de tabela `funcionarios`
+-- Índices para tabela `funcionarios`
 --
 ALTER TABLE `funcionarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `cpf` (`cpf`),
+  ADD UNIQUE KEY `cpf_2` (`cpf`),
+  ADD UNIQUE KEY `email_2` (`email`);
 
 --
--- Índices de tabela `historico_reservas`
+-- Índices para tabela `historico_reservas`
 --
 ALTER TABLE `historico_reservas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_data_registro` (`data_registro`);
 
 --
--- Índices de tabela `hospedes`
+-- Índices para tabela `hospedes`
 --
 ALTER TABLE `hospedes`
   ADD PRIMARY KEY (`id`),
@@ -434,43 +450,35 @@ ALTER TABLE `hospedes`
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Índices de tabela `imagens_acomodacoes`
+-- Índices para tabela `imagens_acomodacoes`
 --
 ALTER TABLE `imagens_acomodacoes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `acomodacao_id` (`acomodacao_id`);
 
 --
--- Índices de tabela `logs_acesso`
+-- Índices para tabela `logs_login`
 --
-ALTER TABLE `logs_acesso`
+ALTER TABLE `logs_login`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_funcionario` (`id_funcionario`);
+  ADD KEY `funcionario_id` (`funcionario_id`);
 
 --
--- Índices de tabela `manutencao`
+-- Índices para tabela `manutencao`
 --
 ALTER TABLE `manutencao`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_acomodacao` (`id_acomodacao`);
 
 --
--- Índices de tabela `notificacoes`
---
-ALTER TABLE `notificacoes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_reserva` (`id_reserva`),
-  ADD KEY `id_funcionario` (`id_funcionario`);
-
---
--- Índices de tabela `preferencias_hospedes`
+-- Índices para tabela `preferencias_hospedes`
 --
 ALTER TABLE `preferencias_hospedes`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_hospede` (`id_hospede`);
 
 --
--- Índices de tabela `reservas`
+-- Índices para tabela `reservas`
 --
 ALTER TABLE `reservas`
   ADD PRIMARY KEY (`id`),
@@ -478,7 +486,15 @@ ALTER TABLE `reservas`
   ADD KEY `id_acomodacao` (`id_acomodacao`);
 
 --
--- AUTO_INCREMENT para tabelas despejadas
+-- Índices para tabela `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `token` (`token`),
+  ADD KEY `funcionario_id` (`funcionario_id`);
+
+--
+-- AUTO_INCREMENT de tabelas despejadas
 --
 
 --
@@ -503,7 +519,7 @@ ALTER TABLE `amenidades_acomodacoes`
 -- AUTO_INCREMENT de tabela `funcionarios`
 --
 ALTER TABLE `funcionarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `historico_reservas`
@@ -524,21 +540,15 @@ ALTER TABLE `imagens_acomodacoes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
--- AUTO_INCREMENT de tabela `logs_acesso`
+-- AUTO_INCREMENT de tabela `logs_login`
 --
-ALTER TABLE `logs_acesso`
+ALTER TABLE `logs_login`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de tabela `manutencao`
 --
 ALTER TABLE `manutencao`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `notificacoes`
---
-ALTER TABLE `notificacoes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -554,53 +564,58 @@ ALTER TABLE `reservas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- Restrições para tabelas despejadas
+-- AUTO_INCREMENT de tabela `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para despejos de tabelas
 --
 
 --
--- Restrições para tabelas `amenidades_acomodacoes`
+-- Limitadores para a tabela `amenidades_acomodacoes`
 --
 ALTER TABLE `amenidades_acomodacoes`
   ADD CONSTRAINT `amenidades_acomodacoes_ibfk_1` FOREIGN KEY (`id_amenidades`) REFERENCES `amenidades` (`id`),
   ADD CONSTRAINT `amenidades_acomodacoes_ibfk_2` FOREIGN KEY (`id_acomodacoes`) REFERENCES `acomodacoes` (`id`);
 
 --
--- Restrições para tabelas `imagens_acomodacoes`
+-- Limitadores para a tabela `imagens_acomodacoes`
 --
 ALTER TABLE `imagens_acomodacoes`
   ADD CONSTRAINT `imagens_acomodacoes_ibfk_1` FOREIGN KEY (`acomodacao_id`) REFERENCES `acomodacoes` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `logs_acesso`
+-- Limitadores para a tabela `logs_login`
 --
-ALTER TABLE `logs_acesso`
-  ADD CONSTRAINT `logs_acesso_ibfk_1` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionarios` (`id`) ON DELETE CASCADE;
+ALTER TABLE `logs_login`
+  ADD CONSTRAINT `logs_login_ibfk_1` FOREIGN KEY (`funcionario_id`) REFERENCES `funcionarios` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `manutencao`
+-- Limitadores para a tabela `manutencao`
 --
 ALTER TABLE `manutencao`
   ADD CONSTRAINT `manutencao_ibfk_1` FOREIGN KEY (`id_acomodacao`) REFERENCES `acomodacoes` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `notificacoes`
---
-ALTER TABLE `notificacoes`
-  ADD CONSTRAINT `notificacoes_ibfk_1` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `notificacoes_ibfk_2` FOREIGN KEY (`id_funcionario`) REFERENCES `funcionarios` (`id`) ON DELETE SET NULL;
-
---
--- Restrições para tabelas `preferencias_hospedes`
+-- Limitadores para a tabela `preferencias_hospedes`
 --
 ALTER TABLE `preferencias_hospedes`
   ADD CONSTRAINT `preferencias_hospedes_ibfk_1` FOREIGN KEY (`id_hospede`) REFERENCES `hospedes` (`id`) ON DELETE CASCADE;
 
 --
--- Restrições para tabelas `reservas`
+-- Limitadores para a tabela `reservas`
 --
 ALTER TABLE `reservas`
   ADD CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`id_hospede`) REFERENCES `hospedes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`id_acomodacao`) REFERENCES `acomodacoes` (`id`) ON DELETE CASCADE;
+
+--
+-- Limitadores para a tabela `user_tokens`
+--
+ALTER TABLE `user_tokens`
+  ADD CONSTRAINT `user_tokens_ibfk_1` FOREIGN KEY (`funcionario_id`) REFERENCES `funcionarios` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

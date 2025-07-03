@@ -2,6 +2,9 @@
 
 $Routes = [
     '/' => 'HomeController@index',
+    '/Signin' => 'HomeController@signin',
+    '/Signup' => 'HomeController@signup',
+    '/Dashboard' => 'HomeController@dashboard',
     '/Hospedes' => 'GuestController@list',
     '/Hospedes/@id' => 'GuestController@editar',
     '/Hospedes/Update/@id' => 'GuestController@update',

@@ -15,7 +15,7 @@ class HomeController extends RenderView
         $this->guestModel = new GuestModel();
     }
 
-    public function Index()
+    public function dashboard()
     {
         // 3. Os models agora são chamados a partir das propriedades da classe ($this->).
         // --- DADOS BÁSICOS ---
@@ -50,7 +50,7 @@ class HomeController extends RenderView
         $acomodacoesManutencaoLista = $this->accommodationsModel->getAcomodacoesEmManutencao();
 
         // Carregar a View com todos os dados
-        $this->LoadView('Home', [
+        $this->LoadView('Dashboard', [
             'Title' => 'Dashboard',
             'father' => 'Visão Geral',
             'page' => 'Dashboard',
