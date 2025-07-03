@@ -377,60 +377,43 @@ class ReservationsModel extends Database
      * com base nas datas das reservas ativas.
      * É executado em duas etapas para garantir a consistência.
      */
-public function atualizarStatusAcomodacoes()
+    public function atualizarStatusAcomodacoes()
     {
         try {
             $this->pdo->beginTransaction();
 
-            /**
-             * Etapa 1: Liberar acomodações.
-             * Define como 'disponivel' todas as acomodações que estão marcadas como 'ocupado',
-             * mas que NÃO possuem uma reserva ativa ('confirmada' ou 'check-in realizado') para a data de hoje.
-             * Isso corrige o status de acomodações cujo checkout já passou.
-             */
+            // Etapa 1: Liberar acomodações que estão ocupadas mas já passaram do checkout
             $sqlLiberar = "
                 UPDATE acomodacoes a
                 LEFT JOIN reservas r ON a.id = r.id_acomodacao
                     AND r.status IN ('confirmada', 'check-in realizado')
-                    AND CURDATE() >= r.data_checkin
-                    AND CURDATE() < r.data_checkout
-                SET
-                    a.status = 'disponivel'
-                WHERE
-                    a.status = 'ocupado'
-                    AND r.id IS NULL; -- A condição chave: não encontrou reserva ativa correspondente.
+                    AND NOW() >= CONCAT(r.data_checkin, ' ', a.hora_checkin)
+                    AND NOW() < CONCAT(r.data_checkout, ' ', a.hora_checkout)
+                SET a.status = 'disponivel'
+                WHERE a.status = 'ocupado'
+                AND r.id IS NULL;
             ";
             $this->pdo->exec($sqlLiberar);
 
-            /**
-             * Etapa 2: Ocupar acomodações.
-             * Define como 'ocupado' todas as acomodações que possuem uma reserva ativa
-             * ('confirmada' ou 'check-in realizado') para a data de hoje e que
-             * ainda não estão marcadas como 'ocupado' ou 'manutencao'.
-             */
+            // Etapa 2: Ocupar acomodações que têm reservas ativas neste momento
             $sqlOcupar = "
                 UPDATE acomodacoes a
                 JOIN reservas r ON a.id = r.id_acomodacao
-                SET
-                    a.status = 'ocupado'
-                WHERE
-                    r.status IN ('confirmada', 'check-in realizado')
-                    AND CURDATE() >= r.data_checkin
-                    AND CURDATE() < r.data_checkout
-                    AND a.status NOT IN ('ocupado', 'manutencao'); -- Otimizado para mais clareza
+                SET a.status = 'ocupado'
+                WHERE r.status IN ('confirmada', 'check-in realizado')
+                AND NOW() >= CONCAT(r.data_checkin, ' ', a.hora_checkin)
+                AND NOW() < CONCAT(r.data_checkout, ' ', a.hora_checkout)
+                AND a.status NOT IN ('ocupado', 'manutencao');
             ";
             $this->pdo->exec($sqlOcupar);
 
             $this->pdo->commit();
 
-            return ['status' => 'success', 'message' => 'Status das acomodações atualizado com sucesso.'];
+            return ['status' => 'success', 'message' => 'Status das acomodações atualizado com base na hora.'];
         } catch (PDOException $e) {
             $this->pdo->rollBack();
-            // Em um ambiente de produção, é melhor logar o erro do que expô-lo ao usuário.
             error_log('Erro ao atualizar status de acomodações: ' . $e->getMessage());
-            return ['status' => 'error', 'message' => 'Ocorreu um erro interno ao atualizar o status das acomodações.'];
+            return ['status' => 'error', 'message' => 'Erro ao atualizar status das acomodações.'];
         }
     }
-
-
 }
