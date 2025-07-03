@@ -44,7 +44,7 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
                         </div>
                     <?php endif; ?>
 
-                    <form action="/RoomFlow/Reservas/Cadastrar" method="post" role="form">
+                    <form action="/RoomFlow/Dashboard/Reservas/Cadastrar" method="post" role="form">
                         <input type="hidden" name="valor_total" id="valor_total_hidden" value="0">
 
                         <h6 class="text-dark text-sm mt-4 d-flex align-items-center">
@@ -131,7 +131,7 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
                         <div class="input-group input-group-outline my-3"><label class="form-label">Observações (opcional)</label><textarea class="form-control" name="observacoes" rows="4"></textarea></div>
 
                         <div class="mt-4 d-flex justify-content-end">
-                            <a href="/RoomFlow/Reservas" class="btn btn-outline-dark me-2">Cancelar</a>
+                            <a href="/RoomFlow/Dashboard/Reservas" class="btn btn-outline-dark me-2">Cancelar</a>
                             <button type="submit" class="btn bg-gradient-dark">Cadastrar Reserva</button>
                         </div>
                     </form>

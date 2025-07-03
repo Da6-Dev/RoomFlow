@@ -65,7 +65,7 @@ function render_form_field($name, $label, $data, $errors, $options = []) {
                     </div>
                 </div>
                 <div class="card-body px-4 pb-3">
-                    <form action="/RoomFlow/Hospedes/Cadastrar" method="post" enctype="multipart/form-data" role="form">
+                    <form action="/RoomFlow/Dashboard/Hospedes/Cadastrar" method="post" enctype="multipart/form-data" role="form">
 
                         <h6 class="text-dark text-sm mt-4">Dados Pessoais</h6>
                         <div class="row">
@@ -149,7 +149,7 @@ function render_form_field($name, $label, $data, $errors, $options = []) {
                         </div>
 
                         <div class="mt-4 d-flex justify-content-end">
-                            <a href="/RoomFlow/Hospedes" class="btn btn-outline-dark me-2">Cancelar</a>
+                            <a href="/RoomFlow/Dashboard/Hospedes" class="btn btn-outline-dark me-2">Cancelar</a>
                             <button type="submit" class="btn bg-gradient-dark">Cadastrar Hóspede</button>
                         </div>
                     </form>

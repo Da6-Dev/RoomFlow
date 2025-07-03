@@ -68,7 +68,7 @@ $hospedePreferencias = $_POST['preferencias'] ?? $preferencias;
                     </div>
                 </div>
                 <div class="card-body px-4 pb-3">
-                    <form action="/RoomFlow/Hospedes/Update/<?php echo $guest['id']; ?>" method="post" enctype="multipart/form-data" role="form">
+                    <form action="/RoomFlow/Dashboard/Hospedes/Update/<?php echo $guest['id']; ?>" method="post" enctype="multipart/form-data" role="form">
 
                         <h6 class="text-dark text-sm mt-4">Dados Pessoais</h6>
                         <div class="row">
@@ -145,12 +145,12 @@ $hospedePreferencias = $_POST['preferencias'] ?? $preferencias;
                                 <button type="button" onclick="confirmDelete(<?php echo $guest['id']; ?>, '<?php echo htmlspecialchars(addslashes($guest['nome'])); ?>')" class="btn btn-danger">Excluir Hóspede</button>
                             </div>
                             <div>
-                                <a href="/RoomFlow/Hospedes" class="btn btn-outline-dark me-2">Cancelar</a>
+                                <a href="/RoomFlow/Dashboard/Hospedes" class="btn btn-outline-dark me-2">Cancelar</a>
                                 <button type="submit" class="btn bg-gradient-dark">Salvar Alterações</button>
                             </div>
                         </div>
                     </form>
-                    <form action="/RoomFlow/Hospedes/Deletar" method="POST" id="form-delete-<?php echo $guest['id']; ?>" class="d-none">
+                    <form action="/RoomFlow/Dashboard/Hospedes/Deletar" method="POST" id="form-delete-<?php echo $guest['id']; ?>" class="d-none">
                         <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
                     </form>
                 </div>

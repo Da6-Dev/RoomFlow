@@ -79,7 +79,7 @@ ob_start();
                                                 <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($checkin['nome_hospede']); ?></h6>
                                                 <span class="text-xs"><?php echo htmlspecialchars($checkin['nome_acomodacao']) . ' ' . htmlspecialchars($checkin['numero']); ?></span>
                                             </div>
-                                            <a href="/RoomFlow/Reservas/<?php echo $checkin['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                            <a href="/RoomFlow/Dashboard/Reservas/<?php echo $checkin['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                         </li>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -98,7 +98,7 @@ ob_start();
                                                 <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($checkout['nome_hospede']); ?></h6>
                                                 <span class="text-xs"><?php echo htmlspecialchars($checkout['nome_acomodacao']) . ' ' . htmlspecialchars($checkout['numero']); ?></span>
                                             </div>
-                                            <a href="/RoomFlow/Reservas/<?php echo $checkout['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                            <a href="/RoomFlow/Dashboard/Reservas/<?php echo $checkout['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                         </li>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -137,7 +137,7 @@ ob_start();
                                         <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($reserva['nome_hospede']); ?></h6>
                                         <span class="text-xs">Check-in em: <?php echo date("d/m/Y", strtotime($reserva['data_checkin'])); ?></span>
                                     </div>
-                                    <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                    <a href="/RoomFlow/Dashboard/Reservas/<?php echo $reserva['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php else: ?>

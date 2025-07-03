@@ -92,7 +92,7 @@ class GuestController extends RenderView
                 $result = $this->guestModel->salvar($data);
 
                 if ($result['status'] === 'success') {
-                    header("Location: /RoomFlow/Hospedes?msg=success_create");
+                    header("Location: /RoomFlow/Dashboard/Hospedes?msg=success_create");
                     exit();
                 } else {
                     $errors = array_merge($errors, $result['errors']);
@@ -114,7 +114,7 @@ class GuestController extends RenderView
     {
         $guest = $this->guestModel->getHospedeById($id);
         if (!$guest) {
-            header("Location: /RoomFlow/Hospedes?msg=not_found");
+            header("Location: /RoomFlow/Dashboard/Hospedes?msg=not_found");
             exit();
         }
 
@@ -132,7 +132,7 @@ class GuestController extends RenderView
     {
         $guest = $this->guestModel->getHospedeById($id);
         if (!$guest) {
-            header("Location: /RoomFlow/Hospedes?msg=not_found");
+            header("Location: /RoomFlow/Dashboard/Hospedes?msg=not_found");
             exit();
         }
 
@@ -146,7 +146,7 @@ class GuestController extends RenderView
                 $result = $this->guestModel->salvar($data);
 
                 if ($result['status'] === 'success') {
-                    header("Location: /RoomFlow/Hospedes?msg=success_update");
+                    header("Location: /RoomFlow/Dashboard/Hospedes?msg=success_update");
                     exit();
                 } else {
                     $errors = array_merge($errors, $result['errors']);
@@ -170,11 +170,11 @@ class GuestController extends RenderView
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['id'])) {
             $id_guest = $_POST['id'];
             if ($this->guestModel->deletar($id_guest)) {
-                header("Location: /RoomFlow/Hospedes?msg=success_delete");
+                header("Location: /RoomFlow/Dashboard/Hospedes?msg=success_delete");
                 exit();
             }
         }
-        header("Location: /RoomFlow/Hospedes?msg=error_delete");
+        header("Location: /RoomFlow/Dashboard/Hospedes?msg=error_delete");
         exit();
     }
 }

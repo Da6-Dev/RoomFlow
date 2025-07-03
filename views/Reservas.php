@@ -77,7 +77,7 @@ function getStatusBadge($status) {
                             <h6 class="mb-0">Gerenciamento de Reservas</h6>
                         </div>
                         <div class="col-md-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Reservas/Cadastrar/">
+                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Dashboard/Reservas/Cadastrar/">
                                 <i class="material-symbols-rounded">add_circle</i>&nbsp;&nbsp;Nova Reserva
                             </a>
                         </div>
@@ -123,11 +123,11 @@ function getStatusBadge($status) {
                                                 <span class="badge badge-sm <?php echo $badge['class']; ?>"><?php echo $badge['text']; ?></span>
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                <form action="/RoomFlow/Reservas/Deletar" method="POST" id="form-delete-<?php echo $reserva['id']; ?>" class="d-none">
+                                                <form action="/RoomFlow/Dashboard/Reservas/Deletar" method="POST" id="form-delete-<?php echo $reserva['id']; ?>" class="d-none">
                                                     <input type="hidden" name="id" value="<?php echo $reserva['id']; ?>">
                                                 </form>
 
-                                                <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver / Editar Reserva">
+                                                <a href="/RoomFlow/Dashboard/Reservas/<?php echo $reserva['id']; ?>" class="text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Ver / Editar Reserva">
                                                     <i class="material-symbols-rounded">edit</i>
                                                 </a>
                                                 <a href="#" class="text-danger ms-2" onclick="confirmDelete(<?php echo $reserva['id']; ?>, 'reserva para <?php echo htmlspecialchars(addslashes($reserva['hospede'])); ?>')" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir Reserva">

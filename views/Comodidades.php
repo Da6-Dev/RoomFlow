@@ -67,7 +67,7 @@ if ($form_action === 'create') {
                     <h6 class="mb-0"><i class="material-symbols-rounded opacity-10 me-1">add_circle</i> Adicionar Nova Comodidade</h6>
                 </div>
                 <div class="card-body pt-0 p-3">
-                    <form action="/RoomFlow/Comodidades/Cadastrar" method="POST">
+                    <form action="/RoomFlow/Dashboard/Comodidades/Cadastrar" method="POST">
                         <div class="input-group input-group-outline my-3 <?php echo !empty($create_nome_value) ? 'is-filled' : ''; ?>">
                             <label class="form-label">Nome da Comodidade (ex: Wi-Fi Grátis)</label>
                             <input type="text" name="nome" class="form-control" value="<?php echo $create_nome_value; ?>" required>
@@ -100,7 +100,7 @@ if ($form_action === 'create') {
                                         <span class="text-sm"><?php echo htmlspecialchars($amenity['nome']); ?></span>
                                     </div>
                                     <div class="actions">
-                                        <form action="/RoomFlow/Comodidades/Deletar" method="POST" id="form-delete-<?php echo $amenity['id']; ?>" class="d-none">
+                                        <form action="/RoomFlow/Dashboard/Comodidades/Deletar" method="POST" id="form-delete-<?php echo $amenity['id']; ?>" class="d-none">
                                             <input type="hidden" name="id" value="<?php echo $amenity['id']; ?>">
                                         </form>
                                         <a href="#" class="text-secondary me-2" onclick="openEditModal(<?php echo $amenity['id']; ?>, '<?php echo htmlspecialchars(addslashes($amenity['nome'])); ?>')" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar">

@@ -30,7 +30,7 @@
     <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
         <div class="sidenav-header">
             <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="/RoomFlow/">
+            <a class="navbar-brand px-4 py-3 m-0" href="/RoomFlow/Dashboard">
                 <img src="/RoomFlow/public/assets/img/icons/Roomflow.svg" class="navbar-brand-img" width="26" height="26" alt="main_logo">
                 <span class="ms-1 text-sm text-dark">RoomFlow</span>
             </a>
@@ -42,7 +42,7 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Home</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/Roomflow/">
+                    <a class="nav-link text-dark" href="/Roomflow/Dashboard/">
                         <i class="material-symbols-rounded opacity-5">home</i>
                         <span class="nav-link-text ms-1">Home</span>
                     </a>
@@ -51,13 +51,13 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Hospedes</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/Roomflow/Hospedes/Cadastrar/">
+                    <a class="nav-link text-dark" href="/Roomflow/Dashboard/Hospedes/Cadastrar/">
                         <i class="material-symbols-rounded opacity-5">person_add</i>
                         <span class="nav-link-text ms-1">Cadastrar</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Hospedes/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Hospedes/">
                         <i class="material-symbols-rounded opacity-5">group</i>
                         <span class="nav-link-text ms-1">Listar</span>
                     </a>
@@ -66,19 +66,19 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Acomodações</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Comodidades/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Comodidades/">
                         <i class="material-symbols-rounded opacity-5">widgets</i>
                         <span class="nav-link-text ms-1">Comodidades</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/Roomflow/Acomodacoes/Cadastrar">
+                    <a class="nav-link text-dark" href="/Roomflow/Dashboard/Acomodacoes/Cadastrar">
                         <i class="material-symbols-rounded opacity-5">add_home</i>
                         <span class="nav-link-text ms-1">Cadastrar Acomodação</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Acomodacoes/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Acomodacoes/">
                         <i class="material-symbols-rounded opacity-5">apartment</i>
                         <span class="nav-link-text ms-1">Listar Acomodações</span>
                     </a>
@@ -87,19 +87,19 @@
                     <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Reservas</h6>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Cadastrar/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Reservas/Cadastrar/">
                         <i class="material-symbols-rounded opacity-5">edit_calendar</i>
                         <span class="nav-link-text ms-1">Fazer Reserva</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Reservas/">
                         <i class="material-symbols-rounded opacity-5">book_online</i>
                         <span class="nav-link-text ms-1">Listar Reservas</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="/RoomFlow/Reservas/Historico/">
+                    <a class="nav-link text-dark" href="/RoomFlow/Dashboard/Reservas/Historico/">
                         <i class="material-symbols-rounded opacity-5">history</i>
                         <span class="nav-link-text ms-1">Histórico</span>
                     </a>

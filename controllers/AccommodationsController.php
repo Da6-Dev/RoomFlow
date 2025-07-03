@@ -105,7 +105,7 @@ class AccommodationsController extends RenderView
 
             if (empty($errors)) {
                 if ($this->accommodationsModel->create($data)) {
-                    header('Location: /RoomFlow/Acomodacoes?msg=success_create');
+                    header('Location: /RoomFlow/Dashboard/Acomodacoes?msg=success_create');
                     exit();
                 } else {
                     $errors['general'] = 'Erro ao cadastrar a acomodação. Tente novamente.';
@@ -153,7 +153,7 @@ class AccommodationsController extends RenderView
 
             if (empty($errors)) {
                 if ($this->accommodationsModel->update($id, $data)) {
-                    header('Location: /RoomFlow/Acomodacoes?msg=success_update');
+                    header('Location: /RoomFlow/Dashboard/Acomodacoes?msg=success_update');
                     exit();
                 } else {
                     $errors['general'] = 'Erro ao atualizar a acomodação. Tente novamente.';
@@ -179,14 +179,14 @@ class AccommodationsController extends RenderView
     {
         $id = $_POST['id'] ?? null;
         if (!$id) {
-            header('Location: /RoomFlow/Acomodacoes?msg=error_invalid_id');
+            header('Location: /RoomFlow/Dashboard/Acomodacoes?msg=error_invalid_id');
             exit();
         }
 
         if ($this->accommodationsModel->delete($id)) {
-            header('Location: /RoomFlow/Acomodacoes?msg=success_delete');
+            header('Location: /RoomFlow/Dashboard/Acomodacoes?msg=success_delete');
         } else {
-            header('Location: /RoomFlow/Acomodacoes?msg=error_delete');
+            header('Location: /RoomFlow/Dashboard/Acomodacoes?msg=error_delete');
         }
         exit();
     }
