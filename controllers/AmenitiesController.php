@@ -56,7 +56,7 @@ class AmenitiesController extends RenderView
 
             if (empty($errors)) {
                 if ($this->amenitiesModel->create($data)) {
-                    header('Location: /RoomFlow/Dashboard/Comodidades?msg=success_create');
+                    header('Location: /RoomFlow/Comodidades?msg=success_create');
                 } else {
                     $errors['general'] = 'Ocorreu um erro ao salvar a comodidade.';
                 }
@@ -85,7 +85,7 @@ class AmenitiesController extends RenderView
             if (empty($errors)) {
                 $data['id'] = $id;
                 if ($this->amenitiesModel->update($data)) {
-                    header('Location: /RoomFlow/Dashboard/Comodidades?msg=success_update');
+                    header('Location: /RoomFlow/Comodidades?msg=success_update');
                 } else {
                     $errors['general'] = 'Ocorreu um erro ao atualizar a comodidade.';
                 }
@@ -106,7 +106,7 @@ class AmenitiesController extends RenderView
             exit();
         }
         
-        header('Location: /RoomFlow/Dashboard/Comodidades');
+        header('Location: /RoomFlow/Comodidades');
         exit();
     }
 
@@ -115,9 +115,9 @@ class AmenitiesController extends RenderView
     {
         $id = $_POST['id'] ?? null;
         if ($id && $this->amenitiesModel->delete($id)) {
-            header("Location: /RoomFlow/Dashboard/Comodidades?msg=success_delete");
+            header("Location: /RoomFlow/Comodidades?msg=success_delete");
         } else {
-            header("Location: /RoomFlow/Dashboard/Comodidades?msg=error_delete");
+            header("Location: /RoomFlow/Comodidades?msg=error_delete");
         }
         exit();
     }

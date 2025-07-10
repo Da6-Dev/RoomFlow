@@ -9,9 +9,10 @@ ob_start();
     <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-symbols-rounded opacity-10">payments</i>
+                <div class="card-header p-3 pt-2 position-relative">
+                    <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-white border-radius-md position-absolute d-flex align-items-center justify-content-center"
+                        style="top: -24px; left: 16px; width: 48px; height: 48px;">
+                        <i class="material-symbols-rounded" style="font-size: 26px; line-height: 1; margin-top: -25px;">payments</i>
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Receita do Mês</p>
@@ -20,11 +21,13 @@ ob_start();
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-symbols-rounded opacity-10">price_check</i>
+                <div class="card-header p-3 pt-2 position-relative">
+                    <div class="icon icon-lg icon-shape bg-gradient-info shadow-info text-white border-radius-md position-absolute d-flex align-items-center justify-content-center"
+                        style="top: -24px; left: 16px; width: 48px; height: 48px;">
+                        <i class="material-symbols-rounded" style="font-size: 26px; line-height: 1; margin-top: -25px;">price_check</i>
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Diária Média (Mês)</p>
@@ -33,11 +36,13 @@ ob_start();
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-symbols-rounded opacity-10">pie_chart</i>
+                <div class="card-header p-3 pt-2 position-relative">
+                    <div class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-white border-radius-md position-absolute d-flex align-items-center justify-content-center"
+                        style="top: -24px; left: 16px; width: 48px; height: 48px;">
+                        <i class="material-symbols-rounded" style="font-size: 26px; line-height: 1; margin-top: -25px;">pie_chart</i>
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Taxa de Ocupação</p>
@@ -46,12 +51,15 @@ ob_start();
                 </div>
             </div>
         </div>
+
         <div class="col-xl-3 col-sm-6">
             <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-symbols-rounded opacity-10">person_add</i>
+                <div class="card-header p-3 pt-2 position-relative">
+                    <div class="icon icon-shape bg-gradient-primary shadow-primary text-white border-radius-md position-absolute d-flex align-items-center justify-content-center"
+                        style="top: -24px; left: 16px; width: 48px; height: 48px;">
+                        <i class="material-symbols-rounded" style="font-size: 26px; line-height: 1; margin-top: -20px;">person_add</i>
                     </div>
+
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Novos Hóspedes Hoje</p>
                         <h4 class="mb-0"><?php echo $novosHospedesHoje; ?></h4>
@@ -79,7 +87,7 @@ ob_start();
                                                 <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($checkin['nome_hospede']); ?></h6>
                                                 <span class="text-xs"><?php echo htmlspecialchars($checkin['nome_acomodacao']) . ' ' . htmlspecialchars($checkin['numero']); ?></span>
                                             </div>
-                                            <a href="/RoomFlow/Dashboard/Reservas/<?php echo $checkin['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                            <a href="/RoomFlow/Reservas/<?php echo $checkin['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                         </li>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -89,7 +97,7 @@ ob_start();
                         </div>
 
                         <div class="col-md-6">
-                             <h6><i class="material-symbols-rounded text-danger">exit_to_app</i> Check-outs para Hoje (<?php echo count($checkoutsHoje); ?>)</h6>
+                            <h6><i class="material-symbols-rounded text-danger">exit_to_app</i> Check-outs para Hoje (<?php echo count($checkoutsHoje); ?>)</h6>
                             <ul class="list-group">
                                 <?php if (!empty($checkoutsHoje)): ?>
                                     <?php foreach ($checkoutsHoje as $checkout): ?>
@@ -98,7 +106,7 @@ ob_start();
                                                 <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($checkout['nome_hospede']); ?></h6>
                                                 <span class="text-xs"><?php echo htmlspecialchars($checkout['nome_acomodacao']) . ' ' . htmlspecialchars($checkout['numero']); ?></span>
                                             </div>
-                                            <a href="/RoomFlow/Dashboard/Reservas/<?php echo $checkout['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                            <a href="/RoomFlow/Reservas/<?php echo $checkout['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                         </li>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -130,14 +138,14 @@ ob_start();
                 </div>
                 <div class="card-body p-3">
                     <ul class="list-group">
-                        <?php if(!empty($reservasPendentes)): ?>
-                            <?php foreach($reservasPendentes as $reserva): ?>
+                        <?php if (!empty($reservasPendentes)): ?>
+                            <?php foreach ($reservasPendentes as $reserva): ?>
                                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($reserva['nome_hospede']); ?></h6>
                                         <span class="text-xs">Check-in em: <?php echo date("d/m/Y", strtotime($reserva['data_checkin'])); ?></span>
                                     </div>
-                                    <a href="/RoomFlow/Dashboard/Reservas/<?php echo $reserva['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
+                                    <a href="/RoomFlow/Reservas/<?php echo $reserva['id']; ?>" class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="material-symbols-rounded" aria-hidden="true">arrow_forward</i></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php else: ?>
@@ -153,9 +161,9 @@ ob_start();
                     <h6><i class="material-symbols-rounded text-secondary">build</i> Acomodações em Manutenção (<?php echo count($acomodacoesManutencaoLista); ?>)</h6>
                 </div>
                 <div class="card-body p-3">
-                     <ul class="list-group">
-                        <?php if(!empty($acomodacoesManutencaoLista)): ?>
-                            <?php foreach($acomodacoesManutencaoLista as $item): ?>
+                    <ul class="list-group">
+                        <?php if (!empty($acomodacoesManutencaoLista)): ?>
+                            <?php foreach ($acomodacoesManutencaoLista as $item): ?>
                                 <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
                                     <div class="d-flex flex-column">
                                         <h6 class="mb-1 text-dark text-sm"><?php echo htmlspecialchars($item['tipo']); ?> - Número <?php echo htmlspecialchars($item['numero']); ?></h6>
@@ -173,43 +181,43 @@ ob_start();
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    var ctx = document.getElementById('acomodacoesChart').getContext('2d');
-    var acomodacoesChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Disponível', 'Ocupado', 'Manutenção'],
-            datasets: [{
-                label: 'Status das Acomodações',
-                data: [
-                    <?php echo $acomodacoesDisponiveis; ?>,
-                    <?php echo $acomodacoesOcupadas; ?>,
-                    <?php echo $acomodacoesManutencao; ?>
-                ],
-                backgroundColor: [
-                    'rgba(76, 175, 80, 0.7)', // Verde (Success)
-                    'rgba(233, 30, 99, 0.7)',  // Rosa/Vermelho (Ocupado)
-                    'rgba(158, 158, 158, 0.7)' // Cinza (Manutenção)
-                ],
-                borderColor: [
-                    'rgba(76, 175, 80, 1)',
-                    'rgba(233, 30, 99, 1)',
-                    'rgba(158, 158, 158, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'top',
+    document.addEventListener("DOMContentLoaded", function() {
+        var ctx = document.getElementById('acomodacoesChart').getContext('2d');
+        var acomodacoesChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Disponível', 'Ocupado', 'Manutenção'],
+                datasets: [{
+                    label: 'Status das Acomodações',
+                    data: [
+                        <?php echo $acomodacoesDisponiveis; ?>,
+                        <?php echo $acomodacoesOcupadas; ?>,
+                        <?php echo $acomodacoesManutencao; ?>
+                    ],
+                    backgroundColor: [
+                        'rgba(76, 175, 80, 0.7)', // Verde (Success)
+                        'rgba(233, 30, 99, 0.7)', // Rosa/Vermelho (Ocupado)
+                        'rgba(158, 158, 158, 0.7)' // Cinza (Manutenção)
+                    ],
+                    borderColor: [
+                        'rgba(76, 175, 80, 1)',
+                        'rgba(233, 30, 99, 1)',
+                        'rgba(158, 158, 158, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
                 }
             }
-        }
+        });
     });
-});
 </script>
 
 

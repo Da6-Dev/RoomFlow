@@ -62,7 +62,7 @@ $alert = getAlertDetails($_GET['msg'] ?? '');
                             <h6 class="mb-0">Acomodações</h6>
                         </div>
                         <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Dashboard/Acomodacoes/Cadastrar">
+                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Acomodacoes/Cadastrar">
                                 <i class="material-symbols-rounded">add</i>&nbsp;&nbsp;Adicionar Acomodação
                             </a>
                         </div>
@@ -111,10 +111,10 @@ $alert = getAlertDetails($_GET['msg'] ?? '');
                                 <?php echo htmlspecialchars(substr($acomodacao['descricao'], 0, 100)) . (strlen($acomodacao['descricao']) > 100 ? '...' : ''); ?>
                             </p>
                             <div class="d-flex align-items-center justify-content-end">
-                                <form action="/RoomFlow/Dashboard/Acomodacoes/Deletar" method="POST" id="form-delete-<?php echo $acomodacao['id']; ?>" class="d-none">
+                                <form action="/RoomFlow/Acomodacoes/Deletar" method="POST" id="form-delete-<?php echo $acomodacao['id']; ?>" class="d-none">
                                     <input type="hidden" name="id" value="<?php echo $acomodacao['id']; ?>">
                                 </form>
-                                <a href="/RoomFlow/Dashboard/Acomodacoes/<?php echo $acomodacao['id']; ?>" class="btn btn-sm btn-outline-dark mb-0 me-2">Ver / Editar</a>
+                                <a href="/RoomFlow/Acomodacoes/<?php echo $acomodacao['id']; ?>" class="btn btn-sm btn-outline-dark mb-0 me-2">Ver / Editar</a>
                                 <button onclick="confirmDelete(<?php echo $acomodacao['id']; ?>, '<?php echo htmlspecialchars(addslashes($acomodacao['tipo'])); ?> Nº <?php echo $acomodacao['numero']; ?>')" class="btn btn-sm btn-outline-danger mb-0">Excluir</button>
                             </div>
                         </div>

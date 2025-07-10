@@ -49,7 +49,7 @@ $alert = get_alert_details($_GET['msg'] ?? '');
                             <h6 class="mb-0">Hóspedes Cadastrados</h6>
                         </div>
                         <div class="col-md-6 text-end">
-                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Dashboard/Hospedes/Cadastrar/">
+                            <a class="btn bg-gradient-dark mb-0" href="/RoomFlow/Hospedes/Cadastrar/">
                                 <i class="material-symbols-rounded">add</i>&nbsp;&nbsp;Adicionar Hóspede
                             </a>
                         </div>
@@ -87,10 +87,10 @@ $alert = get_alert_details($_GET['msg'] ?? '');
                                             <span class="text-secondary text-sm font-weight-bold"><?php echo formatarCPF($guest['documento']); ?></span>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <form action="/RoomFlow/Dashboard/Hospedes/Deletar" method="POST" id="form-delete-<?php echo $guest['id']; ?>" class="d-none">
+                                            <form action="/RoomFlow/Hospedes/Deletar" method="POST" id="form-delete-<?php echo $guest['id']; ?>" class="d-none">
                                                 <input type="hidden" name="id" value="<?php echo $guest['id']; ?>">
                                             </form>
-                                            <a href="/RoomFlow/Dashboard/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Hóspede">
+                                            <a href="/RoomFlow/Hospedes/<?php echo $guest['id']; ?>" class="text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar Hóspede">
                                                 <i class="material-symbols-rounded">edit</i>
                                             </a>
                                             <a href="#" class="text-danger ms-2" onclick="confirmDelete(<?php echo $guest['id']; ?>, '<?php echo htmlspecialchars(addslashes($guest['nome'])); ?>')" data-bs-toggle="tooltip" data-bs-placement="top" title="Excluir Hóspede">

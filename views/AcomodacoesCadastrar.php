@@ -116,7 +116,7 @@ $alert = get_alert_details($errors);
                         <li class="stepper-step" data-step="4"><div class="step-circle">4</div><div class="step-title">Fotos</div></li>
                     </ul>
 
-                    <form action="/RoomFlow/Dashboard/Acomodacoes/Cadastrar" method="post" enctype="multipart/form-data" role="form" id="accommodation-form">
+                    <form action="/RoomFlow/Acomodacoes/Cadastrar" method="post" enctype="multipart/form-data" role="form" id="accommodation-form">
                         <div class="step-panel active" data-step="1">
                             <h6 class="text-dark text-sm mt-3">Informações Principais</h6>
                             <div class="row">

@@ -80,7 +80,7 @@ class ReservationsController extends RenderView
 
             if (empty($errors)) {
                 if ($this->reservationsModel->create($data)) {
-                    header('Location: /RoomFlow/Dashboard/Reservas/Cadastrar?msg=success_create');
+                    header('Location: /RoomFlow/Reservas/Cadastrar?msg=success_create');
                     exit;
                 } else {
                     $errors['general'] = 'Erro ao cadastrar a reserva.';
@@ -124,13 +124,13 @@ class ReservationsController extends RenderView
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'] ?? null;
             if ($id && $this->reservationsModel->delete($id)) {
-                header('Location: /RoomFlow/Dashboard/Reservas?msg=success_delete');
+                header('Location: /RoomFlow/Reservas?msg=success_delete');
             } else {
-                header('Location: /RoomFlow/Dashboard/Reservas?msg=error_delete');
+                header('Location: /RoomFlow/Reservas?msg=error_delete');
             }
             exit;
         }
-        header('Location: /RoomFlow/Dashboard/Reservas');
+        header('Location: /RoomFlow/Reservas');
         exit;
     }
 
@@ -138,7 +138,7 @@ class ReservationsController extends RenderView
     {
         $reserva = $this->reservationsModel->getReservationById($id);
         if (!$reserva) {
-            header('Location: /RoomFlow/Dashboard/Reservas?msg=not_found');
+            header('Location: /RoomFlow/Reservas?msg=not_found');
             exit;
         }
 
@@ -166,7 +166,7 @@ class ReservationsController extends RenderView
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty($errors)) {
                 if ($this->reservationsModel->update($data)) {
-                    header('Location: /RoomFlow/Dashboard/Reservas?msg=success_update');
+                    header('Location: /RoomFlow/Reservas?msg=success_update');
                     exit;
                 } else {
                     $errors['general'] = 'Erro ao atualizar a reserva.';

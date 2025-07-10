@@ -85,7 +85,7 @@ if ($currentAcomodacaoId && isset($datasReservadas[$currentAcomodacaoId])) {
                         </div>
                     <?php endif; ?>
 
-                    <form action="/RoomFlow/Dashboard/Reservas/Update/<?php echo $reserva['id']; ?>" method="post" role="form" id="form-edit-reserva">
+                    <form action="/RoomFlow/Reservas/Update/<?php echo $reserva['id']; ?>" method="post" role="form" id="form-edit-reserva">
                         <input type="hidden" name="valor_total" id="valor_total_hidden" value="<?php echo htmlspecialchars($reserva['valor_total'] ?? '0'); ?>">
 
                         <h6 class="text-dark text-sm mt-4 d-flex align-items-center">
@@ -167,13 +167,12 @@ if ($currentAcomodacaoId && isset($datasReservadas[$currentAcomodacaoId])) {
                             <i class="material-symbols-rounded opacity-5 me-2">edit_note</i>
                             Observações
                         </h6>
-                        <div class="input-group input-group-outline my-3 is-filled">
-                            <label class="form-label">Observações</label>
-                            <textarea class="form-control" name="observacoes" rows="3"><?php echo htmlspecialchars($reserva['observacoes'] ?? ''); ?></textarea>
+                        <div class="input-group input-group-static my-3 is-filled">
+                            <input type="text" class="form-control" name="observacoes" aria-rowspan="3" value="<?php echo htmlspecialchars($reserva['observacoes'] ?? ''); ?>">
                         </div>
                     </form>
 
-                    <form action="/RoomFlow/Dashboard/Reservas/Deletar" method="POST" id="form-delete-<?php echo $reserva['id']; ?>" class="d-none">
+                    <form action="/RoomFlow/Reservas/Deletar" method="POST" id="form-delete-<?php echo $reserva['id']; ?>" class="d-none">
                         <input type="hidden" name="id" value="<?php echo $reserva['id']; ?>">
                     </form>
                 </div>
@@ -200,7 +199,7 @@ if ($currentAcomodacaoId && isset($datasReservadas[$currentAcomodacaoId])) {
                     <div class="d-flex flex-column">
                         <button type="submit" form="form-edit-reserva" class="btn bg-gradient-dark mb-2">Salvar Alterações</button>
                         <button type="button" onclick="confirmDelete(<?php echo $reserva['id']; ?>)" class="btn btn-danger mb-2">Excluir Reserva</button>
-                        <a href="/RoomFlow/Dashboard/Reservas" class="btn btn-outline-dark">Cancelar</a>
+                        <a href="/RoomFlow/Reservas" class="btn btn-outline-dark">Cancelar</a>
                     </div>
                 </div>
             </div>

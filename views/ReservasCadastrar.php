@@ -22,12 +22,19 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
 }
 ?>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    @media screen and (max-width: 993px) {
+        #reservas-row {
+            flex-direction: column-reverse;
+            gap: 3rem;
+        }
+    }
+</style>
 
 <div class="container-fluid py-4">
     <input type="hidden" id="datasReservadas" value="<?php echo htmlspecialchars(json_encode($datasReservadas)); ?>">
 
-    <div class="row">
+    <div class="row" id="reservas-row">
         <div class="col-lg-8 mb-lg-0 mb-4">
             <div class="card">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -44,7 +51,7 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
                         </div>
                     <?php endif; ?>
 
-                    <form action="/RoomFlow/Dashboard/Reservas/Cadastrar" method="post" role="form">
+                    <form action="/RoomFlow/Reservas/Cadastrar" method="post" role="form">
                         <input type="hidden" name="valor_total" id="valor_total_hidden" value="0">
 
                         <h6 class="text-dark text-sm mt-4 d-flex align-items-center">
@@ -124,14 +131,18 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
                             </div>
                         </div>
 
+
                         <h6 class="text-dark text-sm mt-4 d-flex align-items-center">
                             <i class="material-symbols-rounded opacity-5 me-2">edit_note</i>
                             Observações
                         </h6>
-                        <div class="input-group input-group-outline my-3"><label class="form-label">Observações (opcional)</label><textarea class="form-control" name="observacoes" rows="4"></textarea></div>
+                        <div class="input-group input-group-static mb-4">
+                            <label class="form-label">Observações (opcional)</label>
+                            <input type="text" name="observacoes" class="form-control">
+                        </div>
 
                         <div class="mt-4 d-flex justify-content-end">
-                            <a href="/RoomFlow/Dashboard/Reservas" class="btn btn-outline-dark me-2">Cancelar</a>
+                            <a href="/RoomFlow/Reservas" class="btn btn-outline-dark me-2">Cancelar</a>
                             <button type="submit" class="btn bg-gradient-dark">Cadastrar Reserva</button>
                         </div>
                     </form>
@@ -165,4 +176,3 @@ if (isset($_GET['msg']) && $_GET['msg'] === 'success_create') {
 $content = ob_get_clean();
 include __DIR__ . '/Layout.php';
 ?>
-
