@@ -44,14 +44,6 @@ Após configurar o servidor, acesse a aplicação no navegador:
 http://localhost/RoomFlow/
 ```
 
-## Contribuição
-Contribuições são bem-vindas! Siga os passos:
-1. Faça um fork do repositório
-2. Crie uma branch: `git checkout -b minha-feature`
-3. Faça suas alterações e commit: `git commit -m 'Minha nova feature'`
-4. Envie um push: `git push origin minha-feature`
-5. Abra um Pull Request
-
 ## Licença
 Este projeto está sob a licença MIT. Sinta-se à vontade para utilizá-lo e modificá-lo conforme necessário.
 
